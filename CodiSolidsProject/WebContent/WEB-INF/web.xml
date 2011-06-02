@@ -30,6 +30,18 @@
 		<servlet-name>AcademiaServlet</servlet-name>
 		<url-pattern>/academia.echo</url-pattern>
 	</servlet-mapping>
+	
+		<!-- * TIENDA * -->
+  	
+  	<servlet>
+		<servlet-name>TiendaServlet</servlet-name>
+		<servlet-class>codesolids.gui.tienda.TiendaServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>TiendaServlet</servlet-name>
+		<url-pattern>/tienda.echo</url-pattern>
+	</servlet-mapping>
 
 	<!-- *********** -->
 
