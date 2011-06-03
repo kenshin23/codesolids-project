@@ -30,7 +30,7 @@ public class Personaje {
 	
 	public Personaje()
 	{
-		this.gold = 20000;
+		this.gold = 30000;
 		this.items = new ArrayList<Item>();
 	}
 	

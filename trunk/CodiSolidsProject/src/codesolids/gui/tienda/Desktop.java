@@ -15,12 +15,12 @@ import com.minotauro.echo.table.base.TableColModel;
 import com.minotauro.echo.table.base.TableColumn;
 import com.minotauro.echo.table.base.TableSelModel;
 import com.minotauro.echo.table.renderer.BaseCellRenderer;
-//import com.minotauro.echo.table.renderer.ButtonCellRenderer;
+import com.minotauro.echo.table.renderer.ButtonCellRenderer;
 import com.minotauro.echo.table.renderer.LabelCellRenderer;
 import com.minotauro.echo.table.renderer.NestedCellRenderer;
 import com.minotauro.echo.table.renderer.ImageCellRenderer;
 import com.sun.org.apache.bcel.internal.generic.NEW;
-import codesolids.gui.style.Styles1;
+import codesolids.gui.style.GUIStyles;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
@@ -48,12 +48,12 @@ import nextapp.echo.app.event.WindowPaneListener;
 
 import codesolids.gui.tienda.TestTableModel;
 import codesolids.gui.tienda.Item;
+import codesolids.gui.academia.Poder;
 import codesolids.gui.style.Styles1;
 import echopoint.HtmlLayout;
 import echopoint.ImageIcon;
 import echopoint.layout.HtmlLayoutData;
 import echopoint.util.ExtentKit;
-
 
 /**
  * @author Fernando Osuna
@@ -412,7 +412,7 @@ public class Desktop extends ContentPane {
 		}else
 			btnBuild2.setEnabled(false);
 		row.add(btnBuild2);
-		row.setCellSpacing(new Extent(100));
+		row.setCellSpacing(new Extent(106));
 		col.add(row);
 
 		nameIt = "White Bomb";
@@ -528,7 +528,7 @@ public class Desktop extends ContentPane {
 			btnBuild5.setEnabled(false);
 		
 		row.add(btnBuild5);
-		row.setCellSpacing(new Extent(100));
+		row.setCellSpacing(new Extent(110));
 		col.add(row);			
 				
 		/*Esto es para prueba
@@ -855,7 +855,7 @@ private Row initTopRowVender() {
 	          ret.setToolTipText("Comprar");
 
 
-	          if (item.getPrice() <= player.getGold())
+	          if (item.getPrice() < player.getGold())
 	          {	  
 	        		  ret.addActionListener(new ActionListener() {
 	        			  public void actionPerformed(ActionEvent e) {
@@ -1033,7 +1033,7 @@ private TableColModel initTableColModel2() {
 
 	          ret.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	              btnVerClicked(row);
+	              btnVerClicked2(row);
 	            }
 	          });
 	          return ret;
