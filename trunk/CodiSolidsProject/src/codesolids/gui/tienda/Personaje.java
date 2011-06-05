@@ -10,8 +10,11 @@ import codesolids.gui.academia.Poder;
 import codesolids.gui.tienda.Item;
 
 /**
- * @author Fernando Osuna
+ * 
  * @author Antonio López
+ * 
+ * @Colaborador Fernando Osuna
+ * 
  */
 
 public class Personaje {
