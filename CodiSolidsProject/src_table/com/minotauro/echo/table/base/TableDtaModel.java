@@ -85,4 +85,11 @@ public abstract class TableDtaModel {
   // --------------------------------------------------------------------------------
 
   public abstract Object getElementAt(int row);
+
+  // --------------------------------------------------------------------------------
+
+  public abstract boolean getEditable();
+
+  public abstract void setEditable(boolean editable);
+
 }
