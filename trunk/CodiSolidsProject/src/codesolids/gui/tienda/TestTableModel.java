@@ -1,8 +1,8 @@
-
 /*
  * Created on 09/05/2007
  */
-package codesolids.gui.tienda;
+package codesolids.gui.academia;
+
 import java.util.ArrayList;
 import java.util.List;
 
