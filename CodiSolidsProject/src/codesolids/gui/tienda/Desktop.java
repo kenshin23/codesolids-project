@@ -15,12 +15,9 @@ import com.minotauro.echo.table.base.TableColModel;
 import com.minotauro.echo.table.base.TableColumn;
 import com.minotauro.echo.table.base.TableSelModel;
 import com.minotauro.echo.table.renderer.BaseCellRenderer;
-import com.minotauro.echo.table.renderer.ButtonCellRenderer;
 import com.minotauro.echo.table.renderer.LabelCellRenderer;
 import com.minotauro.echo.table.renderer.NestedCellRenderer;
 import com.minotauro.echo.table.renderer.ImageCellRenderer;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import codesolids.gui.style.GUIStyles;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
