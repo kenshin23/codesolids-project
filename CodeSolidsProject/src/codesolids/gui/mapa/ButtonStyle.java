@@ -1,4 +1,9 @@
 package codesolids.gui.mapa;
+/*
+ * 
+ * @autor:Hector Prada
+ */
+
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
