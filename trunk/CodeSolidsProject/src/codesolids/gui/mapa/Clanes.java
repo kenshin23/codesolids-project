@@ -1,5 +1,10 @@
 package codesolids.gui.mapa;
 
+/*
+ * 
+ * @autor:Hector Prada
+ */
+
 
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Panel;

@@ -1,5 +1,10 @@
 package codesolids.gui.mapa;
 
+/*
+ * 
+ * @autor:Hector Prada
+ */
+
 
 //import echopoint.ImageMap;
 //import echopoint.model.CircleSection;

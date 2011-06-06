@@ -2,8 +2,10 @@ package codesolids.gui.mapa;
 
 /*
  * 
- * @autor: hECTOR PRADA
+ * @autor:Hector Prada
  */
+
+ 
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Window;
