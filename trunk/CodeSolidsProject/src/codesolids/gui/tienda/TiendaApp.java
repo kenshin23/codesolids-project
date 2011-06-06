@@ -27,8 +27,8 @@ public class TiendaApp extends ApplicationInstance {
 		Window ventana = new Window();
 		ventana.setTitle("Tienda");
 		
-		Desktop desktop = new Desktop();
-		ventana.setContent(desktop);
+		TiendaDesktop tiendaDesktop = new TiendaDesktop();
+		ventana.setContent(tiendaDesktop);
 		return ventana;
 	}
 

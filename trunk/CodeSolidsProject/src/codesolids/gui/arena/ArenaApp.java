@@ -9,8 +9,8 @@ public class ArenaApp extends ApplicationInstance {
 		Window window = new Window();
 		window.setTitle("Arena");
 		
-	    Desktop desktop = new Desktop();
-	    window.setContent(desktop);
+	    ArenaDesktop arenaDesktop = new ArenaDesktop();
+	    window.setContent(arenaDesktop);
 	    
 	    return window;
 	}

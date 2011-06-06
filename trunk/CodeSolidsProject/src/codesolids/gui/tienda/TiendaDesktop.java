@@ -50,7 +50,7 @@ import echopoint.layout.HtmlLayoutData;
  * 
  */
 
-public class Desktop extends ContentPane {
+public class TiendaDesktop extends ContentPane {
 	private HtmlLayout htmlLayout;
 	
 	private TestTableModel tableDtaModel;
@@ -69,7 +69,7 @@ public class Desktop extends ContentPane {
 	private List<Item> listItemplayer;
 	private Personaje player = new Personaje();
 	
-	public Desktop() {
+	public TiendaDesktop() {
 		initGUI();
 	
 	}

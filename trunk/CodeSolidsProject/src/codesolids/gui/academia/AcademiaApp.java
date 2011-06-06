@@ -31,8 +31,8 @@ public class AcademiaApp extends ApplicationInstance {
 		Window ventana = new Window();
 		ventana.setTitle("Academia");
 		
-		Desktop desktop = new Desktop();
-	    ventana.setContent(desktop);
+		AcademiaDesktop academiaDesktop = new AcademiaDesktop();
+	    ventana.setContent(academiaDesktop);
 		return ventana;
 	}		
 }

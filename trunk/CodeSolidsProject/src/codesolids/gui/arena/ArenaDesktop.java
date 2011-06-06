@@ -37,7 +37,7 @@ import sun.misc.Cache;
  */
 
 
-public class Desktop extends ContentPane {
+public class ArenaDesktop extends ContentPane {
 
 	private Personaje p1;
 	private Personaje p2;
@@ -73,7 +73,7 @@ public class Desktop extends ContentPane {
 	private boolean flag=false;
 	// --------------------------------------------------------------------------------
 
-	public Desktop(){
+	public ArenaDesktop(){
 		initGUI();
 	}
 
