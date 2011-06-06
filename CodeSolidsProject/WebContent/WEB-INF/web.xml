@@ -38,6 +38,18 @@
 		<url-pattern>/tienda.echo</url-pattern>
 	</servlet-mapping>
 
-	<!-- *********** -->
+		<!-- * MAPA PRINCIPAL * -->
+		
+	<servlet>
+    	<servlet-name>MapaAppServlet</servlet-name>
+    	<servlet-class>codesolids.gui.mapa.MapaAppServlet</servlet-class>
+  	</servlet>
+  
+  	<servlet-mapping>
+  	  <servlet-name>MapaAppServlet</servlet-name>
+  	  <url-pattern>/mapa.echo</url-pattern>
+ 	 </servlet-mapping>
+  
+  		<!-- ********* -->
 
 </web-app>

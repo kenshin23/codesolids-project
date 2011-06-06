@@ -46,7 +46,7 @@ import echopoint.layout.HtmlLayoutData;
  * 
  */
 
-public class Desktop extends ContentPane {
+public class AcademiaDesktop extends ContentPane {
 
 	private HtmlLayout htmlLayout;
 	
@@ -64,7 +64,7 @@ public class Desktop extends ContentPane {
 
 	private List<Poder> listPoder;
 	
-	public Desktop() {
+	public AcademiaDesktop() {
 		initGUI();
 	
 	}
