@@ -147,23 +147,23 @@ public class Personaje {
 	
 	public void buildItem(String name){
 		if(name == "Armor Black"){
-			Item it1 = new Item(3, "Armor Black", 4600, 30, "Armadura",false,"Images/Items/armor.jpeg");
+			Item it1 = new Item(3, "Armor Black", 4600, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png");
 			this.items.add(it1);
 		}
 		if(name == "Sword Red"){
-			Item it2 = new Item(5, "Sword Red", 4600, 30, "Espada",false,"Images/Items/sword2.jpeg");
+			Item it2 = new Item(5, "Sword Red", 4600, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png");
 			this.items.add(it2);
 		}
 		if(name == "White Bomb"){
-			Item it3 = new Item(5, "White Bomb", 3100, 35, "Bomba",false,"Images/Items/bomb.jpeg");
+			Item it3 = new Item(5, "White Bomb", 3100, 35, "Bomba", "Bomba mágica de color blanco",false,"Images/Items/bomb.png");
 			this.items.add(it3);
 		}
 		if(name == "Black Bomb"){
-			Item it4 = new Item(5, "Black Bomb", 6100, 60, "Bomba",false,"Images/Items/bomb.jpeg");
+			Item it4 = new Item(5, "Black Bomb", 6100, 60, "Bomba", "Bomba mágica de color negro",false,"Images/Items/bomb.png");
 			this.items.add(it4);
 		}
 		if(name == "Red Bomb"){
-			Item it5 = new Item(5, "Red Bomb", 9100, 90, "Bomba",false,"Images/Items/bomb.jpeg");
+			Item it5 = new Item(5, "Red Bomb", 9100, 90, "Bomba", "Bomba mágica de color rojo",false,"Images/Items/bomb.png");
 			this.items.add(it5);
 		}		
 	}

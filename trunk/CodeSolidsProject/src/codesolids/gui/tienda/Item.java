@@ -11,6 +11,7 @@ public class Item {
 	protected int precio;
 	protected int indice;
 	protected String tipo;
+	protected String descripcion;
 	protected boolean uso;
 	protected String dirImage;
 	
@@ -18,13 +19,14 @@ public class Item {
 	
 	}
 	
-	public Item(int level, String nombre, int precio, int indice, String tipo, boolean uso, String dirImage)
+	public Item(int level, String nombre, int precio, int indice, String tipo, String descripcion, boolean uso, String dirImage)
 	{
 		this.level = level;
 		this.nombre = nombre;
 		this.precio = precio;
 		this.indice = indice;
 		this.tipo = tipo;
+		this.descripcion = descripcion;
 		this.uso = uso;
 		this.dirImage = dirImage;
 
@@ -68,6 +70,14 @@ public class Item {
 	
 	public String getType(){
 		return tipo;
+	}
+	
+	public String getDescription() {
+		return descripcion;
+	}
+
+	public void setDescription(String descripcion){
+		this.descripcion = descripcion;
 	}
 	
 	public void setUse(boolean uso){
