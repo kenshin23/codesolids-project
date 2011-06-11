@@ -29,7 +29,6 @@ public class Item {
 		this.descripcion = descripcion;
 		this.uso = uso;
 		this.dirImage = dirImage;
-
 	}
 
 	public int getLevel() {
