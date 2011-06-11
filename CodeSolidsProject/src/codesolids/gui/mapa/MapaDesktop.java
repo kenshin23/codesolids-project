@@ -43,7 +43,7 @@ import nextapp.echo.app.event.ActionListener;
 public class MapaDesktop extends ContentPane {
 
 	Panel panel = new Panel();
-	protected MapaDesktop() {
+	public MapaDesktop() {
 		super();
 		
 		constructorComponentes();
