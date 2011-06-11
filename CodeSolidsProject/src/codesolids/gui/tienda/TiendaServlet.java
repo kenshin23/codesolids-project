@@ -7,7 +7,7 @@ import nextapp.echo.webcontainer.WebContainerServlet;
  * @author Fernando Osuna
  */
 
-
+@SuppressWarnings("serial")
 public class TiendaServlet extends WebContainerServlet{
 	
 	@Override

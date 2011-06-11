@@ -1,10 +1,7 @@
 package codesolids.gui.tienda;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import codesolids.gui.academia.Poder;
 import codesolids.gui.tienda.Item;
@@ -33,6 +30,7 @@ public class Personaje {
 	
 	public Personaje()
 	{
+		this.level = 10;
 		this.gold = 30000;
 		this.items = new ArrayList<Item>();
 	}
