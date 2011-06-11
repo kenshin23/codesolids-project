@@ -23,18 +23,14 @@ import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
-import nextapp.echo.app.Window;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-import nextapp.echo.app.event.WindowPaneEvent;
-import nextapp.echo.app.event.WindowPaneListener;
 import nextapp.echo.extras.app.TabPane;
 import nextapp.echo.extras.app.layout.TabPaneLayoutData;
 
-import codesolids.gui.tienda.TestTableModel;
 import codesolids.gui.tienda.Item;
-import codesolids.gui.mapa.ButtonStyle;
+import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.style.Styles1;
 import echopoint.HtmlLayout;
@@ -44,12 +40,10 @@ import echopoint.layout.HtmlLayoutData;
  * @author Fernando Osuna
  * 
  */
-
+@SuppressWarnings("serial")
 public class TiendaDesktop extends ContentPane {
 	private HtmlLayout htmlLayout;
 	
-	private Label name;
-	private Label index;
 	private Label description;
 	
 	WindowPane window;
@@ -57,6 +51,19 @@ public class TiendaDesktop extends ContentPane {
 	private List<Item> listItemtienda;
 	private Personaje player = new Personaje();
 	private int indexTab = 0;
+	
+	Button btnBuild5 = new Button();
+	Button btnBuild1 = new Button();
+    Button btnBuild2 = new Button();
+    Button btnBuild3 = new Button();
+    Button btnBuild4 = new Button();
+
+	
+	private String[] imagePath = new String[]{
+			"Images/Items/armor.png","Images/Items/sword.png","Images/Items/stone1.png","Images/Items/potion1.png",
+			"Images/Items/stone2.png","Images/Items/armor2.png","Images/Items/potion2.png","Images/Items/potion1.png",
+			"Images/Items/stone3.png","Images/Items/sword2.png","Images/Items/bomb.png","Images/Items/bomb2.png",
+			"Images/Items/bomb3.png","Images/Items/potion2.png","Images/Items/potion1.png"};
 	
 	public TiendaDesktop() {
 		initGUI();
@@ -214,16 +221,19 @@ public class TiendaDesktop extends ContentPane {
 		grid.setBorder(new Border(new Extent(10), new Color(228, 228, 228), Border.STYLE_DOUBLE));
 		Row rowTab = new Row();
 		Column colTab = new Column();
-		ResourceImageReference ir;
+		//ResourceImageReference ir;		Otra forma de asignar las imagenes
 		Label lblImage;
 	    Label lblData;
 
 	    listItemtienda = new ArrayList<Item>();
 	    CreateList();
 		for (int i = 0; i < listItemtienda.size(); i++){
+
+			ImageReferenceCache irc = ImageReferenceCache.getInstance();
+		    ImageReference ir = irc.getImageReference(imagePath[i]);
 			rowTab = new Row();
 			colTab = new Column();
-			ir = new ResourceImageReference(listItemtienda.get(i).getImage());
+			//ir = new ResourceImageReference(listItemtienda.get(i).getImage());
 			lblImage = new Label(ir);
 			lblData = new Label(listItemtienda.get(i).getName());
 			colTab.add(lblData);
@@ -256,7 +266,7 @@ public class TiendaDesktop extends ContentPane {
 		    btnBuy.setHeight(new Extent(15));
 		    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
 		    btnBuy.setToolTipText("Comprar");
-		    if (it.getPrice() <= player.getGold()){
+		    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
 		    	btnBuy.setEnabled(true);
 		    }
 		    else{
@@ -269,15 +279,6 @@ public class TiendaDesktop extends ContentPane {
 					indexTab = 0;
 					removeAll();
 					add(initComprar());
-//					remove(head);
-//					head.removeAll();
-//					HtmlLayoutData hld = new HtmlLayoutData("head");
-//					description = new Label("GOLD: " + player.getGold());
-//					description.setBackground(Color.BLACK);
-//					description.setForeground(Color.YELLOW);
-//					head.add(description);
-//					head.setLayoutData(hld);
-//					htmlLayout.add(head);
 				}
 			});
 		    colTab.add(btnBuy);
@@ -301,7 +302,8 @@ public class TiendaDesktop extends ContentPane {
 			rowTab = new Row();
 			colTab = new Column();
 			if(listItemtienda.get(i).getType() == "Armadura"){
-				ir = new ResourceImageReference(listItemtienda.get(i).getImage());
+				ImageReferenceCache irc = ImageReferenceCache.getInstance();
+			    ImageReference ir = irc.getImageReference(imagePath[i]);
 				lblImage = new Label(ir);
 				lblData = new Label(listItemtienda.get(i).getName());
 				colTab.add(lblData);
@@ -333,7 +335,7 @@ public class TiendaDesktop extends ContentPane {
 			    btnBuy.setHeight(new Extent(15));
 			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
 			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold()){
+			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
 			    	btnBuy.setEnabled(true);
 			    }
 			    else{
@@ -371,7 +373,8 @@ public class TiendaDesktop extends ContentPane {
 			rowTab = new Row();
 			colTab = new Column();
 			if(listItemtienda.get(i).getType() == "Bomba"){
-				ir = new ResourceImageReference(listItemtienda.get(i).getImage());
+				ImageReferenceCache irc = ImageReferenceCache.getInstance();
+			    ImageReference ir = irc.getImageReference(imagePath[i]);
 				lblImage = new Label(ir);
 				lblData = new Label(listItemtienda.get(i).getName());
 				colTab.add(lblData);
@@ -403,7 +406,7 @@ public class TiendaDesktop extends ContentPane {
 			    btnBuy.setHeight(new Extent(15));
 			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
 			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold()){
+			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
 			    	btnBuy.setEnabled(true);
 			    }
 			    else{
@@ -441,7 +444,8 @@ public class TiendaDesktop extends ContentPane {
 			rowTab = new Row();
 			colTab = new Column();
 			if(listItemtienda.get(i).getType() == "Espada"){
-				ir = new ResourceImageReference(listItemtienda.get(i).getImage());
+				ImageReferenceCache irc = ImageReferenceCache.getInstance();
+			    ImageReference ir = irc.getImageReference(imagePath[i]);
 				lblImage = new Label(ir);
 				lblData = new Label(listItemtienda.get(i).getName());
 				colTab.add(lblData);
@@ -473,7 +477,7 @@ public class TiendaDesktop extends ContentPane {
 			    btnBuy.setHeight(new Extent(15));
 			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
 			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold()){
+			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
 			    	btnBuy.setEnabled(true);
 			    }
 			    else{
@@ -511,7 +515,8 @@ public class TiendaDesktop extends ContentPane {
 			rowTab = new Row();
 			colTab = new Column();
 			if(listItemtienda.get(i).getType() == "Piedra"){
-				ir = new ResourceImageReference(listItemtienda.get(i).getImage());
+				ImageReferenceCache irc = ImageReferenceCache.getInstance();
+			    ImageReference ir = irc.getImageReference(imagePath[i]);
 				lblImage = new Label(ir);
 				lblData = new Label(listItemtienda.get(i).getName());
 				colTab.add(lblData);
@@ -543,7 +548,7 @@ public class TiendaDesktop extends ContentPane {
 			    btnBuy.setHeight(new Extent(15));
 			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
 			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold()){
+			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
 			    	btnBuy.setEnabled(true);
 			    }
 			    else{
@@ -581,7 +586,8 @@ public class TiendaDesktop extends ContentPane {
 			rowTab = new Row();
 			colTab = new Column();
 			if(listItemtienda.get(i).getType() == "Pocion"){
-				ir = new ResourceImageReference(listItemtienda.get(i).getImage());
+				ImageReferenceCache irc = ImageReferenceCache.getInstance();
+			    ImageReference ir = irc.getImageReference(imagePath[i]);
 				lblImage = new Label(ir);
 				lblData = new Label(listItemtienda.get(i).getName());
 				colTab.add(lblData);
@@ -613,7 +619,7 @@ public class TiendaDesktop extends ContentPane {
 			    btnBuy.setHeight(new Extent(15));
 			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
 			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold()){
+			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
 			    	btnBuy.setEnabled(true);
 			    }
 			    else{
@@ -870,15 +876,18 @@ public class TiendaDesktop extends ContentPane {
 	    lblData = new Label("Indice "+ item.getIndex());
 	    colTab.add(lblData);
 	    
-	    Button btnBuild1 = new Button();
+	    btnBuild1 = new Button();
 		btnBuild1.setText("Fabricar");
 		btnBuild1.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnBuild1.setWidth(new Extent(60));
 		btnBuild1.setHeight(new Extent(15));
 		btnBuild1.setStyle(Styles1.DEFAULT_STYLE);
 		btnBuild1.setToolTipText("Armadura + Piedra Negra");
-		if(player.contains("Armadura") && player.contains("Piedra Negra")){
-			btnBuild1.setEnabled(true);						
+		if(item.getLevel() <= player.getLevel()){
+			if(player.contains("Armadura") && player.contains("Piedra Negra"))
+				btnBuild1.setEnabled(true);
+			else
+				btnBuild1.setEnabled(false);
 		}else
 			btnBuild1.setEnabled(false);
 		btnBuild1.addActionListener(new ActionListener() {
@@ -888,9 +897,9 @@ public class TiendaDesktop extends ContentPane {
 				it = player.searchItem("Armadura");
 				player.removeItem(it);
 				it = player.searchItem("Piedra Negra");
-				player.removeItem(it);
-				removeAll();
-				add(initRefinar());
+				player.removeItem(it);				
+				it = player.searchItem(nameItem1);
+				testButton(it);
 			}
 		});
 		colTab.add(btnBuild1);
@@ -916,15 +925,18 @@ public class TiendaDesktop extends ContentPane {
 	    lblData = new Label("Indice "+ item.getIndex());
 	    colTab.add(lblData);
 	    
-	    Button btnBuild2 = new Button();
+	    btnBuild2 = new Button();
 		btnBuild2.setText("Fabricar");
 		btnBuild2.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnBuild2.setWidth(new Extent(60));
 		btnBuild2.setHeight(new Extent(15));
 		btnBuild2.setStyle(Styles1.DEFAULT_STYLE);
 		btnBuild2.setToolTipText("Espada + Piedra Roja");
-		if(player.contains("Espada") && player.contains("Piedra Roja")){
-			btnBuild2.setEnabled(true);						
+		if(item.getLevel() <= player.getLevel()){
+			if(player.contains("Espada") && player.contains("Piedra Roja"))
+				btnBuild2.setEnabled(true);
+			else
+				btnBuild2.setEnabled(false);
 		}else
 			btnBuild2.setEnabled(false);
 		btnBuild2.addActionListener(new ActionListener() {
@@ -934,9 +946,9 @@ public class TiendaDesktop extends ContentPane {
 				it = player.searchItem("Espada");
 				player.removeItem(it);
 				it = player.searchItem("Piedra Roja");
-				player.removeItem(it);
-				removeAll();
-				add(initRefinar());
+				player.removeItem(it);				
+				it = player.searchItem(nameItem2);
+				testButton(it);
 			}
 		});
 		colTab.add(btnBuild2);
@@ -962,15 +974,18 @@ public class TiendaDesktop extends ContentPane {
 	    lblData = new Label("Indice "+ item.getIndex());
 	    colTab.add(lblData);
 	    
-	    Button btnBuild3 = new Button();
+	    btnBuild3 = new Button();
 		btnBuild3.setText("Fabricar");
 		btnBuild3.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnBuild3.setWidth(new Extent(60));
 		btnBuild3.setHeight(new Extent(15));
 		btnBuild3.setStyle(Styles1.DEFAULT_STYLE);
 		btnBuild3.setToolTipText("Piedra Blanca x 3");		
-		if(player.countItem("Piedra Blanca") >= 3){
-			btnBuild3.setEnabled(true);						
+		if(item.getLevel() <= player.getLevel()){
+			if(player.countItem("Piedra Blanca") >= 3)
+				btnBuild3.setEnabled(true);
+			else
+				btnBuild3.setEnabled(false);
 		}else
 			btnBuild3.setEnabled(false);
 		btnBuild3.addActionListener(new ActionListener() {
@@ -982,9 +997,9 @@ public class TiendaDesktop extends ContentPane {
 				it = player.searchItem("Piedra Blanca");
 				player.removeItem(it);
 				it = player.searchItem("Piedra Blanca");
-				player.removeItem(it);
-				removeAll();
-				add(initRefinar());
+				player.removeItem(it);				
+				it = player.searchItem(nameItem3);
+				testButton(it);
 			}
 		});
 		colTab.add(btnBuild3);
@@ -1010,15 +1025,18 @@ public class TiendaDesktop extends ContentPane {
 	    lblData = new Label("Indice "+ item.getIndex());
 	    colTab.add(lblData);
 	    
-	    Button btnBuild4 = new Button();
+	    btnBuild4 = new Button();
 		btnBuild4.setText("Fabricar");
 		btnBuild4.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnBuild4.setWidth(new Extent(60));
 		btnBuild4.setHeight(new Extent(15));
 		btnBuild4.setStyle(Styles1.DEFAULT_STYLE);
 		btnBuild4.setToolTipText("Piedra Blanca + Piedra Negra + Piedra Roja");
-		if(player.contains("Piedra Blanca") && player.contains("Piedra Roja") && player.contains("Piedra Negra")){
-			btnBuild4.setEnabled(true);						
+		if(item.getLevel() <= player.getLevel()){
+			if(player.contains("Piedra Blanca") && player.contains("Piedra Roja") && player.contains("Piedra Negra"))
+				btnBuild4.setEnabled(true);
+			else
+				btnBuild4.setEnabled(false);
 		}else
 			btnBuild4.setEnabled(false);
 		btnBuild4.addActionListener(new ActionListener() {
@@ -1031,8 +1049,8 @@ public class TiendaDesktop extends ContentPane {
 				player.removeItem(it);
 				it = player.searchItem("Piedra Negra");
 				player.removeItem(it);
-				removeAll();
-				add(initRefinar());
+				it = player.searchItem(nameItem4);
+				testButton(it);				
 			}
 		});
 		colTab.add(btnBuild4);
@@ -1058,15 +1076,18 @@ public class TiendaDesktop extends ContentPane {
 	    lblData = new Label("Indice "+ item.getIndex());
 	    colTab.add(lblData);
 	    
-	    Button btnBuild5 = new Button();
+	    btnBuild5 = new Button();
 		btnBuild5.setText("Fabricar");
 		btnBuild5.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnBuild5.setWidth(new Extent(60));
 		btnBuild5.setHeight(new Extent(15));
 		btnBuild5.setStyle(Styles1.DEFAULT_STYLE);
 		btnBuild5.setToolTipText("Piedra Roja x 3");
-		if(player.countItem("Piedra Roja") >= 3){
-			btnBuild5.setEnabled(true);						
+		if( item.getLevel() <= player.getLevel()){
+			if(player.countItem("Piedra Roja") >= 3)
+				btnBuild5.setEnabled(true);
+			else
+				btnBuild5.setEnabled(false);
 		}else
 			btnBuild5.setEnabled(false);
 		btnBuild5.addActionListener(new ActionListener() {
@@ -1078,11 +1099,13 @@ public class TiendaDesktop extends ContentPane {
 				it = player.searchItem("Piedra Roja");
 				player.removeItem(it);
 				it = player.searchItem("Piedra Roja");
-				player.removeItem(it);
-				removeAll();
-				add(initRefinar());
+				player.removeItem(it);				
+				it = player.searchItem(nameItem5);
+				testButton(it);
 			}
 		});
+		
+		
 		colTab.add(btnBuild5);
 	    rowTab.add(lblImage);
 	    rowTab.add(colTab);
@@ -1100,6 +1123,34 @@ public class TiendaDesktop extends ContentPane {
 		htmlLayout.add(panel);
 		
 		return htmlLayout;
+	}
+	public void testButton(Item it){
+		if(player.contains("Armadura") && player.contains("Piedra Negra") && it.getLevel() <= player.getLevel()){
+			if( it.getName() == "Armadura Negra")
+				btnBuild1.setEnabled(true);						
+		}else
+			btnBuild1.setEnabled(false);
+		if(player.contains("Espada") && player.contains("Piedra Roja") && it.getLevel() <= player.getLevel()){
+			if(it.getName() == "Espada Roja")
+				btnBuild2.setEnabled(true);						
+		}else
+			btnBuild2.setEnabled(false);
+		if(player.countItem("Piedra Blanca") >= 3 && it.getLevel() <= player.getLevel()){
+			if(it.getName() == "Bomba Blanca")
+				btnBuild3.setEnabled(true);						
+		}else
+			btnBuild3.setEnabled(false);
+		if(player.contains("Piedra Blanca") && player.contains("Piedra Roja") && player.contains("Piedra Negra")
+				&& it.getLevel() <= player.getLevel()){
+			if(it.getName() == "Bomba Negra")
+				btnBuild4.setEnabled(true);						
+		}else
+			btnBuild4.setEnabled(false);
+		if(player.countItem("Piedra Roja") >= 3 && it.getLevel() <= player.getLevel()){
+			if(it.getName() == "Bomba Roja")
+				btnBuild5.setEnabled(true);						
+		}else
+			btnBuild5.setEnabled(false);
 	}
 	
 private Button exit() {
