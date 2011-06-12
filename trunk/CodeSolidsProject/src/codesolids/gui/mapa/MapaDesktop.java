@@ -50,21 +50,21 @@ public class MapaDesktop extends ContentPane {
 	}
 
 	private void constructorComponentes() {
-		ResourceImageReference fondo = new ResourceImageReference("/images/Mapa/fondo.jpg");
-		ResourceImageReference perfil_des = new ResourceImageReference("/images/Mapa/perfil_sel.png");
-		ResourceImageReference perfil_sel = new ResourceImageReference("/images/Mapa/perfil_des.png");
-		ResourceImageReference academia_sel = new ResourceImageReference("/images/Mapa/academia_sel.png");
-		ResourceImageReference academia_des = new ResourceImageReference("/images/Mapa/academia_des.png");
-		ResourceImageReference ranking_sel = new ResourceImageReference("/images/Mapa/ranking_sel.png");
-		ResourceImageReference ranking_des = new ResourceImageReference("/images/Mapa/ranking_des.png");
-		ResourceImageReference arena_sel = new ResourceImageReference("/images/Mapa/arena_sel.png");
-		ResourceImageReference arena_des = new ResourceImageReference("/images/Mapa/arena_des.png");
-		ResourceImageReference clanes_sel = new ResourceImageReference("/images/Mapa/clanes_sel.png");
-		ResourceImageReference clanes_des = new ResourceImageReference("/images/Mapa/clanes_des.png");
-		ResourceImageReference tienda_sel = new ResourceImageReference("/images/Mapa/tienda_sel.png");
-		ResourceImageReference tienda_des = new ResourceImageReference("/images/Mapa/tienda_des.png");
-		ResourceImageReference chat_sel = new ResourceImageReference("/images/Mapa/chat_sel.png");
-		ResourceImageReference chat_des = new ResourceImageReference("/images/Mapa/chat_des.png");
+		ResourceImageReference fondo = new ResourceImageReference("/Images/Mapa/fondo.jpg");
+		ResourceImageReference perfil_des = new ResourceImageReference("/Images/Mapa/perfil_sel.png");
+		ResourceImageReference perfil_sel = new ResourceImageReference("/Images/Mapa/perfil_des.png");
+		ResourceImageReference academia_sel = new ResourceImageReference("/Images/Mapa/academia_sel.png");
+		ResourceImageReference academia_des = new ResourceImageReference("/Images/Mapa/academia_des.png");
+		ResourceImageReference ranking_sel = new ResourceImageReference("/Images/Mapa/ranking_sel.png");
+		ResourceImageReference ranking_des = new ResourceImageReference("/Images/Mapa/ranking_des.png");
+		ResourceImageReference arena_sel = new ResourceImageReference("/Images/Mapa/arena_sel.png");
+		ResourceImageReference arena_des = new ResourceImageReference("/Images/Mapa/arena_des.png");
+		ResourceImageReference clanes_sel = new ResourceImageReference("/Images/Mapa/clanes_sel.png");
+		ResourceImageReference clanes_des = new ResourceImageReference("/Images/Mapa/clanes_des.png");
+		ResourceImageReference tienda_sel = new ResourceImageReference("/Images/Mapa/tienda_sel.png");
+		ResourceImageReference tienda_des = new ResourceImageReference("/Images/Mapa/tienda_des.png");
+		ResourceImageReference chat_sel = new ResourceImageReference("/Images/Mapa/chat_sel.png");
+		ResourceImageReference chat_des = new ResourceImageReference("/Images/Mapa/chat_des.png");
 		
 		panel.setEnabled(true);
 		panel.setVisible(true);
