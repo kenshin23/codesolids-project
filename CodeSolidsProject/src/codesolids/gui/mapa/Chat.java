@@ -83,7 +83,7 @@ public class Chat extends ContentPane {
 		panelBackground.setEnabled(true);
 		ColumnLayoutData panelBakcgroundLD = new ColumnLayoutData();
 		panelBakcgroundLD.setHeight(new Extent(947, Extent.PX));
-		ResourceImageReference ir = new ResourceImageReference("/images/Mapa/mago_fuego3.jpg");
+		ResourceImageReference ir = new ResourceImageReference("/Images/Mapa/mago_fuego3.jpg");
 	    panelBakcgroundLD.setBackgroundImage(new FillImage(ir,new Extent(50, Extent.PERCENT), new Extent(50, Extent.PERCENT),FillImage.NO_REPEAT));
 		panelBackground.setLayoutData(panelBakcgroundLD);
 		columnaExterna.add(panelBackground);
