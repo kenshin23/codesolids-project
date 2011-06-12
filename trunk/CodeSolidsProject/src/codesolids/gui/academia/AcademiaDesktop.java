@@ -697,7 +697,7 @@ public class AcademiaDesktop extends ContentPane {
 	    	        				  lblText.setText("Usted esta entrenando " + poderesPlayer.get(poderesPlayer.size()-1).getName());
 	    	        				  add(ventanaCompra);  
 	    	        			  }
-	    	        			  if ( player.getGold() < poder.getGold() )
+	    	        			  else if ( player.getGold() < poder.getGold() )
 	    	        			  {
 	    	        				  btnVerClicked(row);
 	    	        				  
@@ -734,7 +734,7 @@ public class AcademiaDesktop extends ContentPane {
 	    	        				  lblText.setText("Usted esta entrenando " + poderesPlayer.get(poderesPlayer.size()-1).getName());
 	    	        				  add(ventanaCompra);  
 	    	        			  }
-	    	        			  if(player.getGold() < poder.getGold())
+	    	        			  else if(player.getGold() < poder.getGold())
 	    	        			  {
 	    	        				  btnVerClicked(row);
 	    	        				  
