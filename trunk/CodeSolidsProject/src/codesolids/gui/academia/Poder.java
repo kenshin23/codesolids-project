@@ -3,31 +3,38 @@ package codesolids.gui.academia;
 /**
  * @author: Antonio López
  * 
+ * @Colaborador: Jose Perez
+ * 
  */
 
 public class Poder {
 
+	protected int id;
 	protected int level;
 	protected String nombre;
 	protected int oro;
 	protected int dano;
 	protected int tiempoReutilizacion;
+	protected int tiempoEntrenamiento;
 	protected int psinergia;
 	protected String tipo;
 	protected boolean uso;
 	protected String dirImage;
 	
+	
 	public Poder() {
 	
 	}
 	
-	public Poder(int level,String nombre,int oro,int dano,int tiempoReutilizacion,int psinergia,String tipo,boolean uso,String dirImage)
+	public Poder(int id,int level,String nombre,int oro,int dano,int tiempoReutilizacion,int psinergia,String tipo,boolean uso,String dirImage,int tiempoEntrenamiento)
 	{
+		this.id = id;
 		this.level = level;
 		this.nombre = nombre;
 		this.oro = oro;
 		this.dano = dano;
 		this.tiempoReutilizacion = tiempoReutilizacion;
+		this.tiempoEntrenamiento = tiempoEntrenamiento;
 		this.psinergia = psinergia;
 		this.tipo = tipo;
 		this.uso = uso;
@@ -35,6 +42,16 @@ public class Poder {
 
 	}
 
+	public int getId()
+	{
+		return id;
+	}
+	
+	public void setId(int id)
+	{
+		this.id = id;
+	}
+	
 	public int getLevel() {
 		return level;
 	}
@@ -105,6 +122,15 @@ public class Poder {
 	
 	public String getImage(){
 		return dirImage;
+	}
+	
+	public int getTrainingTime(){
+		return tiempoEntrenamiento;
+	}
+	
+	public void setTrainingTime(int tiempoEntrenamiento)
+	{
+		this.tiempoEntrenamiento = tiempoEntrenamiento;
 	}
 	
 }

@@ -14,15 +14,15 @@ public class Personaje {
 	protected int cp;
 	protected String tipo;
 	protected String dirImage;
+	protected boolean learning;
 	protected List<Poder> poderes;
-	
 	
 	public Personaje()
 	{
 		
 	}
 	
-	public Personaje(String login, int level, int gold, int xp,int hp, int cp, String tipo, String dirImage, List<Poder> poderes){
+	public Personaje(String login, int level, int gold, int xp,int hp, int cp, String tipo, String dirImage, boolean learning, List<Poder> poderes){
 		
 		this.login = login;
 		this.level = level;
@@ -32,6 +32,7 @@ public class Personaje {
 		this.cp = cp;
 		this.tipo = tipo;
 		this.dirImage = dirImage;
+		this.learning = learning;
 		this.poderes = poderes;
 		
 	}
@@ -116,10 +117,23 @@ public class Personaje {
 		return dirImage;
 	}
 	
-	public void setPoderes(Poder poder){
-		
-		this.poderes.add(poder);
-		
+	public void setPoderes(List<Poder> poderes){
+		this.poderes = poderes;
+	}
+	
+	public List<Poder> getPoderes()
+	{
+		return poderes;
+	}
+	
+	public boolean getLearning()
+	{
+		return learning;
+	}
+	
+	public void setLearning(boolean learning)
+	{
+		this.learning = learning;
 	}
 	
 }

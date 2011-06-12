@@ -43,7 +43,7 @@ public class TestTableModel extends TableDtaModel implements PageableModel {
 
   // --------------------------------------------------------------------------------
 
-  public TestTableModel() {
+  public TestTableModel() { 
     // Empty
   }
 
@@ -64,7 +64,8 @@ public class TestTableModel extends TableDtaModel implements PageableModel {
   }
 
   public void setDataList(List<Object> dataList) {
-    this.dataList = dataList;
+     
+	  this.dataList = dataList;	  
   }
 
   // --------------------------------------------------------------------------------
