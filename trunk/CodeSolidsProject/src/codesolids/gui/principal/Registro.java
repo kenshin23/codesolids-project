@@ -73,7 +73,7 @@ public class Registro extends WindowPane {
 		ImageReference image = w;
 		FillImage imagep = new FillImage(image);
 		
-		this.setBackgroundImage(imagep);
+		//this.setBackgroundImage(imagep);
 		
 		
 		col = new Column();
