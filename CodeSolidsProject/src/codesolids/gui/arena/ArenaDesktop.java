@@ -1,5 +1,6 @@
 package codesolids.gui.arena;
 
+import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.*;
 
 import java.util.ArrayList;
@@ -649,7 +650,7 @@ public class ArenaDesktop extends ContentPane{
 	private void btnExitClicked(){
 		
 		removeAll();
-		add(new Desktop());
+		add(new MapaDesktop());
 		
 	}
 	
