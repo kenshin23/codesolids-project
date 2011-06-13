@@ -27,6 +27,8 @@ public class Info {
 		
 		//FillImageBorder imageb = new FillImageBorder(Color.BLUE, new Insets(new Extent(4)), new Insets(new Extent(4)));
 		
+		//Aqui SVN
+		
 		windowPane.setTitle("HISTORIA");
 		windowPane.setMinimumHeight(new Extent(600));
 		windowPane.setMinimumWidth(new Extent(500));
