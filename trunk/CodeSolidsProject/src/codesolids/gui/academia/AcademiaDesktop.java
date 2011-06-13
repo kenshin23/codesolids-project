@@ -157,7 +157,7 @@ public class AcademiaDesktop extends ContentPane {
 		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
 	    tableNavigation.setAlignment(Alignment.ALIGN_RIGHT);
 	    tableNavigation.setForeground(Color.WHITE);
-	    tableNavigation.setInsets(new Insets(0, 0, 95, 100));
+	    tableNavigation.setInsets(new Insets(0, 0, 95, 80));
 	    
 	    tableNavigation.setLayoutData(hld);
 	    retHtmlLayout1.add(tableNavigation);

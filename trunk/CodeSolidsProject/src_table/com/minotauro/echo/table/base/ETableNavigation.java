@@ -4,7 +4,9 @@
 package com.minotauro.echo.table.base;
 
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
+import nextapp.echo.app.Color;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.TextField;
@@ -175,5 +177,6 @@ public class ETableNavigation extends Row {
     btnLst.setEnabled(!end);
 
     txtPage.setText(page + "/" + pageableModel.getTotalPages());
+    txtPage.setBorder(new Border(3, new Color(87, 205, 211), Border.STYLE_SOLID));
   }
 }
