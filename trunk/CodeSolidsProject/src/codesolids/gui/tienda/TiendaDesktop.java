@@ -40,6 +40,7 @@ import echopoint.layout.HtmlLayoutData;
  * @author Fernando Osuna
  * 
  */
+
 @SuppressWarnings("serial")
 public class TiendaDesktop extends ContentPane {
 	private HtmlLayout htmlLayout;

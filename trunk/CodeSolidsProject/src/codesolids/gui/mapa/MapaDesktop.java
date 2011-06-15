@@ -13,6 +13,7 @@ package codesolids.gui.mapa;
 
 import nextapp.echo.app.Grid;
 import codesolids.gui.arena.*;
+import codesolids.gui.perfil.PerfilDesktop;
 import codesolids.gui.tienda.*;
 import codesolids.gui.academia.*;
 //import nextapp.echo.app.ImageReference;
@@ -226,7 +227,7 @@ public class MapaDesktop extends ContentPane {
 	private void perfilBtnClicked(ActionEvent e) {
 		
 		removeAll();
-		add(new Perfil());
+		add(new PerfilDesktop());
 	}
 	private void rankingBtnClicked(ActionEvent e) {
 		

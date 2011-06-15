@@ -10,7 +10,7 @@ import codesolids.gui.tienda.Item;
  * 
  * @author Antonio López
  * 
- * @Colaborador Fernando Osuna
+ * @author Fernando Osuna
  * 
  */
 
@@ -20,8 +20,11 @@ public class Personaje {
 	protected int level;
 	protected int gold;
 	protected int xp;
-	protected int hp;
-	protected int cp;
+	protected int life;
+	protected int energy;
+	protected int force;
+	protected int defense;
+	protected int speed;
 	protected String tipo;
 	protected String dirImage;
 	protected List<Poder> poderes;
@@ -35,15 +38,18 @@ public class Personaje {
 		this.items = new ArrayList<Item>();
 	}
 	
-	public Personaje(String login, int level, int gold, int xp,int hp, int cp, String tipo, String dirImage, //
+	public Personaje(String login, int level, int xp, int gold, int life, int energy, int force, int defense, int speed, String tipo, String dirImage, //
 						List<Poder> poderes, List<Item> items){
 		
 		this.login = login;
 		this.level = level;
 		this.gold = gold;
 		this.xp = xp;
-		this.hp = hp;
-		this.cp = cp;
+		this.life = life;
+		this.energy = energy;
+		this.force = force;
+		this.defense = defense;
+		this.speed = speed;
 		this.tipo = tipo;
 		this.dirImage = dirImage;
 		this.poderes = poderes;
@@ -91,24 +97,54 @@ public class Personaje {
 		return xp;
 	}
 	
-	public void setHp(int hp)
+	public void setLife(int life)
 	{
-		this.hp = hp;
+		this.life = life;
 	}
 	
-	public int getHp()
+	public int getLife()
 	{
-		return hp;
+		return life;
 	}
 	
-	public void setCp(int cp)
+	public void setEnergy(int energy)
 	{
-		this.cp = cp;
+		this.energy = energy;
 	}
 	
-	public int getCp()
+	public int getEnergy()
 	{
-		return cp;
+		return life;
+	}
+	
+	public void setForce(int force)
+	{
+		this.force = force;
+	}
+	
+	public int getForce()
+	{
+		return force;
+	}
+	
+	public void setDefense(int defense)
+	{
+		this.defense = defense;
+	}
+	
+	public int getDefense()
+	{
+		return defense;
+	}
+	
+	public void setSpeed(int speed)
+	{
+		this.speed = speed;
+	}
+	
+	public int getSpeed()
+	{
+		return speed;
 	}
 
 	public void setType(String tipo)
@@ -168,6 +204,10 @@ public class Personaje {
 	
 	public List<Item> getItems(){
 		return this.items;
+	}
+	
+	public List<Poder> getPowers(){
+		return this.poderes;
 	}
 	
 	public void revomeItems(){
