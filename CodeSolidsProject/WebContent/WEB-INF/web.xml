@@ -37,6 +37,17 @@
 		<servlet-name>TiendaServlet</servlet-name>
 		<url-pattern>/tienda.echo</url-pattern>
 	</servlet-mapping>
+	
+		<!-- * PERFIL * -->
+	<servlet>
+		<servlet-name>PerfilServlet</servlet-name>
+		<servlet-class>codesolids.gui.perfil.PerfilServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>PerfilServlet</servlet-name>
+		<url-pattern>/perfil.echo</url-pattern>
+	</servlet-mapping>
 
 		<!-- * MAPA PRINCIPAL * -->
 		
