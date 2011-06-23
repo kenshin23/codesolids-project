@@ -3,6 +3,8 @@ package codesolids.gui.principal;
 
 import java.awt.GridLayout;
 
+import codesolids.bd.clases.Usuario;
+import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
 
@@ -41,8 +43,14 @@ import echopoint.util.ExtentKit;
 
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
 * @author Karla Moreno
@@ -59,6 +67,7 @@ public class Registro extends WindowPane {
 	private PasswordField fieldPass;
 	private PasswordField fieldPass2;
 	
+	private Label lblText;
 	
 	public Registro(){
 
@@ -98,7 +107,7 @@ public class Registro extends WindowPane {
 		row.setAlignment(Alignment.ALIGN_CENTER);
 		row.setCellSpacing(new Extent(20));
 		row.add(label);
-		TextField fieldLogin = new TextField();
+		fieldLogin = new TextField();
 		row.add(fieldLogin);
 		
 		col.add(row);
@@ -109,7 +118,7 @@ public class Registro extends WindowPane {
 	    label = new Label("Contraseña");
 	    label.setForeground(Color.WHITE);
 	    row.add(label);
-		final PasswordField fieldPass = new PasswordField(); 
+		fieldPass = new PasswordField(); 
 		
 		row.add(fieldPass);
 		
@@ -121,7 +130,7 @@ public class Registro extends WindowPane {
 		label = new Label("Confirme Contraseña");
 		label.setForeground(Color.WHITE);
 		row.add(label);
-		final PasswordField fieldPass2 = new PasswordField(); 
+		fieldPass2 = new PasswordField(); 
 		
 		row.add(fieldPass2);
 		
@@ -133,7 +142,7 @@ public class Registro extends WindowPane {
 		label = new Label("E-mail:");
 		label.setForeground(Color.WHITE);
 		row.add(label);
-		TextField fieldEmail = new TextField(); 
+		fieldEmail = new TextField(); 
 		row.add(fieldEmail);
 		
 		col.add(row);
@@ -167,126 +176,210 @@ public class Registro extends WindowPane {
 	}
 	
 //************************ METODO PARA VALIDAR CORREO ****************************************************
-			public boolean isEmail(String input) {
-	        Pattern pat = null;
-	        Matcher mat = null;        
-	        pat = Pattern.compile("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$");
-	        mat = pat.matcher(input);
-	        if (mat.find()) {
-	            //System.out.println("[" + mat.group() + "]");
-	            return true;
-	        }else{
-	            return false;
-	        }        
-	    }
+	public boolean isEmail(String input) {
+		Pattern pat = null;
+		Matcher mat = null;        
+		pat = Pattern.compile("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$");
+		mat = pat.matcher(input);
+		if (mat.find()) {
+			//System.out.println("[" + mat.group() + "]");
+			return true;
+		}else{
+			return false;
+		}        
+	}
 
 //*****************************************************************************************************************		  
-			private void btnRegistrarClicked() {
-					 
-				  		if ((fieldLogin != null) && (fieldEmail != null) && (fieldPass != null) && (fieldPass2 != null) && (fieldPass.getText() == fieldPass2.getText()) && (isEmail(fieldEmail.getText())))
-				  		{
-				  			Label lblText = new Label();
-				  			lblText.setForeground(Color.CYAN);
-				  			lblText.setText("La cuenta ha sido creada");
-				  			lblText.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-							col.add(lblText);
-				  			//CrearVentana();		  				
-				  		}		
-				  			else
-				  			{
-				  			Label lblText = new Label();
-				  			lblText.setForeground(Color.CYAN);
-				  			lblText.setText("La cuenta NO ha sido creada");
-							lblText.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-							col.add(lblText);
-				  			//CrearVentana2();
-				  			}							  
-			}	  
-						
-//************************ METODO PARA CREAR VENTANA (DATOS CORRECTOS) ****************************************************
-			
-			public void CrearVentana()
-			{
-				final WindowPane ventana = new WindowPane();
-				ventana.setTitle("Cuenta Creada");
-				ventana.setWidth(new Extent(80));
-				ventana.setMaximumWidth(new Extent(100));
-				ventana.setMaximumHeight(new Extent(100));
-				ventana.setMovable(false);
-				ventana.setResizable(false);
-				ventana.setStyle(StyleWindow.ACADEMY_STYLE);
+	private void btnRegistrarClicked() {
 
-				Button btnListo = new Button("Listo");
-				btnListo.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-				btnListo.setToolTipText("Listo");
-				btnListo.setStyle(Styles1.DEFAULT_STYLE);
+		if (!validateCampo())
+		{
+			//Aqui debe ir Mensaje de Advertencia
+			return;
+		}
 				
-				btnListo.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						ventana.userClose();
-					}
-				});
-
-				Row rowBtn = new Row();
-				rowBtn.setInsets(new Insets(20, 20, 20, 20));
-				rowBtn.add(btnListo);
-
-				Column colPane = new Column();
-				colPane.setInsets(new Insets(5, 5, 5, 0));
-				colPane.setCellSpacing(new Extent(10));
-				Label lblText = new Label();
-				lblText.setText("La cuenta ha sido creada");
-				colPane.add(lblText);
-
-				colPane.add(rowBtn);
-				
-				ventana.add(colPane);
-				
-				add(ventana);
-			}
-			
-			
-//************************ METODO PARA CREAR VENTANA (DATOS INCORRECTOS) ****************************************************
-			
-			public void CrearVentana2()
-			{
-				final WindowPane ventana = new WindowPane();
-				ventana.setTitle("Cuenta NO Creada");
-				ventana.setWidth(new Extent(80));
-				ventana.setMaximumWidth(new Extent(100));
-				ventana.setMaximumHeight(new Extent(100));
-				ventana.setMovable(false);
-				ventana.setResizable(false);
-				ventana.setStyle(StyleWindow.ACADEMY_STYLE);
-
-				Button btnListo = new Button("Listo");
-				btnListo.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-				btnListo.setToolTipText("Listo");
-				btnListo.setStyle(Styles1.DEFAULT_STYLE);
-				
-				btnListo.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						ventana.userClose();
-					}
-				});
-
-				Row rowBtn = new Row();
-				rowBtn.setInsets(new Insets(20, 20, 20, 20));
-				rowBtn.add(btnListo);
-
-				Column colPane = new Column();
-				colPane.setInsets(new Insets(5, 5, 5, 0));
-				colPane.setCellSpacing(new Extent(10));
-				Label lblText = new Label();
-				lblText.setText("La cuenta No ha sido creada");
-				colPane.add(lblText);
-
-				colPane.add(rowBtn);
-				
-				ventana.add(colPane);
-				add(ventana);
+		Session session = null;
 		
+		try{
+			
+			session = SessionHibernate.getInstancia().getSession();
+			session.beginTransaction();
+			
+			if(!checkUserEmail(session))
+			{
+				
+				//Aqui debe ir Mensaje de Advertencia
+				return;
 			}
+			
+			Usuario userBean = new Usuario();
+			
+			userBean.setLogin(fieldLogin.getText());
+			userBean.setPassword(fieldPass.getText());
+			userBean.setEmail(fieldEmail.getText());
+			
+			Calendar fechaRegister = new GregorianCalendar();
+			userBean.setDateJoin(fechaRegister);
+			
+			session.save(userBean);
+						
+			this.userClose();
+			
+		}finally
+		{
+			if(session != null)
+			{
+				if(session.getTransaction() != null)
+				{
+					session.getTransaction().commit();
+				}
+				
+				session.close();
+			}
+		}
+		
+		
+/*		if ((fieldLogin != null) && (fieldEmail != null) && (fieldPass != null) && (fieldPass2 != null) && (fieldPass.getText() == fieldPass2.getText()) && (isEmail(fieldEmail.getText())))
+		{
+			Label lblText = new Label();
+			lblText.setForeground(Color.CYAN);
+			lblText.setText("La cuenta ha sido creada");
+			lblText.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
+			col.add(lblText);
+			//CrearVentana();		  				
+		}		
+		else
+		{
+			Label lblText = new Label();
+			lblText.setForeground(Color.CYAN);
+			lblText.setText("La cuenta NO ha sido creada");
+			lblText.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
+			col.add(lblText);
+			//CrearVentana2();
+		}*/							  
+	}	  
+
+//************************ METODO PARA CREAR VENTANA (DATOS CORRECTOS) ****************************************************
+
+	public void CrearVentana()
+	{
+		final WindowPane ventana = new WindowPane();
+		ventana.setTitle("Cuenta Creada");
+		ventana.setWidth(new Extent(80));
+		ventana.setMaximumWidth(new Extent(100));
+		ventana.setMaximumHeight(new Extent(100));
+		ventana.setMovable(false);
+		ventana.setResizable(false);
+		ventana.setStyle(StyleWindow.ACADEMY_STYLE);
+
+		Button btnListo = new Button("Listo");
+		btnListo.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
+		btnListo.setToolTipText("Listo");
+		btnListo.setStyle(Styles1.DEFAULT_STYLE);
+
+		btnListo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				ventana.userClose();
+			}
+		});
+
+		Row rowBtn = new Row();
+		rowBtn.setInsets(new Insets(20, 20, 20, 20));
+		rowBtn.add(btnListo);
+
+		Column colPane = new Column();
+		colPane.setInsets(new Insets(5, 5, 5, 0));
+		colPane.setCellSpacing(new Extent(10));
+		Label lblText = new Label();
+		lblText.setText("La cuenta ha sido creada");
+		colPane.add(lblText);
+
+		colPane.add(rowBtn);
+
+		ventana.add(colPane);
+
+		add(ventana);
+	}
+
+
+//************************ METODO PARA CREAR VENTANA (DATOS INCORRECTOS) ****************************************************
+
+	public void CrearVentana2()
+	{
+		final WindowPane ventana = new WindowPane();
+		ventana.setTitle("Cuenta NO Creada");
+		ventana.setWidth(new Extent(80));
+		ventana.setMaximumWidth(new Extent(100));
+		ventana.setMaximumHeight(new Extent(100));
+		ventana.setMovable(false);
+		ventana.setResizable(false);
+		ventana.setStyle(StyleWindow.ACADEMY_STYLE);
+
+		Button btnListo = new Button("Listo");
+		btnListo.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
+		btnListo.setToolTipText("Listo");
+		btnListo.setStyle(Styles1.DEFAULT_STYLE);
+
+		btnListo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				ventana.userClose();
+			}
+		});
+
+		Row rowBtn = new Row();
+		rowBtn.setInsets(new Insets(20, 20, 20, 20));
+		rowBtn.add(btnListo);
+
+		Column colPane = new Column();
+		colPane.setInsets(new Insets(5, 5, 5, 0));
+		colPane.setCellSpacing(new Extent(10));
+		Label lblText = new Label();
+		lblText.setText("La cuenta No ha sido creada");
+		colPane.add(lblText);
+
+		colPane.add(rowBtn);
+
+		ventana.add(colPane);
+		add(ventana);
+
+	}
+	
+	private boolean checkUserEmail(Session session)
+	{
+		Criteria criteria = session.createCriteria(Usuario.class).add(Restrictions.and(//
+																Restrictions.eq("login", fieldLogin.getText()),
+																Restrictions.eq("email", fieldEmail.getText())));
+
+		if (criteria.list().size() != 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	
+	private boolean validateCampo()
+	{
+		if (fieldLogin.getText().equals("")) {
+			return false;
+		}
+
+		if (fieldPass.getText().equals("")) {
+			return false;
+		}
+
+		if (fieldPass2.getText().equals("")) {
+			return false;
+		}
+		
+		if (fieldEmail.getText().equals("")) {
+			return false;
+		}
+		
+		return true;
+	}
+		
+	
 }
 
 
