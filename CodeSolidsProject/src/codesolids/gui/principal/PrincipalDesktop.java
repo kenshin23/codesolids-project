@@ -1,12 +1,7 @@
 package codesolids.gui.principal;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-
-import codesolids.bd.clases.Usuario;
-import codesolids.bd.hibernate.SessionHibernate;
-
+import codesolids.gui.arena.*;
+import codesolids.gui.validacion.*;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.style.*;
 import echopoint.HtmlLayout;
@@ -22,7 +17,6 @@ import nextapp.echo.app.Label;
 import nextapp.echo.app.PasswordField;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.TextField;
-import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
@@ -34,18 +28,13 @@ import nextapp.echo.app.event.ActionListener;
  */
 
 
-public class Desktop extends ContentPane {
+public class PrincipalDesktop extends ContentPane {
 
 	private HtmlLayout htmllayaut;
 
-	private TextField textLogin; 
-	private PasswordField textPassword;
-	
-	private Usuario usuario;
-	
 	// --------------------------------------------------------------------------------
 
-	public Desktop(){
+	public PrincipalDesktop(){
 		initGUI();
 	}
 
@@ -82,16 +71,16 @@ public class Desktop extends ContentPane {
 		Label la = new Label("Login");
 		la.setForeground(Color.WHITE);
 		row.add(la);
-		textLogin = new TextField();
-		row.add(textLogin);
+		TextField log = new TextField();
+		row.add(log);
 		col.add(row);
 		
 		row = new Row();
 		la = new Label("Password");
 		la.setForeground(Color.WHITE);
 		row.add(la);
-		textPassword = new PasswordField();
-		row.add(textPassword);
+		PasswordField pass = new PasswordField();
+		row.add(pass);
 		col.add(row);
 		
 		Button btnAcceder = new Button("Acceder");
@@ -186,55 +175,8 @@ public class Desktop extends ContentPane {
 	
 	
 	private void btnAccederClicked() {
-		
-		if(!validateCampo())
-		{
-			return;
-		}
-		
-		Session session = null;
-		
-		try
-		{
-			session = SessionHibernate.getInstancia().getSession();
-			session.beginTransaction();
-			
-			Criteria criteria = session.createCriteria(Usuario.class).add(//
-								Restrictions.and(Restrictions.eq("login", textLogin.getText()),//
-												 Restrictions.eq("password", textPassword.getText())));
-		
-			usuario = (Usuario) criteria.uniqueResult();
-			
-			if (usuario == null)
-			{
-				//Esto no se deberia hacer, hay que hacer una clases para ventanas de mensajes
-				//Por lo rapido lo hice asi. XD
-				WindowPane ventanaEmergente = new WindowPane();
-				ventanaEmergente.setTitle("Error!");
-				
-				ventanaEmergente.add(new Label("Login o Contraseña incorrectos"));
-				add(ventanaEmergente);
-
-			}
-			else
-			{
-				removeAll();
-				add(new MapaDesktop());
-			}
-			
-		}finally
-		{
-			if(session != null)
-			{
-				if(session.getTransaction() != null)
-				{
-					session.getTransaction().commit();
-				}
-				
-				session.close();
-			}
-		}
-		
+		removeAll();
+		add(new MapaDesktop());
 	}
 	
 	private void btnHistoriaClicked() {
@@ -248,31 +190,6 @@ public class Desktop extends ContentPane {
 		add(new Registro());
 		
 	}
-	
-	private boolean validateCampo()
-	{
-		boolean ok = true;
-
-		ok &= !textLogin.getText().equals("");
-		ok &= !textPassword.getText().equals("");
-
-		if(ok)
-		{
-			return true;
-		}
-		
-		
-		//Esto no se deberia hacer, hay que hacer una clases para ventanas de mensajes
-		//Por lo rapido lo hice asi. XD
-		WindowPane ventanaEmergente = new WindowPane();
-		ventanaEmergente.setTitle("Campos Vacios!");
-		
-		ventanaEmergente.add(new Label("Por favor ingrese todos sus datos, faltan algunos campos por rellenar"));
-		add(ventanaEmergente);
-		
-		return false;
-	}
-	
 	
 }
 

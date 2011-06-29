@@ -9,8 +9,8 @@ public class PrincipalApp extends ApplicationInstance {
 		Window window = new Window();
 		window.setTitle("Arena");
 		
-	    Desktop desktop = new Desktop();
-	    window.setContent(desktop);
+	    PrincipalDesktop principalDesktop = new PrincipalDesktop();
+	    window.setContent(principalDesktop);
 	    
 	    return window;
 	}

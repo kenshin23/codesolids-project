@@ -103,7 +103,7 @@ public class Perfil extends ContentPane {
 		
 		Button returnButton = new Button();
 		returnButton.setText("REGRESAR");
-		returnButton.setStyle(ButtonStyle.BOTON_REGRESAR);
+		returnButton.setStyle(Styles.BOTON_REGRESAR);
 		returnButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			regresarBtnClicked(e);
