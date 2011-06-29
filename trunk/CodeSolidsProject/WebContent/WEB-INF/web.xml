@@ -74,6 +74,21 @@
  	 </servlet-mapping>
   
   		<!-- ********* -->
+  		
+  	
+  		<!-- * validacion * -->
+		
+	<servlet>
+    	<servlet-name>validacionAppServlet</servlet-name>
+    	<servlet-class>codesolids.gui.validacion.validacionAppServlet</servlet-class>
+  	</servlet>
+  
+  	<servlet-mapping>
+  	  <servlet-name>validacionAppServlet</servlet-name>
+  	  <url-pattern>/validacion.echo</url-pattern>
+ 	 </servlet-mapping>
+  
+  		<!-- ********* -->
 
 </web-app>
 
