@@ -1,6 +1,7 @@
 package codesolids.gui.academia;
 
 
+import codesolids.bd.clases.Usuario;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Window;
 
