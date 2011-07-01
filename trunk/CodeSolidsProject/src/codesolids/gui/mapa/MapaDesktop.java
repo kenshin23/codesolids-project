@@ -40,6 +40,7 @@ import nextapp.echo.app.Button;
 import nextapp.echo.app.Window;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+import codesolids.bd.clases.Usuario;
 
 /**
  * @author Hector Prada
@@ -47,11 +48,14 @@ import nextapp.echo.app.event.ActionListener;
  */
 
 public class MapaDesktop extends ContentPane {
+	
+	private Usuario usuario;
 
 	//Panel panel = new Panel();
-	public MapaDesktop() {
+	public MapaDesktop(Usuario usuario) {
 		super();
 		
+		this.usuario = usuario;
 		constructorComponentes();
 	}
 
@@ -239,7 +243,8 @@ public class MapaDesktop extends ContentPane {
 	private void arenaBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
 		this.removeAll();
-		add(new ArenaDesktop());
+		add(new PreArena(usuario));
+		//add(new ArenaDesktop(usuario));
 		
 //	Window win = (Window) getParent();
 //		win.setContent(new Arena());
@@ -247,22 +252,22 @@ public class MapaDesktop extends ContentPane {
 	private void perfilBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
 		removeAll();
-		add(new PerfilDesktop());
+		add(new PerfilDesktop(usuario));
 	}
 	private void rankingBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
 		removeAll();
-		add(new Ranking());
+		add(new Ranking(usuario));
 	}
 	private void clanesBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
 		removeAll();
-		add(new Clanes());
+		add(new Clanes(usuario));
 	}
 	private void tiendaBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
 		removeAll();
-		add(new TiendaDesktop());
+		add(new TiendaDesktop(usuario));
 	}
 	private void academiaBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
@@ -273,7 +278,7 @@ public class MapaDesktop extends ContentPane {
 	private void chatBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
 		removeAll();
-		add(new Chat());
+		add(new Chat(usuario));
 	}
 }
 

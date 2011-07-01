@@ -29,6 +29,7 @@ import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import codesolids.gui.academia.TimedServerPush;
 import codesolids.gui.mapa.MapaDesktop;
+import codesolids.bd.clases.Usuario;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
 
@@ -53,6 +54,8 @@ import echopoint.layout.HtmlLayoutData;
  */
 
 public class AcademiaDesktop extends ContentPane {
+	
+	private Usuario usuario;
 
 	private TestTableModel tableDtaModel;
 	
@@ -267,7 +270,7 @@ public class AcademiaDesktop extends ContentPane {
 	    btnExit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               removeAll();
-              add(new MapaDesktop());
+              add(new MapaDesktop(usuario));
             }
         });
         rowBtn.add(btnExit);

@@ -7,7 +7,7 @@ public class PrincipalApp extends ApplicationInstance {
 	
 	public Window init(){
 		Window window = new Window();
-		window.setTitle("Arena");
+		window.setTitle("CodeSolids Project");
 		
 	    PrincipalDesktop principalDesktop = new PrincipalDesktop();
 	    window.setContent(principalDesktop);

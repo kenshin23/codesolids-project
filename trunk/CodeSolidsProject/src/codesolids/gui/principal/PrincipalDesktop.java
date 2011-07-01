@@ -196,7 +196,7 @@ public class PrincipalDesktop extends ContentPane {
                 
                 try
                 {
-                        session = SessionHibernate.getInstancia().getSession();
+                        session = SessionHibernate.getInstance().getSession();
                         session.beginTransaction();
                         
                         Criteria criteria = session.createCriteria(Usuario.class).add(//
@@ -219,7 +219,7 @@ public class PrincipalDesktop extends ContentPane {
                         else
                         {
                                 removeAll();
-                                add(new MapaDesktop());
+                                add(new MapaDesktop(usuario));
                         }
                         
                 }finally

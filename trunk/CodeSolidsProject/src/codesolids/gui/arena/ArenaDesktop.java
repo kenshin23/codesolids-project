@@ -2,6 +2,8 @@ package codesolids.gui.arena;
 
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.*;
+import codesolids.bd.clases.Usuario;
+import codesolids.bd.hibernate.SessionHibernate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ import java.lang.Number;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
 
+import org.hibernate.Session;
 import org.informagen.echo.app.CapacityBar;
 
 import com.thoughtworks.xstream.converters.reflection.FieldKey;
@@ -48,6 +51,8 @@ import sun.misc.Cache;
 
 
 public class ArenaDesktop extends ContentPane{
+	
+	private Usuario usuario;
 
 	private Personaje p1;
 	private Personaje p2;
@@ -82,7 +87,8 @@ public class ArenaDesktop extends ContentPane{
 	// --------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------
 
-	public ArenaDesktop(){
+	public ArenaDesktop(Usuario usuario){
+		this.usuario = usuario;
 
 		initGUI();
 	}
@@ -646,11 +652,34 @@ public class ArenaDesktop extends ContentPane{
 
 		}
 	}
+	private void UpdateOutOfArena() {
+
+	    Session session = null;
+
+	    try {
+	      session = SessionHibernate.getInstance().getSession();
+	      session.beginTransaction();
+	      
+	      usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+
+	      usuario.setArena(0);
+
+	      session.update(usuario);
+	    } finally {
+	      if (session != null) {
+	        if (session.getTransaction() != null) {
+	          session.getTransaction().commit();
+	        }
+
+	        session.close();
+	      }
+	    }
+	}
 	
 	private void btnExitClicked(){
-		
+		UpdateOutOfArena();
 		removeAll();
-		add(new MapaDesktop());
+		add(new MapaDesktop(usuario));
 		
 	}
 	

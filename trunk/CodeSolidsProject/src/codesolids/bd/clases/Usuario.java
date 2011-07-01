@@ -1,18 +1,24 @@
 package codesolids.bd.clases;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Proxy;
-
 
 
 /**
@@ -32,6 +38,9 @@ public class Usuario {
 	private String password;
 	private String email;
 	private Calendar dateJoin;
+	
+	private int arena;
+	private List<Invitation> invitationList = new ArrayList<Invitation>();
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -75,6 +84,25 @@ public class Usuario {
 	public void setDateJoin(Calendar dateJoin) {
 		this.dateJoin = dateJoin;
 	}
+	
+	  public int getArena() {
+			return arena;
+	  }
+
+	  public void setArena(int arena) {
+			this.arena = arena;
+	  }
+	
+	  @OneToMany(mappedBy = "usuarioRef", orphanRemoval = true)
+	  @LazyCollection(LazyCollectionOption.TRUE)
+	  @Cascade({CascadeType.ALL})
+	  public List<Invitation> getInvitationList() {
+		return invitationList;
+	  }
+
+	  public void setInvitationList(List<Invitation> invitationList) {
+		this.invitationList = invitationList;
+	  }
 	
 	
 }
