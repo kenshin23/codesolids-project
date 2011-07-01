@@ -1,10 +1,5 @@
 package codesolids.gui.mapa;
 
-/*
- * 
- * @autor:Hector Prada
- */
-
 
 //import echopoint.ImageMap;
 //import echopoint.model.CircleSection;
@@ -136,7 +131,7 @@ public class MapaDesktop extends ContentPane {
 			academiaBtn.setLayoutData(academiaBtnLD);
 			academiaBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					academiaBtnClicked(e);
+					academiaBtnClicked();
 				}
 			});
 		gridBotones.add(academiaBtn);
@@ -269,12 +264,14 @@ public class MapaDesktop extends ContentPane {
 		removeAll();
 		add(new TiendaDesktop(usuario));
 	}
-	private void academiaBtnClicked(ActionEvent e) {
+	
+	private void academiaBtnClicked() {
 		this.setBackgroundImage(null);
 		removeAll();
 		add(new AcademiaDesktop());
 	
 	}
+	
 	private void chatBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
 		removeAll();
