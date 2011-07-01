@@ -169,7 +169,7 @@ public class Validacion extends ContentPane {
 
 		if (valid) {
 			Window win = (Window) getParent();
-			win.setContent(new MapaDesktop());
+			//win.setContent(new MapaDesktop());
 		} else {
 			login.setText("");
 			contra.setText("");

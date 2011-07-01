@@ -28,7 +28,8 @@ import codesolids.gui.style.Styles1;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 
-import codesolids.gui.perfil.Usuario;
+import codesolids.gui.perfil.User;
+import codesolids.bd.clases.Usuario;
 
 /**
  * 
@@ -39,15 +40,18 @@ import codesolids.gui.perfil.Usuario;
 @SuppressWarnings("serial")
 public class PerfilDesktop extends ContentPane {
 	
+	private Usuario usuario;
+	
 	private HtmlLayout htmlLayout;
 	
 	private Label lblImage;
 	private Label lblData;
 	
-	private Usuario user;
+	private User user;
 	private int indexPlayer = 0;
 	
-	public PerfilDesktop() {
+	public PerfilDesktop(Usuario usuario) {
+		this.usuario = usuario;
 		initGUI();
 	
 	}
@@ -102,7 +106,7 @@ public class PerfilDesktop extends ContentPane {
 		
 		hld = new HtmlLayoutData("body");
 		
-		user = new Usuario();
+		user = new User();
 		user.setLogin("USUARIO");
 				
 		Panel panelImage= new Panel();
@@ -191,7 +195,7 @@ public class PerfilDesktop extends ContentPane {
 	
 	private void button1Clicked(ActionEvent e) {		
 		removeAll();
-		add(new MapaDesktop());
+		add(new MapaDesktop(usuario));
 	}
 	
 	private void button2Clicked(ActionEvent e) {

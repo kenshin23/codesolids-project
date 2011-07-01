@@ -32,6 +32,7 @@ import nextapp.echo.extras.app.layout.TabPaneLayoutData;
 import codesolids.gui.tienda.Item;
 import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.gui.mapa.MapaDesktop;
+import codesolids.bd.clases.Usuario;
 import codesolids.gui.style.Styles1;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
@@ -43,6 +44,8 @@ import echopoint.layout.HtmlLayoutData;
 
 @SuppressWarnings("serial")
 public class TiendaDesktop extends ContentPane {
+	
+	private Usuario usuario;
 	private HtmlLayout htmlLayout;
 	
 	private Label description;
@@ -66,7 +69,8 @@ public class TiendaDesktop extends ContentPane {
 			"Images/Items/stone3.png","Images/Items/sword2.png","Images/Items/bomb.png","Images/Items/bomb2.png",
 			"Images/Items/bomb3.png","Images/Items/potion2.png","Images/Items/potion1.png"};
 	
-	public TiendaDesktop() {
+	public TiendaDesktop(Usuario usuario) {
+		this.usuario = usuario;
 		initGUI();
 	
 	}
@@ -1300,6 +1304,6 @@ private Button exit() {
 	
 	private void button1Clicked(ActionEvent e) {		
 		removeAll();
-		add(new MapaDesktop());
+		add(new MapaDesktop(usuario));
 	}	
 }

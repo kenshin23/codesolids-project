@@ -2,6 +2,7 @@ package codesolids.bd.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
 
@@ -15,12 +16,12 @@ public class SessionHibernate {
 	
 	private SessionHibernate()
 	{
-		Configuration configuration = new Configuration();
-		configuration.configure("hibernate.cfg.xml");
+		Configuration configuration = new AnnotationConfiguration();
+		configuration.configure("/codesolids/bd/clases/hibernate.cfg.xml");
 		sessionFactory = configuration.buildSessionFactory();
 	}	
 	
-	public static SessionHibernate getInstancia()
+	public static SessionHibernate getInstance()
 	{
 		return instance;
 	}
