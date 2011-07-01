@@ -17,7 +17,7 @@ public class SessionHibernate {
 	private SessionHibernate()
 	{
 		Configuration configuration = new AnnotationConfiguration();
-		configuration.configure("/codesolids/bd/clases/hibernate.cfg.xml");
+		configuration.configure("hibernate.cfg.xml");
 		sessionFactory = configuration.buildSessionFactory();
 	}	
 	
