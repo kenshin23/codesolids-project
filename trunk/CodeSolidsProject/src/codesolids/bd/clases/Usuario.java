@@ -40,7 +40,8 @@ public class Usuario {
 	private Calendar dateJoin;
 	
 	private int arena;
-	private List<Invitation> invitationList = new ArrayList<Invitation>();
+	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
+	private List<Invitation> invReceivesList = new ArrayList<Invitation>();
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -93,15 +94,26 @@ public class Usuario {
 			this.arena = arena;
 	  }
 	
-	  @OneToMany(mappedBy = "usuarioRef", orphanRemoval = true)
+	  @OneToMany(mappedBy = "userGeneratesRef", orphanRemoval = true)
 	  @LazyCollection(LazyCollectionOption.TRUE)
 	  @Cascade({CascadeType.ALL})
-	  public List<Invitation> getInvitationList() {
-		return invitationList;
+	  public List<Invitation> getInvGeneratesList() {
+		return invGeneratesList;
 	  }
 
-	  public void setInvitationList(List<Invitation> invitationList) {
-		this.invitationList = invitationList;
+	  public void setInvGeneratesList(List<Invitation> invGeneratesList) {
+		this.invGeneratesList = invGeneratesList;
+	  }
+	  
+	  @OneToMany(mappedBy = "userReceivesRef", orphanRemoval = true)
+	  @LazyCollection(LazyCollectionOption.TRUE)
+	  @Cascade({CascadeType.ALL})
+	  public List<Invitation> getInvReceivesList() {
+		return invReceivesList;
+	  }
+
+	  public void setInvReceivesList(List<Invitation> invReceivesList) {
+		this.invReceivesList = invReceivesList;
 	  }
 	
 	

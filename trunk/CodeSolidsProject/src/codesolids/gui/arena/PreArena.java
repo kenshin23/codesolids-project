@@ -157,7 +157,7 @@ public class PreArena extends ContentPane{
 	    		}
 	    		colUser.removeAll();
 	    		colButtons.removeAll();
-	    		consultInvitations();
+	    		
 	    		for (int i = 0; i < results.size(); i++) {
 	    			row = new Row();
 
@@ -168,10 +168,8 @@ public class PreArena extends ContentPane{
 			    	invite = new Button("Invitar");
 			    	invite.setStyle(Styles1.DEFAULT_STYLE);
 			    	final Invitation invitation = new Invitation();
-			    	invitation.setGenerates( usuario.getLogin());
-			    	invitation.setReceives(results.get(i).getLogin());
-			    	if(results.get(i).getLogin() == usuario.getLogin())
-			    		invite.setEnabled(false);
+			    	invitation.setUserGeneratesRef(usuario);
+			    	invitation.setUserReceivesRef(results.get(i));
 			    	invite.setToolTipText("Luchar");
 			    	invite.addActionListener(new ActionListener() {
 			          public void actionPerformed(ActionEvent evt) {
@@ -179,9 +177,14 @@ public class PreArena extends ContentPane{
 			          }
 
 			        });
+			    	if(usuario.getLogin() == results.get(i).getLogin()){
+			    		invite.setEnabled(false);
+			    		invite.setFocusedForeground(Color.BLUE);
+			    	}
 			    	colButtons.add(invite);
 	    			colButtons.setCellSpacing(new Extent(20));
 	    		}
+	    		consultInvitations();
 	    	}
 	    });
 		
@@ -209,8 +212,10 @@ public class PreArena extends ContentPane{
 	      session = SessionHibernate.getInstance().getSession();
 	      session.beginTransaction();
 	      
+	      usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+
 	      Invitation obj = new Invitation();
-		  obj.setReceives(usuario.getLogin());
+		  obj.setUserReceivesRef(usuario);
 
 		  resultsI = //
 		  session.createCriteria(Invitation.class).add(Example.create(obj)).list();
@@ -230,25 +235,27 @@ public class PreArena extends ContentPane{
 	      }
 	    }
 	    invitations.removeAll();
-   	  	for( it = 0; it < resultsI.size(); it++){
-   	  		row = new Row();
-   	  		Label lbl = new Label("Usuario   : "+resultsI.get(it).getGenerates());
-   	  		lbl.setForeground(Color.WHITE);
-   	  		row.add(lbl);
-   	  		Button aceptar = new Button("Aceptar");
-   	  		aceptar.setStyle(Styles1.DEFAULT_STYLE);
-   	  		aceptar.setToolTipText("Aceptar la invitacion");
-   	  		aceptar.addActionListener(new ActionListener() {
-          	public void actionPerformed(ActionEvent evt) {
-          		inviteServerPush.end();
-          		removeAll();
-          		add(new ArenaDesktop(usuario));
-          		}
-
-   	  		});
-   	  		row.add(aceptar);
-   	  		invitations.add(row);
-   	  		invitations.setInsets(new Insets(new Extent(110)));
+   	  	for( int i = 0; i < resultsI.size(); i++){
+   	  		if(resultsI.get(i).getUserGeneratesRef().getLogin() != usuario.getLogin()){
+	   	  		row = new Row();
+	   	  		Label lbl = new Label("Usuario   : "+resultsI.get(i).getUserGeneratesRef().getLogin());
+	   	  		lbl.setForeground(Color.WHITE);
+	   	  		row.add(lbl);
+	   	  		Button aceptar = new Button("Aceptar");
+	   	  		aceptar.setStyle(Styles1.DEFAULT_STYLE);
+	   	  		aceptar.setToolTipText("Aceptar la invitacion");
+	   	  		aceptar.addActionListener(new ActionListener() {
+	          	public void actionPerformed(ActionEvent evt) {
+	          		inviteServerPush.end();
+	          		removeAll();
+	          		add(new ArenaDesktop(usuario));
+	          		}
+	
+	   	  		});
+	   	  		row.add(aceptar);
+	   	  		invitations.add(row);
+	   	  		invitations.setInsets(new Insets(new Extent(110)));
+   	  		}
    	  	}
 	}
 	
@@ -261,8 +268,8 @@ public class PreArena extends ContentPane{
 	      
 		  Invitation bean = new Invitation();
 
-		  bean.setGenerates(invitation.getGenerates());
-		  bean.setReceives(invitation.getReceives());
+		  bean.setUserGeneratesRef(invitation.getUserGeneratesRef());
+		  bean.setUserReceivesRef(invitation.getUserReceivesRef());
 
 		  session.save(bean);
 	    } finally {
@@ -310,6 +317,17 @@ public class PreArena extends ContentPane{
 	      usuario = (Usuario) session.load(Usuario.class, usuario.getId());
 
 	      usuario.setArena(0);
+	      Invitation obj = new Invitation();
+		  obj.setUserReceivesRef(usuario);
+
+		  resultsI = //
+		  session.createCriteria(Invitation.class).add(Example.create(obj)).list();
+		  for(int i = 0; i < resultsI.size(); i++){
+			  if(resultsI.get(i).getUserGeneratesRef() == usuario ){
+				  session.delete(resultsI.get(i));
+			  }
+		  }
+	      
 	      session.update(usuario);	      
 	    } finally {
 	      if (session != null) {
@@ -326,5 +344,6 @@ public class PreArena extends ContentPane{
 		removeAll();
 		add(new MapaDesktop(usuario));
 	}
+
 
 }
