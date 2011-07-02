@@ -21,10 +21,8 @@ public class Invitation{
 
 	private int id;
 
-	private String generates;
-	private String receives;
-	
-	private Usuario usuarioRef;
+	private Usuario userGeneratesRef;
+	private Usuario userReceivesRef;
 	
 	public Invitation() {
 		// Empty
@@ -38,27 +36,22 @@ public class Invitation{
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getGenerates() {
-		return generates;
-	}
-	public void setGenerates(String generates) {
-		this.generates = generates;
-	}
-	public String getReceives() {
-		return receives;
-	}
-	public void setReceives(String receives) {
-		this.receives = receives;
-	}
-
-
 	@ManyToOne
-	public Usuario getUsuarioRef() {
-		return usuarioRef;
+	public Usuario getUserGeneratesRef() {
+		return userGeneratesRef;
 	}
 
-	public void setUsuarioRef(Usuario usuarioRef) {
-		this.usuarioRef = usuarioRef;
+	public void setUserGeneratesRef(Usuario userGeneratesRef) {
+		this.userGeneratesRef = userGeneratesRef;
 	}
+	@ManyToOne
+	public Usuario getUserReceivesRef() {
+		return userReceivesRef;
+	}
+
+	public void setUserReceivesRef(Usuario userreceivesRef) {
+		this.userReceivesRef = userreceivesRef;
+	}
+
 	
 }
