@@ -13,6 +13,7 @@ import codesolids.gui.principal.PrincipalDesktop;
 import codesolids.gui.style.Styles1;
 import codesolids.gui.tienda.*;
 import codesolids.gui.academia.*;
+import codesolids.gui.chat.ChatGui;
 import echopoint.ImageMap;
 import echopoint.model.RectangleSection;
 //import nextapp.echo.app.ImageReference;
@@ -300,9 +301,8 @@ public class MapaDesktop extends ContentPane {
 	}
 	
 	private void chatBtnClicked(ActionEvent e) {
-		this.setBackgroundImage(null);
-		removeAll();
-		add(new Chat(usuario));
+		
+		add(new ChatGui());
 	}
 }
 
