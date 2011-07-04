@@ -12,6 +12,7 @@ import codesolids.gui.style.*;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
@@ -202,7 +203,7 @@ public class PrincipalDesktop extends ContentPane {
                         Criteria criteria = session.createCriteria(Usuario.class).add(//
                                                                 Restrictions.and(Restrictions.eq("login", textLogin.getText()),//
                                                                                                  Restrictions.eq("password", textPassword.getText())));
-                
+               
                         usuario = (Usuario) criteria.uniqueResult();
                         
                         if (usuario == null)
@@ -218,6 +219,9 @@ public class PrincipalDesktop extends ContentPane {
                         }
                         else
                         {
+                    			PrincipalApp pa = (PrincipalApp) ApplicationInstance.getActive();
+                    			pa.setUsuario(usuario);
+                    			
                                 removeAll();
                                 add(new MapaDesktop(usuario));
                         }

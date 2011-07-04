@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -20,13 +21,11 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Proxy;
 
-
 /**
  * 
  * @author Antonio López
  *
  */
-
 
 @Entity
 @Table(name = "t_user")
@@ -38,6 +37,8 @@ public class Usuario {
 	private String password;
 	private String email;
 	private Calendar dateJoin;
+	
+	private Chat chatRef;
 	
 	private int arena;
 	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
@@ -115,6 +116,15 @@ public class Usuario {
 	  public void setInvReceivesList(List<Invitation> invReceivesList) {
 		this.invReceivesList = invReceivesList;
 	  }
-	
-	
+
+	@ManyToOne
+	public Chat getChatRef() {
+		return chatRef;
+	}
+
+	public void setChatRef(Chat chatRef) {
+		this.chatRef = chatRef;
+	}
+	  
+	 
 }
