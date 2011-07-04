@@ -29,12 +29,29 @@ import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.extras.app.TabPane;
 import nextapp.echo.extras.app.layout.TabPaneLayoutData;
 
+import javax.imageio.stream.FileCacheImageOutputStream;
+
+import com.minotauro.echo.table.base.CellRenderer;
+import com.minotauro.echo.table.base.ETable;
+import com.minotauro.echo.table.base.ETableNavigation;
+import com.minotauro.echo.table.base.TableColModel;
+import com.minotauro.echo.table.base.TableColumn;
+import com.minotauro.echo.table.base.TableSelModel;
+import com.minotauro.echo.table.renderer.BaseCellRenderer;
+import com.minotauro.echo.table.renderer.ButtonCellRenderer;
+import com.minotauro.echo.table.renderer.LabelCellRenderer;
+import com.minotauro.echo.table.renderer.NestedCellRenderer;
+import com.minotauro.echo.table.renderer.ImageCellRenderer;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
+import codesolids.util.TestTableModel;
 import codesolids.gui.tienda.Item;
 import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.bd.clases.Usuario;
 import codesolids.gui.style.Styles1;
 import echopoint.HtmlLayout;
+import echopoint.ImageIcon;
 import echopoint.layout.HtmlLayoutData;
 
 /**
@@ -48,11 +65,24 @@ public class TiendaDesktop extends ContentPane {
 	private Usuario usuario;
 	private HtmlLayout htmlLayout;
 	
+	private TestTableModel tableDtaModel;
+	private TestTableModel tableDtaModelPlayer;
+	private TestTableModel tableDtaModelBuild;
+	
+	private ETable table;
+	private ETable tablePlayer;
+	private ETable tableBuild;
+	
+	private Label name;
+	private Label index;
 	private Label description;
+	private Label oro;
 	
 	WindowPane window;
 
 	private List<Item> listItemtienda;
+	private List<Item> listItemplayer;
+	private List<Item> listItembuild;
 	private Personaje player = new Personaje();
 	private int indexTab = 0;
 	
@@ -64,20 +94,18 @@ public class TiendaDesktop extends ContentPane {
 
 	
 	private String[] imagePath = new String[]{
-			"Images/Items/armor.png","Images/Items/sword.png","Images/Items/stone1.png","Images/Items/potion1.png",
-			"Images/Items/stone2.png","Images/Items/armor2.png","Images/Items/potion2.png","Images/Items/potion1.png",
-			"Images/Items/stone3.png","Images/Items/sword2.png","Images/Items/bomb.png","Images/Items/bomb2.png",
-			"Images/Items/bomb3.png","Images/Items/potion2.png","Images/Items/potion1.png"};
+			"Images/Fondos/cartel.png","Images/Items/armor.png","Images/Items/sword.png","Images/Items/stone1.png",
+			"Images/Items/potion1.png","Images/Items/stone2.png","Images/Items/armor2.png","Images/Items/potion2.png",
+			"Images/Items/potion1.png","Images/Items/stone3.png","Images/Items/sword2.png","Images/Items/bomb.png",
+			"Images/Items/bomb2.png","Images/Items/bomb3.png","Images/Items/potion2.png","Images/Items/potion1.png"};
 	
 	public TiendaDesktop(Usuario usuario) {
 		this.usuario = usuario;
-		initGUI();
-	
+		initGUI();	
 	}
 
 	private void initGUI() {
-		add(initMapa());
-		
+		add(initMapa());		
 	}
 	
 	private Component initMapa()
@@ -94,37 +122,18 @@ public class TiendaDesktop extends ContentPane {
 		ImageReference image = w;
 	
 		HtmlLayoutData hld;
-		
-		hld = new HtmlLayoutData("head");
-		Row title = new Row();
-		description = new Label("Tienda de Articulos Mágicos");
-		description.setFont(new Font(Font.HELVETICA, OVERFLOW_AUTO, new Extent(40)));
-		description.setForeground(Color.WHITE);
-		title.add(description);
-		title.setLayoutData(hld);
-		htmlLayout.add(title);
 
-		hld = new HtmlLayoutData("left");
-		Column col = new Column();
-		Row foot = new Row();
+		hld = new HtmlLayoutData("head");
+		Row row = new Row();
 		
-		menu(hld, col, foot);	
-		htmlLayout.add(col);
-		htmlLayout.add(foot);
+		menu(hld, row);		
+		htmlLayout.add(row);
 		
 		hld = new HtmlLayoutData("central");
 		
-		Row head = new Row();
-		description = new Label("GOLD: " + player.getGold());
-		description.setBackground(Color.BLACK);
-		description.setForeground(Color.YELLOW);
-		head.add(description);
-		head.setLayoutData(hld);
-		htmlLayout.add(head);
-		
 		Panel panel = new Panel();
 		Column col2 = new Column();
-		Row row = new Row();
+		row = new Row();
 		col2.setCellSpacing(new Extent(5));
 		description = new Label("Bienvenido a la Tienda del comerciante Merlot");
 		col2.add(description);
@@ -169,492 +178,52 @@ public class TiendaDesktop extends ContentPane {
 		}
 		
 		HtmlLayoutData hld;
+		
 		hld = new HtmlLayoutData("head");
-		Row title = new Row();
-		description = new Label("Tienda de Articulos Mágicos");
-		description.setFont(new Font(Font.HELVETICA, OVERFLOW_AUTO, new Extent(40)));
-		description.setForeground(Color.WHITE);
-		title.add(description);
-		title.setLayoutData(hld);
-		htmlLayout.add(title);
+		Row row = new Row();
 		
-		hld = new HtmlLayoutData("left");
-		Column col = new Column();
-		Row foot = new Row();
-		
-		menu(hld, col, foot);	
-		htmlLayout.add(col);
-		htmlLayout.add(foot);
+		menu(hld, row);		
+		htmlLayout.add(row);
 		
 		hld = new HtmlLayoutData("central");
-		Row head = new Row();
-		description = new Label("COMPRAR ");
-		description.setFont(new Font(Font.HELVETICA, OVERFLOW_AUTO, new Extent(25)));
-		description.setForeground(Color.WHITE);
-		head.add(description);
-		head.setCellSpacing(new Extent(270));
-		description = new Label("GOLD: " + player.getGold());
-		description.setBackground(Color.BLACK);
-		description.setForeground(Color.YELLOW);
-		head.add(description);
-		head.setCellSpacing(new Extent(310));
-		head.add(exit());
-		head.setLayoutData(hld);
-		htmlLayout.add(head);
 		
-		Panel panel = new Panel();
-		TabPane tabPane = new TabPane();
+		Grid grid = new Grid(1);
 		
-		tabPane.setTabActiveBackground(new Color(228, 228, 228));
-	    tabPane.setTabActiveForeground(Color.BLACK);
+		grid.add(initTopRow());		
+		
+		TableColModel tableColModel = initTableColModel(1);
+	    TableSelModel tableSelModel = new TableSelModel();
 
-	    tabPane.setTabInactiveBackground(Color.LIGHTGRAY);
-	    tabPane.setTabInactiveForeground(Color.BLACK);
-
-	    tabPane.setBackground(new Color(228, 228, 228));
-	    tabPane.setBorder(new Border(1, Color.BLACK, Border.STYLE_SOLID));
-	    tabPane.setActiveTabIndex(indexTab);
+	    tableDtaModel = new TestTableModel();
+	    tableDtaModel.setEditable(true);
+	    tableDtaModel.setPageSize(6);
 	    
-	    TabPaneLayoutData tpld = new TabPaneLayoutData();
-	    tpld.setTitle("Todo");
-		
-		Grid grid = new Grid(4);
-		
-		grid.setLayoutData(tpld);
-		grid.setHeight(new Extent(300));
-		grid.setWidth(new Extent(800));
-		grid.setBorder(new Border(new Extent(10), new Color(228, 228, 228), Border.STYLE_DOUBLE));
-		Row rowTab = new Row();
-		Column colTab = new Column();
-		//ResourceImageReference ir;		Otra forma de asignar las imagenes
-		Label lblImage;
-	    Label lblData;
+	    table = new ETable();
+	    table.setTableDtaModel(tableDtaModel);
+	    table.setTableColModel(tableColModel);
+	    table.setTableSelModel(tableSelModel);
 
-	    listItemtienda = new ArrayList<Item>();
-	    CreateList();
-		for (int i = 0; i < listItemtienda.size(); i++){
-
-			ImageReferenceCache irc = ImageReferenceCache.getInstance();
-		    ImageReference ir = irc.getImageReference(imagePath[i]);
-			rowTab = new Row();
-			colTab = new Column();
-			//ir = new ResourceImageReference(listItemtienda.get(i).getImage());
-			lblImage = new Label(ir);
-			lblData = new Label(listItemtienda.get(i).getName());
-			colTab.add(lblData);
-			lblData = new Label("Tipo "+ listItemtienda.get(i).getType());
-		    colTab.add(lblData);
-		    lblData = new Label("Nivel "+ listItemtienda.get(i).getLevel());
-		    colTab.add(lblData);
-		    lblData = new Label("Precio "+ listItemtienda.get(i).getPrice());
-		    colTab.add(lblData);
-		    Button btnVer = new Button();
-		    btnVer.setText("Ver");
-		    btnVer.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		    btnVer.setWidth(new Extent(60));
-		    btnVer.setHeight(new Extent(15));
-		    btnVer.setStyle(Styles1.DEFAULT_STYLE);
-		    btnVer.setToolTipText("Ver");
-		    btnVer.setEnabled(true);
-		    final Item it = listItemtienda.get(i);
-		    btnVer.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					btnSeeClicked(it);				  
-				}				
-			});
-		    
-		    colTab.add(btnVer);
-		    Button btnBuy = new Button();
-		    btnBuy.setText("Comprar");
-		    btnBuy.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		    btnBuy.setWidth(new Extent(60));
-		    btnBuy.setHeight(new Extent(15));
-		    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
-		    btnBuy.setToolTipText("Comprar");
-		    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
-		    	btnBuy.setEnabled(true);
-		    }
-		    else{
-		    	btnBuy.setEnabled(false);
-		    }
-		    btnBuy.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					player.setGold(player.getGold() - it.getPrice());
-					player.setItems(it);
-					indexTab = 0;
-					removeAll();
-					add(initComprar());
-				}
-			});
-		    colTab.add(btnBuy);
-		    rowTab.add(lblImage);
-		    rowTab.add(colTab);
-		    rowTab.setBackground(Color.WHITE);
-		    grid.add(rowTab);
-		}
-		tabPane.add(grid);
-		
-		tpld = new TabPaneLayoutData();
-	    tpld.setTitle("Armaduras");		
-		Grid grid2 = new Grid(2);
-		
-		grid2.setLayoutData(tpld);
-		grid2.setHeight(new Extent(300));
-		grid2.setWidth(new Extent(400));
-		grid2.setBorder(new Border(new Extent(10), new Color(228, 228, 228), Border.STYLE_DOUBLE));
-		
-		for (int i = 0; i < listItemtienda.size(); i++){
-			rowTab = new Row();
-			colTab = new Column();
-			if(listItemtienda.get(i).getType() == "Armadura"){
-				ImageReferenceCache irc = ImageReferenceCache.getInstance();
-			    ImageReference ir = irc.getImageReference(imagePath[i]);
-				lblImage = new Label(ir);
-				lblData = new Label(listItemtienda.get(i).getName());
-				colTab.add(lblData);
-				lblData = new Label("Tipo "+ listItemtienda.get(i).getType());
-			    colTab.add(lblData);
-			    lblData = new Label("Nivel "+ listItemtienda.get(i).getLevel());
-			    colTab.add(lblData);
-			    lblData = new Label("Precio "+ listItemtienda.get(i).getPrice());
-			    colTab.add(lblData);
-			    final Item it = listItemtienda.get(i);
-			    Button btnVer = new Button();
-			    btnVer.setText("Ver");
-			    btnVer.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnVer.setWidth(new Extent(60));
-			    btnVer.setHeight(new Extent(15));
-			    btnVer.setStyle(Styles1.DEFAULT_STYLE);
-			    btnVer.setToolTipText("Ver");
-			    btnVer.setEnabled(true);
-			    btnVer.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						btnSeeClicked(it);				  
-					}				
-				});
-			    colTab.add(btnVer);
-			    Button btnBuy = new Button();
-			    btnBuy.setText("Comprar");
-			    btnBuy.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnBuy.setWidth(new Extent(60));
-			    btnBuy.setHeight(new Extent(15));
-			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
-			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
-			    	btnBuy.setEnabled(true);
-			    }
-			    else{
-			    	btnBuy.setEnabled(false);
-			    }
-			    btnBuy.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						player.setGold(player.getGold() - it.getPrice());
-						player.setItems(it);
-						indexTab = 1;
-						removeAll();
-						add(initComprar());						
-					}
-				});
-			    colTab.add(btnBuy);
-			    rowTab.add(lblImage);
-			    rowTab.add(colTab);
-			    rowTab.setBackground(Color.WHITE);
-			    grid2.add(rowTab);
-			}
-		}
-		tabPane.add(grid2);
-		
-		tpld = new TabPaneLayoutData();
-	    tpld.setTitle("Bombas");
-		
-		grid2 = new Grid(2);
-		
-		grid2.setLayoutData(tpld);
-		grid2.setHeight(new Extent(300));
-		grid2.setWidth(new Extent(400));
-		grid2.setBorder(new Border(new Extent(10), new Color(228, 228, 228), Border.STYLE_DOUBLE));
-		
-		for (int i = 0; i < listItemtienda.size(); i++){
-			rowTab = new Row();
-			colTab = new Column();
-			if(listItemtienda.get(i).getType() == "Bomba"){
-				ImageReferenceCache irc = ImageReferenceCache.getInstance();
-			    ImageReference ir = irc.getImageReference(imagePath[i]);
-				lblImage = new Label(ir);
-				lblData = new Label(listItemtienda.get(i).getName());
-				colTab.add(lblData);
-				lblData = new Label("Tipo "+ listItemtienda.get(i).getType());
-			    colTab.add(lblData);
-			    lblData = new Label("Nivel "+ listItemtienda.get(i).getLevel());
-			    colTab.add(lblData);
-			    lblData = new Label("Precio "+ listItemtienda.get(i).getPrice());
-			    colTab.add(lblData);
-			    final Item it = listItemtienda.get(i);
-			    Button btnVer = new Button();
-			    btnVer.setText("Ver");
-			    btnVer.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnVer.setWidth(new Extent(60));
-			    btnVer.setHeight(new Extent(15));
-			    btnVer.setStyle(Styles1.DEFAULT_STYLE);
-			    btnVer.setToolTipText("Ver");
-			    btnVer.setEnabled(true);
-			    btnVer.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						btnSeeClicked(it);				  
-					}				
-				});
-			    colTab.add(btnVer);
-			    Button btnBuy = new Button();
-			    btnBuy.setText("Comprar");
-			    btnBuy.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnBuy.setWidth(new Extent(60));
-			    btnBuy.setHeight(new Extent(15));
-			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
-			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
-			    	btnBuy.setEnabled(true);
-			    }
-			    else{
-			    	btnBuy.setEnabled(false);
-			    }
-			    btnBuy.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						player.setGold(player.getGold() - it.getPrice());
-						player.setItems(it);
-						indexTab = 2;
-						removeAll();
-						add(initComprar());						
-					}
-				});
-			    colTab.add(btnBuy);
-			    rowTab.add(lblImage);
-			    rowTab.add(colTab);
-			    rowTab.setBackground(Color.WHITE);
-			    grid2.add(rowTab);
-			}
-		}
-		tabPane.add(grid2);
-		
-		tpld = new TabPaneLayoutData();
-	    tpld.setTitle("Espadas");
-		
-		grid2 = new Grid(2);
-		
-		grid2.setLayoutData(tpld);
-		grid2.setHeight(new Extent(300));
-		grid2.setWidth(new Extent(400));
-		grid2.setBorder(new Border(new Extent(10), new Color(228, 228, 228), Border.STYLE_DOUBLE));
-		
-		for (int i = 0; i < listItemtienda.size(); i++){
-			rowTab = new Row();
-			colTab = new Column();
-			if(listItemtienda.get(i).getType() == "Espada"){
-				ImageReferenceCache irc = ImageReferenceCache.getInstance();
-			    ImageReference ir = irc.getImageReference(imagePath[i]);
-				lblImage = new Label(ir);
-				lblData = new Label(listItemtienda.get(i).getName());
-				colTab.add(lblData);
-				lblData = new Label("Tipo "+ listItemtienda.get(i).getType());
-			    colTab.add(lblData);
-			    lblData = new Label("Nivel "+ listItemtienda.get(i).getLevel());
-			    colTab.add(lblData);
-			    lblData = new Label("Precio "+ listItemtienda.get(i).getPrice());
-			    colTab.add(lblData);
-			    final Item it = listItemtienda.get(i);
-			    Button btnVer = new Button();
-			    btnVer.setText("Ver");
-			    btnVer.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnVer.setWidth(new Extent(60));
-			    btnVer.setHeight(new Extent(15));
-			    btnVer.setStyle(Styles1.DEFAULT_STYLE);
-			    btnVer.setToolTipText("Ver");
-			    btnVer.setEnabled(true);
-			    btnVer.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						btnSeeClicked(it);				  
-					}				
-				});
-			    colTab.add(btnVer);
-			    Button btnBuy = new Button();
-			    btnBuy.setText("Comprar");
-			    btnBuy.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnBuy.setWidth(new Extent(60));
-			    btnBuy.setHeight(new Extent(15));
-			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
-			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
-			    	btnBuy.setEnabled(true);
-			    }
-			    else{
-			    	btnBuy.setEnabled(false);
-			    }
-			    btnBuy.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						player.setGold(player.getGold() - it.getPrice());
-						player.setItems(it);
-						indexTab = 3;
-						removeAll();
-						add(initComprar());						
-					}
-				});
-			    colTab.add(btnBuy);
-			    rowTab.add(lblImage);
-			    rowTab.add(colTab);
-			    rowTab.setBackground(Color.WHITE);
-			    grid2.add(rowTab);
-			}
-		}
-		tabPane.add(grid2);
-		
-		tpld = new TabPaneLayoutData();
-	    tpld.setTitle("Piedras");
-		
-		grid2 = new Grid(2);
-		
-		grid2.setLayoutData(tpld);
-		grid2.setHeight(new Extent(300));
-		grid2.setWidth(new Extent(400));
-		grid2.setBorder(new Border(new Extent(10), new Color(228, 228, 228), Border.STYLE_DOUBLE));
-		
-		for (int i = 0; i < listItemtienda.size(); i++){
-			rowTab = new Row();
-			colTab = new Column();
-			if(listItemtienda.get(i).getType() == "Piedra"){
-				ImageReferenceCache irc = ImageReferenceCache.getInstance();
-			    ImageReference ir = irc.getImageReference(imagePath[i]);
-				lblImage = new Label(ir);
-				lblData = new Label(listItemtienda.get(i).getName());
-				colTab.add(lblData);
-				lblData = new Label("Tipo "+ listItemtienda.get(i).getType());
-			    colTab.add(lblData);
-			    lblData = new Label("Nivel "+ listItemtienda.get(i).getLevel());
-			    colTab.add(lblData);
-			    lblData = new Label("Precio "+ listItemtienda.get(i).getPrice());
-			    colTab.add(lblData);
-			    final Item it = listItemtienda.get(i);
-			    Button btnVer = new Button();
-			    btnVer.setText("Ver");
-			    btnVer.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnVer.setWidth(new Extent(60));
-			    btnVer.setHeight(new Extent(15));
-			    btnVer.setStyle(Styles1.DEFAULT_STYLE);
-			    btnVer.setToolTipText("Ver");
-			    btnVer.setEnabled(true);
-			    btnVer.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						btnSeeClicked(it);				  
-					}				
-				});
-			    colTab.add(btnVer);
-			    Button btnBuy = new Button();
-			    btnBuy.setText("Comprar");
-			    btnBuy.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnBuy.setWidth(new Extent(60));
-			    btnBuy.setHeight(new Extent(15));
-			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
-			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
-			    	btnBuy.setEnabled(true);
-			    }
-			    else{
-			    	btnBuy.setEnabled(false);
-			    }
-			    btnBuy.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						player.setGold(player.getGold() - it.getPrice());
-						player.setItems(it);
-						indexTab = 4;
-						removeAll();
-						add(initComprar());						
-					}
-				});
-			    colTab.add(btnBuy);
-			    rowTab.add(lblImage);
-			    rowTab.add(colTab);
-			    rowTab.setBackground(Color.WHITE);
-			    grid2.add(rowTab);
-			}
-		}
-		tabPane.add(grid2);
-		
-		tpld = new TabPaneLayoutData();
-	    tpld.setTitle("Pociones");
-		
-		grid2 = new Grid(2);
-		
-		grid2.setLayoutData(tpld);
-		grid2.setHeight(new Extent(300));
-		grid2.setWidth(new Extent(400));
-		grid2.setBorder(new Border(new Extent(10), new Color(228, 228, 228), Border.STYLE_DOUBLE));
-		
-		for (int i = 0; i < listItemtienda.size(); i++){
-			rowTab = new Row();
-			colTab = new Column();
-			if(listItemtienda.get(i).getType() == "Pocion"){
-				ImageReferenceCache irc = ImageReferenceCache.getInstance();
-			    ImageReference ir = irc.getImageReference(imagePath[i]);
-				lblImage = new Label(ir);
-				lblData = new Label(listItemtienda.get(i).getName());
-				colTab.add(lblData);
-				lblData = new Label("Tipo "+ listItemtienda.get(i).getType());
-			    colTab.add(lblData);
-			    lblData = new Label("Nivel "+ listItemtienda.get(i).getLevel());
-			    colTab.add(lblData);
-			    lblData = new Label("Precio "+ listItemtienda.get(i).getPrice());
-			    colTab.add(lblData);
-			    final Item it = listItemtienda.get(i);
-			    Button btnVer = new Button();
-			    btnVer.setText("Ver");
-			    btnVer.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnVer.setWidth(new Extent(60));
-			    btnVer.setHeight(new Extent(15));
-			    btnVer.setStyle(Styles1.DEFAULT_STYLE);
-			    btnVer.setToolTipText("Ver");
-			    btnVer.setEnabled(true);
-			    btnVer.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						btnSeeClicked(it);				  
-					}				
-				});
-			    colTab.add(btnVer);
-			    Button btnBuy = new Button();
-			    btnBuy.setText("Comprar");
-			    btnBuy.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			    btnBuy.setWidth(new Extent(60));
-			    btnBuy.setHeight(new Extent(15));
-			    btnBuy.setStyle(Styles1.DEFAULT_STYLE);
-			    btnBuy.setToolTipText("Comprar");
-			    if (it.getPrice() <= player.getGold() && it.getLevel() <= player.getLevel()){
-			    	btnBuy.setEnabled(true);
-			    }
-			    else{
-			    	btnBuy.setEnabled(false);
-			    }
-			    btnBuy.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						player.setGold(player.getGold() - it.getPrice());
-						player.setItems(it);
-						indexTab = 5;
-						removeAll();
-						add(initComprar());						
-					}
-				});
-			    colTab.add(btnBuy);
-			    rowTab.add(lblImage);
-			    rowTab.add(colTab);
-			    rowTab.setBackground(Color.WHITE);
-			    grid2.add(rowTab);
-			}
-		}
-		tabPane.add(grid2);
-		
-		tabPane.setTabCloseEnabled(false);	
-		panel.add(tabPane);
-		panel.setHeight(new Extent(500));
-		panel.setWidth(new Extent(850));		
-		
-		panel.setLayoutData(hld);
-		htmlLayout.add(panel);
+	    
+	    table.setBorder(new Border(1, Color.BLACK, Border.STYLE_SOLID));
+	    table.setInsets(new Insets(5, 2, 5, 2));
+	    
+	    grid.add(table);
+	    
+	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
+	    grid.add(tableNavigation);
+	    
+	    CreateList(1);
+		rowsArrayItems();
+	    
+		grid.setLayoutData(hld);
+		htmlLayout.add(grid);
+	    
+	    Column col = new Column();
+	    col.add(initFoot());
+	    
+	    hld = new HtmlLayoutData("foot");
+	    col.setLayoutData(hld);
+		htmlLayout.add(col);
 		
 		return htmlLayout;
 	}
@@ -668,126 +237,50 @@ public class TiendaDesktop extends ContentPane {
 		}
 		
 		HtmlLayoutData hld;
+		
 		hld = new HtmlLayoutData("head");
-		Row title = new Row();
-		description = new Label("Tienda de Articulos Mágicos");
-		description.setFont(new Font(Font.HELVETICA, OVERFLOW_AUTO, new Extent(40)));
-		description.setForeground(Color.WHITE);
-		title.add(description);
-		title.setLayoutData(hld);
-		htmlLayout.add(title);
+		Row row = new Row();
 		
-		hld = new HtmlLayoutData("left");
-		Column col = new Column();
-		Row foot = new Row();
-		
-		menu(hld, col, foot);		
-		htmlLayout.add(col);
-		htmlLayout.add(foot);
+		menu(hld, row);		
+		htmlLayout.add(row);
 		
 		hld = new HtmlLayoutData("central");
 		
-		Row head = new Row();
-		description = new Label("VENDER ");
-		description.setFont(new Font(Font.HELVETICA, OVERFLOW_AUTO, new Extent(25)));
-		description.setForeground(Color.WHITE);
-		head.add(description);
-		head.setCellSpacing(new Extent(285));
-		description = new Label("GOLD: " + player.getGold());
-		description.setBackground(Color.BLACK);
-		description.setForeground(Color.YELLOW);
-		head.add(description);
-		head.setCellSpacing(new Extent(315));
-		head.add(exit());
-		head.setLayoutData(hld);
-		htmlLayout.add(head);
+		Grid grid = new Grid(1);
 		
-		Panel panel = new Panel();
-		TabPane tabPane = new TabPane();
+		grid.add(initTopRowVender());
 		
-		tabPane.setTabActiveBackground(new Color(228, 228, 228));
-	    tabPane.setTabActiveForeground(Color.BLACK);
+		TableColModel tableColModel = initTableColModel(2);
+	    TableSelModel tableSelModel = new TableSelModel();
 
-	    tabPane.setTabInactiveBackground(Color.LIGHTGRAY);
-	    tabPane.setTabInactiveForeground(Color.BLACK);
-
-	    tabPane.setBackground(new Color(228, 228, 228));
-	    tabPane.setBorder(new Border(1, Color.BLACK, Border.STYLE_SOLID));
+	    tableDtaModelPlayer = new TestTableModel();
+	    tableDtaModelPlayer.setEditable(true);
+	    tableDtaModelPlayer.setPageSize(6);
 	    
-	    TabPaneLayoutData tpld = new TabPaneLayoutData();
-	    tpld.setTitle("Todo");
+	    tablePlayer = new ETable();
+	    tablePlayer.setTableDtaModel(tableDtaModelPlayer);
+	    tablePlayer.setTableColModel(tableColModel);
+	    tablePlayer.setTableSelModel(tableSelModel);
+	    
+	    tablePlayer.setBorder(new Border(1, Color.BLACK, Border.STYLE_SOLID));
+	    tablePlayer.setInsets(new Insets(5, 2, 5, 2));
+	    
+	    grid.add(tablePlayer);
+	    
+	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModelPlayer);
+	    grid.add(tableNavigation);
+	    
+	    CreateListItem(player.getItems());
+		rowsArrayItemsPlayer();
+		grid.setLayoutData(hld);
+		htmlLayout.add(grid);
 		
-		Grid grid = new Grid(4);
-		
-		grid.setLayoutData(tpld);
-		grid.setHeight(new Extent(300));
-		grid.setWidth(new Extent(800));
-		grid.setBorder(new Border(new Extent(10), new Color(228, 228, 228), Border.STYLE_DOUBLE));
-		Row rowTab = new Row();
-		Column colTab = new Column();
-		ResourceImageReference ir;
-		Label lblImage;
-	    Label lblData;
-
-		for (int i = 0; i < player.getItems().size(); i++){
-			rowTab = new Row();
-			colTab = new Column();
-			ir = new ResourceImageReference(player.getItems().get(i).getImage());
-			lblImage = new Label(ir);
-			lblData = new Label(player.getItems().get(i).getName());
-			colTab.add(lblData);
-			lblData = new Label("Tipo "+ player.getItems().get(i).getType());
-		    colTab.add(lblData);
-		    lblData = new Label("Nivel "+ player.getItems().get(i).getLevel());
-		    colTab.add(lblData);
-		    lblData = new Label("Precio "+ player.getItems().get(i).getPrice());
-		    colTab.add(lblData);
-		    final Item it = player.getItems().get(i);
-		    Button btnVer = new Button();
-		    btnVer.setText("Ver");
-		    btnVer.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		    btnVer.setWidth(new Extent(60));
-		    btnVer.setHeight(new Extent(15));
-		    btnVer.setStyle(Styles1.DEFAULT_STYLE);
-		    btnVer.setToolTipText("Ver");
-		    btnVer.setEnabled(true);
-		    btnVer.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					btnSeeClicked(it);				  
-				}				
-			});
-		    colTab.add(btnVer);
-		    Button btnSell = new Button();
-		    btnSell.setText("Vender");
-		    btnSell.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		    btnSell.setWidth(new Extent(60));
-		    btnSell.setHeight(new Extent(15));
-		    btnSell.setStyle(Styles1.DEFAULT_STYLE);
-		    btnSell.setToolTipText("Vender");
-		    btnSell.setEnabled(true);
-		    btnSell.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					player.setGold(player.getGold() + it.getPrice()/2);					
-					player.removeItem(player.searchItem(it.getName()));
-					removeAll();
-					add(initVender());					
-				}
-			});
-		    colTab.add(btnSell);
-		    rowTab.add(lblImage);
-		    rowTab.add(colTab);
-		    rowTab.setBackground(Color.WHITE);
-		    grid.add(rowTab);
-		}
-		tabPane.add(grid);
-		
-		tabPane.setTabCloseEnabled(false);	
-		panel.add(tabPane);
-		panel.setHeight(new Extent(400));
-		panel.setWidth(new Extent(850));		
-		
-		panel.setLayoutData(hld);
-		htmlLayout.add(panel);
+	    Column col = new Column();
+	    col.add(initFoot());
+	    
+	    hld = new HtmlLayoutData("foot");
+	    col.setLayoutData(hld);
+		htmlLayout.add(col);
 		
 		return htmlLayout;
 	}
@@ -801,334 +294,707 @@ public class TiendaDesktop extends ContentPane {
 		}
 		
 		HtmlLayoutData hld;
+		
 		hld = new HtmlLayoutData("head");
-		Row title = new Row();
-		description = new Label("Tienda de Articulos Mágicos");
-		description.setFont(new Font(Font.HELVETICA, OVERFLOW_AUTO, new Extent(40)));
-		description.setForeground(Color.WHITE);
-		title.add(description);
-		title.setLayoutData(hld);
-		htmlLayout.add(title);
+		Row row = new Row();
 		
-		hld = new HtmlLayoutData("left");
-		Column col = new Column();
-		Row foot = new Row();
-		
-		menu(hld, col, foot);		
-		htmlLayout.add(col);
-		htmlLayout.add(foot);
+		menu(hld, row);		
+		htmlLayout.add(row);
 		
 		hld = new HtmlLayoutData("central");
 		
-		Row head = new Row();
-		description = new Label("REFINAR ");
-		description.setFont(new Font(Font.HELVETICA, OVERFLOW_AUTO, new Extent(25)));
-		description.setForeground(Color.WHITE);
-		head.add(description);
-		head.setCellSpacing(new Extent(285));
-		description = new Label("GOLD: " + player.getGold());
-		description.setBackground(Color.BLACK);
-		description.setForeground(Color.YELLOW);
-		head.add(description);
-		head.setCellSpacing(new Extent(305));
-		head.add(exit());
-		head.setLayoutData(hld);
-		htmlLayout.add(head);
+		Grid grid = new Grid(1);
 		
-		Panel panel = new Panel();
-		TabPane tabPane = new TabPane();
+		grid.add(initTopRowVender());
 		
-		tabPane.setTabActiveBackground(new Color(228, 228, 228));
-	    tabPane.setTabActiveForeground(Color.BLACK);
+		TableColModel tableColModel = initTableColModel(3);
+	    TableSelModel tableSelModel = new TableSelModel();
 
-	    tabPane.setTabInactiveBackground(Color.LIGHTGRAY);
-	    tabPane.setTabInactiveForeground(Color.BLACK);
+	    tableDtaModelBuild = new TestTableModel();
+	    tableDtaModelBuild.setEditable(true);
+	    tableDtaModelBuild.setPageSize(6);
+	    
+	    tableBuild = new ETable();
+	    tableBuild.setTableDtaModel(tableDtaModelBuild);
+	    tableBuild.setTableColModel(tableColModel);
+	    tableBuild.setTableSelModel(tableSelModel);
+	    
+	    tableBuild.setBorder(new Border(1, Color.BLACK, Border.STYLE_SOLID));
+	    tableBuild.setInsets(new Insets(5, 2, 5, 2));
+	    
+	    grid.add(tableBuild);
+	    
+	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModelBuild);
+	    grid.add(tableNavigation);
+	    
+	    CreateList(3);
+		rowsArrayItems2();
+		grid.setLayoutData(hld);
+		htmlLayout.add(grid);
+		
+	    Column col = new Column();
+	    col.add(initFoot());
+	    
+	    hld = new HtmlLayoutData("foot");	
+		col.setLayoutData(hld);
+		htmlLayout.add(col);
 
-	    tabPane.setBackground(new Color(228, 228, 228));
-	    tabPane.setBorder(new Border(1, Color.BLACK, Border.STYLE_SOLID));
-	    
-	    TabPaneLayoutData tpld = new TabPaneLayoutData();
-	    tpld.setTitle("Refina tus Objetos");
-		
-		Grid grid = new Grid(3);
-		
-		grid.setLayoutData(tpld);
-		grid.setHeight(new Extent(300));
-		grid.setWidth(new Extent(500));
-		grid.setBorder(new Border(new Extent(10), new Color(228, 228, 228), Border.STYLE_DOUBLE));
-		Row rowTab = new Row();
-		Column colTab = new Column();
-		ResourceImageReference ir;
-		Label lblImage;
-	    Label lblData;
-	    final String nameItem1;
-	    final String nameItem2;
-	    final String nameItem3;
-	    final String nameItem4;
-	    final String nameItem5;
-
-		Item item = new Item(3, "Armadura Negra", 4600, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png");
-		nameItem1 = item.getName();
-		
-		ir = new ResourceImageReference(item.getImage());
-		lblImage = new Label(ir);
-		lblData = new Label(item.getName());
-		colTab.add(lblData);
-		lblData = new Label("Tipo "+ item.getType());
-	    colTab.add(lblData);
-	    lblData = new Label("Nivel "+ item.getLevel());
-	    colTab.add(lblData);
-	    lblData = new Label("Indice "+ item.getIndex());
-	    colTab.add(lblData);
-	    
-	    btnBuild1 = new Button();
-		btnBuild1.setText("Fabricar");
-		btnBuild1.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnBuild1.setWidth(new Extent(60));
-		btnBuild1.setHeight(new Extent(15));
-		btnBuild1.setStyle(Styles1.DEFAULT_STYLE);
-		btnBuild1.setToolTipText("Armadura + Piedra Negra");
-		if(item.getLevel() <= player.getLevel()){
-			if(player.contains("Armadura") && player.contains("Piedra Negra"))
-				btnBuild1.setEnabled(true);
-			else
-				btnBuild1.setEnabled(false);
-		}else
-			btnBuild1.setEnabled(false);
-		btnBuild1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Item it = new Item();
-				player.buildItem(nameItem1);
-				it = player.searchItem("Armadura");
-				player.removeItem(it);
-				it = player.searchItem("Piedra Negra");
-				player.removeItem(it);				
-				it = player.searchItem(nameItem1);
-				testButton(it);
-			}
-		});
-		colTab.add(btnBuild1);
-	    rowTab.add(lblImage);
-	    rowTab.add(colTab);
-	    rowTab.setBackground(Color.WHITE);
-	    grid.add(rowTab);
-	    
-	    item = new Item(5, "Espada Roja", 4600, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png");
-		nameItem2 = item.getName();
-	    
-		rowTab = new Row();
-		colTab = new Column();
-		
-		ir = new ResourceImageReference(item.getImage());
-		lblImage = new Label(ir);
-		lblData = new Label(item.getName());
-		colTab.add(lblData);
-		lblData = new Label("Tipo "+ item.getType());
-	    colTab.add(lblData);
-	    lblData = new Label("Nivel "+ item.getLevel());
-	    colTab.add(lblData);
-	    lblData = new Label("Indice "+ item.getIndex());
-	    colTab.add(lblData);
-	    
-	    btnBuild2 = new Button();
-		btnBuild2.setText("Fabricar");
-		btnBuild2.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnBuild2.setWidth(new Extent(60));
-		btnBuild2.setHeight(new Extent(15));
-		btnBuild2.setStyle(Styles1.DEFAULT_STYLE);
-		btnBuild2.setToolTipText("Espada + Piedra Roja");
-		if(item.getLevel() <= player.getLevel()){
-			if(player.contains("Espada") && player.contains("Piedra Roja"))
-				btnBuild2.setEnabled(true);
-			else
-				btnBuild2.setEnabled(false);
-		}else
-			btnBuild2.setEnabled(false);
-		btnBuild2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Item it = new Item();
-				player.buildItem(nameItem2);
-				it = player.searchItem("Espada");
-				player.removeItem(it);
-				it = player.searchItem("Piedra Roja");
-				player.removeItem(it);				
-				it = player.searchItem(nameItem2);
-				testButton(it);
-			}
-		});
-		colTab.add(btnBuild2);
-	    rowTab.add(lblImage);
-	    rowTab.add(colTab);
-	    rowTab.setBackground(Color.WHITE);
-	    grid.add(rowTab);
-	    
-	    item = new Item(6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png");
-		nameItem3 = item.getName();
-	    
-		rowTab = new Row();
-		colTab = new Column();
-		
-		ir = new ResourceImageReference(item.getImage());
-		lblImage = new Label(ir);
-		lblData = new Label(item.getName());
-		colTab.add(lblData);
-		lblData = new Label("Tipo "+ item.getType());
-	    colTab.add(lblData);
-	    lblData = new Label("Nivel "+ item.getLevel());
-	    colTab.add(lblData);
-	    lblData = new Label("Indice "+ item.getIndex());
-	    colTab.add(lblData);
-	    
-	    btnBuild3 = new Button();
-		btnBuild3.setText("Fabricar");
-		btnBuild3.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnBuild3.setWidth(new Extent(60));
-		btnBuild3.setHeight(new Extent(15));
-		btnBuild3.setStyle(Styles1.DEFAULT_STYLE);
-		btnBuild3.setToolTipText("Piedra Blanca x 3");		
-		if(item.getLevel() <= player.getLevel()){
-			if(player.countItem("Piedra Blanca") >= 3)
-				btnBuild3.setEnabled(true);
-			else
-				btnBuild3.setEnabled(false);
-		}else
-			btnBuild3.setEnabled(false);
-		btnBuild3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Item it = new Item();
-				player.buildItem(nameItem3);
-				it = player.searchItem("Piedra Blanca");
-				player.removeItem(it);
-				it = player.searchItem("Piedra Blanca");
-				player.removeItem(it);
-				it = player.searchItem("Piedra Blanca");
-				player.removeItem(it);				
-				it = player.searchItem(nameItem3);
-				testButton(it);
-			}
-		});
-		colTab.add(btnBuild3);
-	    rowTab.add(lblImage);
-	    rowTab.add(colTab);
-	    rowTab.setBackground(Color.WHITE);
-	    grid.add(rowTab);
-	    
-	    item = new Item(6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png");
-		nameItem4 = item.getName();
-	    
-		rowTab = new Row();
-		colTab = new Column();
-		
-		ir = new ResourceImageReference(item.getImage());
-		lblImage = new Label(ir);
-		lblData = new Label(item.getName());
-		colTab.add(lblData);
-		lblData = new Label("Tipo "+ item.getType());
-	    colTab.add(lblData);
-	    lblData = new Label("Nivel "+ item.getLevel());
-	    colTab.add(lblData);
-	    lblData = new Label("Indice "+ item.getIndex());
-	    colTab.add(lblData);
-	    
-	    btnBuild4 = new Button();
-		btnBuild4.setText("Fabricar");
-		btnBuild4.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnBuild4.setWidth(new Extent(60));
-		btnBuild4.setHeight(new Extent(15));
-		btnBuild4.setStyle(Styles1.DEFAULT_STYLE);
-		btnBuild4.setToolTipText("Piedra Blanca + Piedra Negra + Piedra Roja");
-		if(item.getLevel() <= player.getLevel()){
-			if(player.contains("Piedra Blanca") && player.contains("Piedra Roja") && player.contains("Piedra Negra"))
-				btnBuild4.setEnabled(true);
-			else
-				btnBuild4.setEnabled(false);
-		}else
-			btnBuild4.setEnabled(false);
-		btnBuild4.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Item it = new Item();
-				player.buildItem(nameItem4);
-				it = player.searchItem("Piedra Blanca");
-				player.removeItem(it);
-				it = player.searchItem("Piedra Roja");
-				player.removeItem(it);
-				it = player.searchItem("Piedra Negra");
-				player.removeItem(it);
-				it = player.searchItem(nameItem4);
-				testButton(it);				
-			}
-		});
-		colTab.add(btnBuild4);
-	    rowTab.add(lblImage);
-	    rowTab.add(colTab);
-	    rowTab.setBackground(Color.WHITE);
-	    grid.add(rowTab);
-	    
-	    item = new Item(7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png");
-		nameItem5 = item.getName();
-	    
-		rowTab = new Row();
-		colTab = new Column();
-		
-		ir = new ResourceImageReference(item.getImage());
-		lblImage = new Label(ir);
-		lblData = new Label(item.getName());
-		colTab.add(lblData);
-		lblData = new Label("Tipo "+ item.getType());
-	    colTab.add(lblData);
-	    lblData = new Label("Nivel "+ item.getLevel());
-	    colTab.add(lblData);
-	    lblData = new Label("Indice "+ item.getIndex());
-	    colTab.add(lblData);
-	    
-	    btnBuild5 = new Button();
-		btnBuild5.setText("Fabricar");
-		btnBuild5.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnBuild5.setWidth(new Extent(60));
-		btnBuild5.setHeight(new Extent(15));
-		btnBuild5.setStyle(Styles1.DEFAULT_STYLE);
-		btnBuild5.setToolTipText("Piedra Roja x 3");
-		if( item.getLevel() <= player.getLevel()){
-			if(player.countItem("Piedra Roja") >= 3)
-				btnBuild5.setEnabled(true);
-			else
-				btnBuild5.setEnabled(false);
-		}else
-			btnBuild5.setEnabled(false);
-		btnBuild5.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Item it = new Item();
-				player.buildItem(nameItem5);
-				it = player.searchItem("Piedra Roja");
-				player.removeItem(it);
-				it = player.searchItem("Piedra Roja");
-				player.removeItem(it);
-				it = player.searchItem("Piedra Roja");
-				player.removeItem(it);				
-				it = player.searchItem(nameItem5);
-				testButton(it);
-			}
-		});
-		
-		
-		colTab.add(btnBuild5);
-	    rowTab.add(lblImage);
-	    rowTab.add(colTab);
-	    rowTab.setBackground(Color.WHITE);
-	    grid.add(rowTab);
-	    
-		tabPane.add(grid);
-		
-		tabPane.setTabCloseEnabled(false);	
-		panel.add(tabPane);
-		panel.setHeight(new Extent(400));
-		panel.setWidth(new Extent(850));		
-		
-		panel.setLayoutData(hld);
-		htmlLayout.add(panel);
-		
 		return htmlLayout;
 	}
+	
+	private TableColModel initTableColModel(int tipo) {		
+		
+		TableColModel tableColModel = new TableColModel();
+
+	    TableColumn tableColumn;
+	    LabelCellRenderer lcr;
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Item item = (Item) element;
+	    		return item.getLevel();
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(226,211,161));
+	    lcr.setForeground(Color.BLACK);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Nivel");
+	    
+	    
+	    tableColumn = new TableColumn(){
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Item item = (Item) element;
+	    		return item.getImage();
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    tableColumn.setHeadCellRenderer(lcr);
+	    
+	    ImageCellRenderer icr = new ImageCellRenderer();
+	    icr.setBackground(new Color(226,211,161));
+	    icr.setWidth(new Extent(15));
+	    icr.setHeight(new Extent(15));
+	    
+	    tableColumn.setDataCellRenderer(icr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(15));
+	    tableColumn.setHeadValue("");    
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Item item = (Item) element;
+	    		return item.getName();
+	    	}
+	    };
+	    
+	    tableColumn.setWidth(new Extent(150));
+	    tableColumn.setHeadValue("Nombre");	    
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.LEFT, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);	    
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(226,211,161));
+	    lcr.setForeground(Color.BLACK);
+	    lcr.setAlignment(new Alignment(Alignment.LEFT, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Item item = (Item) element;
+	    		return item.getPrice();
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(226,211,161));
+	    lcr.setForeground(new Color(251,255,0));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Oro");	    
+	    
+	    tableColumn = new TableColumn();
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("");
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    tableColumn.setHeadCellRenderer(lcr);
+	    
+	    if(tipo == 1)
+	    	tableColumn.setDataCellRenderer(initNestedCellRenderer());
+	    else if(tipo == 2)
+	    	tableColumn.setDataCellRenderer(initNestedCellRendererSell());
+	    else if(tipo == 3)
+	    	tableColumn.setDataCellRenderer(initNestedCellRendererBuild());
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    return tableColModel;
+	}
+	
+	private CellRenderer initNestedCellRenderer() {
+		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
+		nestedCellRenderer.setBackground(new Color(226,211,161));
+	    
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override    
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Button ret = new Button("Ver");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Ver");
+
+	          ret.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	              btnVerClicked(row);
+	            }
+	          });
+	          return ret;
+	        }
+	    });
+		
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Item item = (Item) tableDtaModel.getElementAt(row);
+	          final Button ret = new Button("Comprar");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Comprar");
+
+	          if (item.getPrice() <= player.getGold() && item.getLevel() <= player.getLevel() )
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  btnBuyClicked(row);
+	        			  }	        		  
+	        			  private void btnBuyClicked(int row) {	        				
+	        				  Item item = (Item) tableDtaModel.getElementAt(row);
+	        				  
+	        				  player.setGold(player.getGold() - item.getPrice());
+	        				  player.setItems(item);
+	        				  oro = new Label(""+player.getGold());
+	        				  item.setUse(true);	        				  
+	        				  ret.setEnabled(true);
+	        				  
+	        				  removeAll();
+	        				  add(initComprar());
+	        			  }
+	        		  });	        	  
+	          }
+	          else{
+	        	  ret.setEnabled(false);	        	  
+	          }
+	          return ret;
+	        }
+	    });
+	
+	    return nestedCellRenderer;
+	}
+	
+	private CellRenderer initNestedCellRendererSell() {
+		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
+		nestedCellRenderer.setBackground(new Color(226,211,161));
+	    
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override    
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Button ret = new Button("Ver");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Ver");
+
+	          ret.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	              btnVerClicked2(row);
+	            }
+	          });
+	          return ret;
+	        }
+	    });
+		
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Item item = (Item) tableDtaModel.getElementAt(row);
+	          
+	          final Button ret = new Button("Vender");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Vender");
+
+	          if (item.getUse() == false)
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  btnSellClicked(row);
+	        			  }
+	        		  
+	        			  private void btnSellClicked(int row) {
+	        				
+	        				  Item item = (Item) tableDtaModelPlayer.getElementAt(row);
+	        				  tableDtaModelPlayer.del(tableDtaModelPlayer.getElementAt(row));
+	        				  player.setGold(player.getGold() + item.getPrice()/2);
+	        				  Item it = new Item();
+	      					  it = player.searchItem(item.getName());
+	      					  player.removeItem(it);
+	        				  
+	        				  item.setUse(true);	        				  
+	        				  ret.setEnabled(false);
+	        				  
+	        				  removeAll();
+	        				  add(initVender());
+	        			  }
+	        		  });	        	  
+	          }
+	          else{
+	        	  ret.setEnabled(false);
+	          }
+	          return ret;
+	        }
+	    });
+	
+	    return nestedCellRenderer;
+	}
+	
+	private CellRenderer initNestedCellRendererBuild() {
+		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
+		nestedCellRenderer.setBackground(new Color(226,211,161));
+	    
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override    
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Button ret = new Button("Ver");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Ver");
+
+	          ret.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	              btnVerClicked(row);
+	            }
+	          });
+	          return ret;
+	        }
+	    });
+		
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Item item = (Item) tableDtaModelBuild.getElementAt(row);
+	          final Button ret = new Button("Refinar");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Refinar Este Item");
+
+	          if (item.getLevel() <= player.getLevel() && item.getName() == "Armadura Negra" && //
+	        		  player.contains("Armadura") && player.contains("Piedra Negra"))
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  btnBClicked(row);
+	        			  }
+	        		  
+	        			  private void btnBClicked(int row) {
+	        				
+	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
+	        				  player.setItems(item);
+	        				  Item it;
+	        				  it = player.searchItem("Piedra Negra");
+	        				  player.removeItem(it);
+	        				  it = player.searchItem("Armadura");
+	        				  player.removeItem(it);
+	        				  item.setUse(true);	        				  
+	        				  ret.setEnabled(true);
+	        				  
+	        				  removeAll();
+	        				  add(initRefinar());
+	        			  }
+	        		  });	        	  
+	          }
+	          else if (item.getLevel() <= player.getLevel() && item.getName() == "Espada Roja" && //
+	        		  player.contains("Espada") && player.contains("Piedra Roja"))
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  btnBClicked(row);
+	        			  }
+	        		  
+	        			  private void btnBClicked(int row) {
+	        				
+	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
+	        				  player.setItems(item);
+	        				  Item it;
+	        				  it = player.searchItem("Piedra Roja");
+	        				  player.removeItem(it);
+	        				  it = player.searchItem("Espada");
+	        				  player.removeItem(it);
+	        				  item.setUse(true);	        				  
+	        				  ret.setEnabled(true);
+	        				  
+	        				  removeAll();
+	        				  add(initRefinar());
+	        			  }
+	        		  });	        	  
+	          }
+	          else if (item.getLevel() <= player.getLevel() && item.getName() == "Bomba Roja" && //
+	        		  player.countItem("Piedra Roja") >= 3)
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  btnBClicked(row);
+	        			  }
+	        		  
+	        			  private void btnBClicked(int row) {
+	        				
+	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
+	        				  player.setItems(item);
+	        				  Item it;
+	        				  it = player.searchItem("Piedra Roja");
+	        				  player.removeItem(it);
+	        				  it = player.searchItem("Piedra Roja");
+	        				  player.removeItem(it);
+	        				  it = player.searchItem("Piedra Roja");
+	        				  player.removeItem(it);
+	        				  item.setUse(true);	        				  
+	        				  ret.setEnabled(true);
+	        				  
+	        				  removeAll();
+	        				  add(initRefinar());
+	        			  }
+	        		  });	        	  
+	          }
+	          else if (item.getLevel() <= player.getLevel() && item.getName() == "Bomba Negra" && //
+	        		  player.contains("Piedra Negra") && player.contains("Piedra Roja") && player.contains("Piedra Blanca"))
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  btnBClicked(row);
+	        			  }
+	        		  
+	        			  private void btnBClicked(int row) {	        				
+	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
+	        				  player.setItems(item);
+	        				  Item it;
+	        				  it = player.searchItem("Piedra Negra");
+	        				  player.removeItem(it);
+	        				  it = player.searchItem("Piedra Roja");
+	        				  player.removeItem(it);
+	        				  it = player.searchItem("Piedra Blanca");
+	        				  player.removeItem(it);
+	        				  item.setUse(true);	        				  
+	        				  ret.setEnabled(true);
+	        				  
+	        				  removeAll();
+	        				  add(initRefinar());
+	        			  }
+	        		  });	        	  
+	          }
+	          else if (item.getLevel() <= player.getLevel() && item.getName() == "Bomba Blanca" && //
+	        		  player.countItem("Piedra Blanca") >= 3)
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  btnBClicked(row);
+	        			  }
+	        		  
+	        			  private void btnBClicked(int row) {	        				
+	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
+	        				  player.setItems(item);
+	        				  Item it;
+	        				  it = player.searchItem("Piedra Blanca");
+	        				  player.removeItem(it);
+	        				  it = player.searchItem("Piedra Blanca");
+	        				  player.removeItem(it);
+	        				  it = player.searchItem("Piedra Blanca");
+	        				  player.removeItem(it);
+	        				  item.setUse(true);	        				  
+	        				  ret.setEnabled(true);
+	        				  
+	        				  removeAll();
+	        				  add(initRefinar());
+	        			  }
+	        		  });	        	  
+	          }
+	          else{
+	        	  ret.setEnabled(false);	        	  
+	          }
+	          
+	          return ret;
+	        }
+	    });
+	
+	    return nestedCellRenderer;
+	}
+	
+	private void btnVerClicked(int row) 
+	{
+		Item item = (Item) tableDtaModel.getElementAt(row);
+		
+		if (item.getType() == "Armadura")
+			infoItemArmor(item);
+		else if (item.getType() == "Espada")
+			infoItemSword(item);
+		else if (item.getType() == "Pocion")
+			infoItemPotion(item);
+		else if (item.getType() == "Piedra")
+			infoItemStone(item);
+		else
+			infoItemBomb(item);
+	}
+	
+	private Column initFoot() {		
+		
+		Panel panel = new Panel();
+		ImageReferenceCache irc = ImageReferenceCache.getInstance();
+	    ImageReference ir = irc.getImageReference(imagePath[0]);
+
+//		ImageReference imgR = new ResourceImageReference("Images/Fondos/cartel.png");
+		FillImage imgF = new FillImage(ir);
+		
+		panel.setWidth(new Extent(505));
+		panel.setHeight(new Extent(152));
+		panel.setBackgroundImage(imgF);
+		
+		panel.setAlignment(Alignment.ALIGN_CENTER);
+		
+		Column colCartel = new Column();
+		
+		colCartel.add(DscripRow());
+		
+		panel.add(colCartel);
+		
+		colCartel = new Column();
+		colCartel.setInsets(new Insets(0,0,0,40));
+		colCartel.add(panel);
+		
+		return colCartel;
+	}
+	
+	private Column DscripRow()
+	{
+		Column col = new Column();		
+		name = new Label();
+		col.add(name);
+		
+		Row row = new Row();
+		row.setCellSpacing(new Extent(5));
+		
+		index = new Label();
+		row.add(index);
+		col.add(row);
+
+		description = new Label();
+		col.add(description);
+		col.setInsets(new Insets(40));
+
+		return col;
+	}
+	
+	private Row initTopRow() {
+		Row row = new Row();
+	    row.setCellSpacing(new Extent(150));
+		
+		Row rowBtn = new Row();
+		rowBtn.setCellSpacing(new Extent(5));
+	    
+	    Button btnAll = new Button("Todo");
+	    btnAll.setStyle(Styles1.DEFAULT_STYLE);
+	    btnAll.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              btnAllClicked();
+            }
+        });
+	    rowBtn.add(btnAll);
+	    
+	    Button btnArmor = new Button("Armaduras");
+	    btnArmor.setStyle(Styles1.DEFAULT_STYLE);
+	    btnArmor.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              btnArmorClicked();
+            }
+        });
+	    rowBtn.add(btnArmor);
+	    
+	    Button btnSword = new Button("Espadas");
+	    btnSword.setStyle(Styles1.DEFAULT_STYLE);
+	    btnSword.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              btnSwordClicked();
+            }
+        });
+        rowBtn.add(btnSword);
+
+	    Button btnPotion = new Button("Pociones");
+	    btnPotion.setStyle(Styles1.DEFAULT_STYLE);
+	    btnPotion.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	btnPotionClicked();
+            }
+        });
+        rowBtn.add(btnPotion);
+        
+	    Button btnStone = new Button("Piedras Magicas");
+	    btnStone.setStyle(Styles1.DEFAULT_STYLE);
+	    btnStone.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              btnStoneClicked();
+            }
+        });
+        rowBtn.add(btnStone);
+        
+        Button btnBomb = new Button("Bombas Magicas");
+        btnBomb.setStyle(Styles1.DEFAULT_STYLE);
+        btnBomb.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              btnBombClicked();
+            }
+        });
+        rowBtn.add(btnBomb);
+        
+        Panel panel = new Panel();
+        panel.setWidth(new Extent(150));
+        
+        Row rowPanel = new Row();
+        rowPanel.setCellSpacing(new Extent(10));
+        
+        ImageReference imgR = new ResourceImageReference("Images/Util/sacomoneda.png");
+        ImageIcon imgI = new ImageIcon(imgR);
+        imgI.setWidth(new Extent(25));
+        imgI.setHeight(new Extent(25));
+        rowPanel.add(imgI);
+        
+        oro = new Label(" "  + player.getGold());
+        oro.setForeground(Color.YELLOW);
+        rowPanel.add(oro);
+        
+        panel.add(rowPanel);
+        
+        rowBtn.add(panel);
+                
+        row.add(rowBtn);
+        
+        rowBtn = new Row();
+        
+	    Button btnExit = new Button("Tienda");
+	    btnExit.setStyle(Styles1.DEFAULT_STYLE);
+	    btnExit.setToolTipText("Regresar a Principal Tienda");
+	    btnExit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              removeAll();
+              add(initMapa());
+            }
+        });
+        rowBtn.add(btnExit);
+        row.add(rowBtn);
+        
+	    return row;
+	}
+	
+	private Row initTopRowVender() {
+		
+		Row row = new Row();
+	    row.setCellSpacing(new Extent(150));
+		
+		Row rowBtn = new Row();
+		rowBtn.setCellSpacing(new Extent(5));
+        
+        Panel panel = new Panel();
+        panel.setWidth(new Extent(150));
+        
+        Row rowPanel = new Row();
+        rowPanel.setCellSpacing(new Extent(10));
+        
+        ImageReference imgR = new ResourceImageReference("Images/Util/sacomoneda.png");
+        ImageIcon imgI = new ImageIcon(imgR);
+        imgI.setWidth(new Extent(25));
+        imgI.setHeight(new Extent(25));
+        rowPanel.add(imgI);
+        
+        oro = new Label(" "  + player.getGold());
+        oro.setForeground(Color.YELLOW);
+        rowPanel.add(oro);
+        
+        panel.add(rowPanel);
+        
+        rowBtn.add(panel);
+                
+        row.add(rowBtn);
+        
+        rowBtn = new Row();
+
+	    Button btnExit = new Button("Tienda");
+	    btnExit.setStyle(Styles1.DEFAULT_STYLE);
+	    btnExit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              removeAll();
+              add(initMapa());
+            }
+        });
+        rowBtn.add(btnExit);
+        row.add(rowBtn);
+        
+	    return row;
+	}
+	
 	public void testButton(Item it){
 		if(player.contains("Armadura") && player.contains("Piedra Negra") && it.getLevel() <= player.getLevel()){
 			if( it.getName() == "Armadura Negra")
@@ -1157,21 +1023,34 @@ public class TiendaDesktop extends ContentPane {
 		}else
 			btnBuild5.setEnabled(false);
 	}
-	
-private Button exit() {
-	    Button btnExit = new Button("Tienda");
-	    btnExit.setStyle(Styles1.DEFAULT_STYLE);
-	    btnExit.setToolTipText("Regresar a Principal Tienda");
-	    btnExit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              removeAll();
-              add(initMapa());
-            }
-        });        
-	    return btnExit;
+
+	private void rowsArrayItems(){
+		int row = tableDtaModel.getTotalRows();
+		
+		listItemtienda = new ArrayList<Item>();
+		Item item;
+		
+		for(int i = 0; i < row; i++)
+		{
+			item = (Item) tableDtaModel.getElementAt(i);
+			listItemtienda.add(item);
+		}
 	}
 	
-	private void AsignarDatos (int level, String nombre, int precio, int indice, String tipo, String descripcion, boolean uso, String dirImage)
+	private void rowsArrayItems2(){
+		int row = tableDtaModelBuild.getTotalRows();
+		
+		listItembuild = new ArrayList<Item>();
+		Item item;
+		
+		for(int i = 0; i < row; i++)
+		{
+			item = (Item) tableDtaModelBuild.getElementAt(i);
+			listItembuild.add(item);
+		}
+	}
+	
+	private void AsignarDatos (int t, int level, String nombre, int precio, int indice, String tipo, String descripcion, boolean uso, String dirImage)
 	{
 		Item item = new Item();
 		
@@ -1183,34 +1062,68 @@ private Button exit() {
 		item.setDescription(descripcion);
 		item.setUse(uso);
 		item.setImage(dirImage);
-		
-		listItemtienda.add(item);
+		if(t == 1){
+			listItemtienda = new ArrayList<Item>();
+			listItemtienda.add(item);		
+			tableDtaModel.add(item);
+		}
+		else if(t == 2){
+			listItemplayer = new ArrayList<Item>();
+			listItemplayer.add(item);			
+			tableDtaModelPlayer.add(item);			
+		}
+		else if(t == 3){
+			listItembuild = new ArrayList<Item>();
+			listItembuild.add(item);
+			
+			tableDtaModelBuild.add(item);
+		}
 	}
 	
-	private void CreateList()
+	private void CreateList(int tipo)
 	{
-		AsignarDatos(1, "Armadura", 1500, 20, "Armadura", "Armadura Básica",false,"Images/Items/armor.png");
-		AsignarDatos(1, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png");
-		
-		AsignarDatos(2, "Piedra Blanca", 1000, 10, "Piedra", "Piedra mágica de color Blanco",false,"Images/Items/stone1.png");
-		AsignarDatos(2, "Medicina20", 800, 20, "Pocion", "Medicina  básica para aumentar la vida",false,"Images/Items/potion1.png");
-		
-		AsignarDatos(3, "Piedra Negra", 2500, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png");
-		AsignarDatos(3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png");
-		
-		AsignarDatos(4, "Energia", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png");
-		AsignarDatos(4, "Medicina40", 1800, 40, "Pocion", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png");
-		
-		AsignarDatos(5, "Piedra Roja", 3000, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png");
-		AsignarDatos(5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png");
-		
-		AsignarDatos(6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png");
-		AsignarDatos(6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png");
-		
-		AsignarDatos(7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png");
-		AsignarDatos(7, "Energia Super", 2500, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png");
-		
-		AsignarDatos(9, "Medicina Super", 3000, 80, "Pocion", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png");
+		if(tipo == 1){
+			AsignarDatos(tipo, 1, "Armadura", 1500, 20, "Armadura", "Armadura Básica",false,"Images/Items/armor.png");
+			AsignarDatos(tipo, 1, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png");
+			
+			AsignarDatos(tipo, 2, "Piedra Blanca", 1000, 10, "Piedra", "Piedra mágica de color Blanco",false,"Images/Items/stone1.png");
+			AsignarDatos(tipo, 2, "Medicina20", 800, 20, "Pocion", "Medicina  básica para aumentar la vida",false,"Images/Items/potion1.png");
+			
+			AsignarDatos(tipo, 3, "Piedra Negra", 2500, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png");
+			AsignarDatos(tipo, 3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png");
+			
+			AsignarDatos(tipo, 4, "Energia", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png");
+			AsignarDatos(tipo, 4, "Medicina40", 1800, 40, "Pocion", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png");
+			
+			AsignarDatos(tipo, 5, "Piedra Roja", 3000, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png");
+			AsignarDatos(tipo, 5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png");
+			
+			AsignarDatos(tipo, 6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png");
+			AsignarDatos(tipo, 6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png");
+			
+			AsignarDatos(tipo, 7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png");
+			AsignarDatos(tipo, 7, "Energia Super", 2500, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png");
+			
+			AsignarDatos(tipo, 9, "Medicina Super", 3000, 80, "Pocion", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png");
+		}
+		else if(tipo == 3){
+			AsignarDatos(tipo, 3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png");
+			AsignarDatos(tipo, 5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png");
+			
+			AsignarDatos(tipo, 6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png");
+			AsignarDatos(tipo, 6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png");
+			
+			AsignarDatos(tipo, 7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png");			
+		}
+	}
+	
+	private void CreateListItem(List<Item> it)
+	{
+			for(int i = 0; i < it.size(); i++)
+			{
+				AsignarDatos(2, it.get(i).getLevel(), it.get(i).getName(), it.get(i).getPrice(), it.get(i).getIndex(), //
+						it.get(i).getType(), it.get(i).getDescription(), false,it.get(i).getImage());
+			}
 	}
 	
 	private void btnSeeClicked(Item it) 
@@ -1231,14 +1144,360 @@ private Button exit() {
 		  add(win);
 	}
 	
-	private void menu(HtmlLayoutData hld , Column col, Row foot){
-		hld = new HtmlLayoutData("left");
-		Column menu = new Column();
+	private void btnVerClicked2(int row) 
+	{
+		Item item = (Item) tableDtaModelPlayer.getElementAt(row);
+		
+		if (item.getType() == "Armadura")
+			infoItemArmor(item);
+		else if (item.getType() == "Espada")
+			infoItemSword(item);
+		else if (item.getType() == "Pocion")
+			infoItemPotion(item);
+		else if (item.getType() == "Piedra")
+			infoItemStone(item);
+		else
+			infoItemBomb(item);
+	}
+	
+	private void btnAllClicked() {
+		
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModel.clear();		
+		for(int i = 0; i < listItemtienda.size(); i++)
+		{
+			tableDtaModel.add(listItemtienda.get(i));					
+		}		
+	}
+
+	private void btnAllClicked2() {
+		
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModelPlayer.clear();		
+		for(int i = 0; i < listItemplayer.size(); i++)
+		{
+			tableDtaModelPlayer.add(listItemplayer.get(i));					
+		}		
+	}
+	
+	private void btnArmorClicked() {
+		
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModel.clear();
+		
+		for(int i = 0; i < listItemtienda.size(); i++)
+		{
+			if (listItemtienda.get(i).getType() == "Armadura")
+			{
+				tableDtaModel.add(listItemtienda.get(i));
+			}			
+		}		
+	}
+	
+	private void btnArmorClicked2() {
+		
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModelPlayer.clear();
+		
+		for(int i = 0; i < listItemplayer.size(); i++)
+		{
+			if (listItemplayer.get(i).getType() == "Armadura")
+			{
+				tableDtaModelPlayer.add(listItemplayer.get(i));
+			}			
+		}		
+	}
+	
+	private void btnSwordClicked() {
+		
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModel.clear();
+		
+		for(int i = 0; i < listItemtienda.size(); i++)
+		{
+			if (listItemtienda.get(i).getType() == "Espada")
+			{
+				tableDtaModel.add(listItemtienda.get(i));
+			}			
+		}
+	}
+	
+	private void btnSwordClicked2() {
+		
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModelPlayer.clear();
+		
+		for(int i = 0; i < listItemplayer.size(); i++)
+		{
+			if (listItemplayer.get(i).getType() == "Espada")
+			{
+				tableDtaModelPlayer.add(listItemplayer.get(i));
+			}			
+		}
+	}
+	
+	private void btnPotionClicked() {
+		
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModel.clear();
+		
+		for(int i = 0; i < listItemtienda.size(); i++)
+		{
+			if (listItemtienda.get(i).getType() == "Pocion")
+			{
+				tableDtaModel.add(listItemtienda.get(i));
+			}			
+		}
+	}
+	
+	private void btnPotionClicked2() {
+		
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModelPlayer.clear();
+		
+		for(int i = 0; i < listItemplayer.size(); i++)
+		{
+			if (listItemplayer.get(i).getType() == "Pocion")
+			{
+				tableDtaModelPlayer.add(listItemplayer.get(i));
+			}			
+		}
+	}
+	
+	private void btnStoneClicked()
+	{
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModel.clear();
+		
+		for(int i = 0; i < listItemtienda.size(); i++)
+		{
+			if (listItemtienda.get(i).getType() == "Piedra")
+			{
+				tableDtaModel.add(listItemtienda.get(i));
+			}			
+		}		
+	}
+	
+	private void btnStoneClicked2()
+	{
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModelPlayer.clear();
+		
+		for(int i = 0; i < listItemplayer.size(); i++)
+		{
+			if (listItemplayer.get(i).getType() == "Piedra")
+			{
+				tableDtaModelPlayer.add(listItemplayer.get(i));
+			}			
+		}		
+	}
+	
+	private void btnBombClicked()
+	{
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModel.clear();
+		
+		for(int i = 0; i < listItemtienda.size(); i++)
+		{
+			if (listItemtienda.get(i).getType() == "Bomba")
+			{
+				tableDtaModel.add(listItemtienda.get(i));
+			}			
+		}		
+	}
+	
+	private void btnBombClicked2()
+	{
+		name.setText("");
+		index.setText("");
+		description.setText("");
+		tableDtaModelPlayer.clear();
+		
+		for(int i = 0; i < listItemplayer.size(); i++)
+		{
+			if (listItemplayer.get(i).getType() == "Bomba")
+			{
+				tableDtaModelPlayer.add(listItemplayer.get(i));
+			}			
+		}		
+	}
+	
+	private void rowsArrayItemsPlayer(){
+		int row = tableDtaModelPlayer.getTotalRows();
+		
+		listItemplayer = new ArrayList<Item>();
+		Item item;
+		
+		for(int i = 0; i < row; i++)
+		{
+			item = (Item) tableDtaModelPlayer.getElementAt(i);
+			listItemplayer.add(item);
+		}
+	}
+	
+	private void infoItemArmor(Item item)
+	{
+		if (item.getName() == "Armadura")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+		
+		if (item.getName() == "Armadura Negra")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+	}
+	
+	private void infoItemSword(Item item)
+	{
+		if (item.getName() == "Espada")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+		
+		if (item.getName() == "Espada Roja")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+	}
+
+	private void infoItemStone(Item item)
+	{
+		if (item.getName() == "Piedra Blanca")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+		
+		if (item.getName() == "Piedra Negra")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+		
+		if (item.getName() == "Piedra Roja")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+	}
+	
+	private void infoItemPotion(Item item)
+	{
+		if (item.getName() == "Medicina20")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+		
+		if (item.getName() == "Medicina40")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+		
+		if (item.getName() == "Medicina Super")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+		
+		if (item.getName() == "Energia")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+		
+		if (item.getName() == "Energia Super")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+	}
+	
+	private void infoItemBomb(Item item)
+	{
+		if (item.getName() == "Bomba Blanca")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+		
+		if (item.getName() == "Bomba Negra")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}	
+		
+		if (item.getName() == "Bomba Roja")
+		{
+			description.setText("");
+			name.setText("" + item.getName());
+			index.setText("Indice: " + item.getIndex());
+			description.setText(item.getDescription());
+		}
+	}
+	
+	private void menu(HtmlLayoutData hld , Row row){
+		hld = new HtmlLayoutData("head");
+		Row menu = new Row();
 		Button btnComprar = new Button();
 		btnComprar.setText("Comprar");
 		btnComprar.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnComprar.setWidth(new Extent(55));
-		btnComprar.setHeight(new Extent(15));
 		btnComprar.setStyle(Styles1.DEFAULT_STYLE);
 		btnComprar.setToolTipText("Comprar Items");		
 		btnComprar.addActionListener(new ActionListener() {
@@ -1249,13 +1508,12 @@ private Button exit() {
 		});
 		
 		menu.add(btnComprar);
-		col.add(menu);
+		menu.setCellSpacing(new Extent(15));
+		row.add(menu);
 		
 		Button btnVender = new Button();
 		btnVender.setText("Vender");
 		btnVender.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnVender.setWidth(new Extent(55));
-		btnVender.setHeight(new Extent(15));
 		btnVender.setStyle(Styles1.DEFAULT_STYLE);
 		btnVender.setToolTipText("Vender Items");		
 		btnVender.addActionListener(new ActionListener() {
@@ -1265,13 +1523,12 @@ private Button exit() {
 			}
 		});		
 		menu.add(btnVender);
-		col.add(menu);
+		menu.setCellSpacing(new Extent(15));
+		row.add(menu);
 		
 		Button btnRefinar = new Button();
 		btnRefinar.setText("Refinar");
 		btnRefinar.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnRefinar.setWidth(new Extent(55));
-		btnRefinar.setHeight(new Extent(15));
 		btnRefinar.setStyle(Styles1.DEFAULT_STYLE);
 		btnRefinar.setToolTipText("Fabricar Items compuestos");		
 		btnRefinar.addActionListener(new ActionListener() {
@@ -1280,17 +1537,13 @@ private Button exit() {
 				add(initRefinar());
 			}
 		});
-		menu.add(btnRefinar);		
+		menu.add(btnRefinar);
+		menu.setCellSpacing(new Extent(15));
+		row.add(menu);
 		
-		col.add(menu);
-		col.setLayoutData(hld);
-		
-		hld = new HtmlLayoutData("foot");
 		Button returnButton = new Button();
-		returnButton.setText("REGRESAR");
+		returnButton.setText("Salir");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		returnButton.setWidth(new Extent(80));
-		returnButton.setHeight(new Extent(15));
 		returnButton.setToolTipText("Regresar al Mapa Principal");
 		returnButton.setStyle(Styles1.DEFAULT_STYLE);
 		returnButton.addActionListener(new ActionListener() {
@@ -1298,8 +1551,11 @@ private Button exit() {
 			button1Clicked(e);				
 			}
 		});
-		foot.add(returnButton);
-		foot.setLayoutData(hld);		
+		
+		menu.add(returnButton);
+		row.add(menu);
+		
+		row.setLayoutData(hld);		
 	}
 	
 	private void button1Clicked(ActionEvent e) {		

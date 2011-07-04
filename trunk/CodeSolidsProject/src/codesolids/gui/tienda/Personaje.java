@@ -33,7 +33,7 @@ public class Personaje {
 	
 	public Personaje()
 	{
-		this.level = 10;
+		this.level = 5;
 		this.gold = 30000;
 		this.items = new ArrayList<Item>();
 	}

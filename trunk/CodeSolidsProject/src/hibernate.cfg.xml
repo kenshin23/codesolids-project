@@ -99,6 +99,8 @@
 		<mapping class="codesolids.bd.clases.Personaje" />
 		<mapping class="codesolids.bd.clases.PersonajePoderes" />
 		<mapping class="codesolids.bd.clases.Poderes" />
+		<mapping class="codesolids.bd.clases.Ataque" />
+		<mapping class="codesolids.bd.clases.AtaqueItem" />
 		
 	</session-factory>
 </hibernate-configuration>
