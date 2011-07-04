@@ -1,6 +1,7 @@
 package codesolids.gui.chat;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -197,13 +198,17 @@ public Component mostrarActivos() {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 
-		List<codesolids.bd.clases.Chat> list = session.createCriteria(
-				codesolids.bd.clases.Chat.class).list();
+		List<codesolids.bd.clases.Chat> list = session.createCriteria(codesolids.bd.clases.Chat.class).list();
+		
 		for (codesolids.bd.clases.Chat obj : list) {
+			
+			
+			if ( obj.getDateMsg().get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH) ){
+
 			
 			System.out.println(obj.getMensaje());
 			col.add(new Label( obj.getLogin() + ">>" + obj.getMensaje() ));
-			
+			}
 		}
 
 		session.getTransaction().commit();
@@ -225,9 +230,9 @@ public Component mostrarActivos() {
 		usuario = (Usuario) session.load(Usuario.class, usuario.getId());
 		
 		chatBean.setMensaje(txtMsg.getText());
-		Calendar fechaRegister = new GregorianCalendar();
+		Calendar calendar = new GregorianCalendar();
 		chatBean.setLogin(usuario.getLogin());
-		chatBean.setDateMsg(fechaRegister);
+		chatBean.setDateMsg(calendar);
 		
 		session.save(chatBean);
 
