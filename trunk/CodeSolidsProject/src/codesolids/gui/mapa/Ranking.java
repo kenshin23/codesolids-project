@@ -1,124 +1,292 @@
 package codesolids.gui.mapa;
-/*
- * 
+/**
  * @autor:Hector Prada
+ * 
+ * modified on 04-07-2011 by Jeisson Bastidas
+ * 
  */
 
+import java.util.ArrayList;
+import java.util.List;
 
-import codesolids.bd.clases.Usuario;
-import nextapp.echo.app.ImageReference;
-import nextapp.echo.app.Panel;
-import nextapp.echo.app.Extent;
-import nextapp.echo.app.ContentPane;
-import nextapp.echo.app.Column;
-import nextapp.echo.app.Color;
+import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
-import nextapp.echo.app.Label;
+import nextapp.echo.app.Button;
+import nextapp.echo.app.Color;
+import nextapp.echo.app.Column;
+import nextapp.echo.app.ContentPane;
+import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Font;
+import nextapp.echo.app.Insets;
+import nextapp.echo.app.Label;
+import nextapp.echo.app.Panel;
+import nextapp.echo.app.ResourceImageReference;
+import nextapp.echo.app.Row;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-import nextapp.echo.app.layout.ColumnLayoutData;
-import nextapp.echo.app.Alignment;
-import nextapp.echo.app.FillImage;
-import nextapp.echo.app.ResourceImageReference;
-import nextapp.echo.app.Insets;
-import nextapp.echo.app.Button;
 
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.Usuario;
+import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.util.TestTableModel;
+
+import com.minotauro.echo.table.base.ETable;
+import com.minotauro.echo.table.base.TableColModel;
+import com.minotauro.echo.table.base.TableColumn;
+import com.minotauro.echo.table.base.TableSelModel;
+import com.minotauro.echo.table.renderer.LabelCellRenderer;
+
+@SuppressWarnings("serial")
 public class Ranking extends ContentPane {
+
 	private Usuario usuario;
+
+	private TestTableModel tableDtaModel;
+	private List<Personaje> personajes = new ArrayList<Personaje>();
+
 	Panel panel = new Panel();
+
 	protected Ranking(Usuario usuario) {
+
 		super(); // SIN ESTE SUPER FUE UN DOLOR PARA QUE FUNCIONARA, este salva vidas
 		this.usuario = usuario;
 		constructorComp();
+
 	}
-	
+
 	private void constructorComp() {
+
+		setBackground(Color.BLACK);
+
 		//al panel inicial le coloco las medidas exactas a usar
 		panel.setHeight(new Extent(983, Extent.PX));
 		panel.setWidth(new Extent (1280, Extent.PX));
-		add(panel);
-		ContentPane cpExterno = new ContentPane();
-		cpExterno.setEnabled(true);
-		panel.add(cpExterno);
-		
-		//agrego la columna que contiene los paneles y sus caracteristicas
-		
-		Column columnaExterna = new Column();
-		columnaExterna.setBorder(new Border(new Extent(5, Extent.PX), new Color(0xd4630c), Border.STYLE_DOUBLE));
-		columnaExterna.setEnabled(true);
-		columnaExterna.setBackground(Color.BLACK);
-		cpExterno.add(columnaExterna);
-		
-		//agrego titulo superior y caracteristicas
-		
-		Label tituloSuperior = new Label();
-		tituloSuperior.setFont(new Font(new Font.Typeface("ARIAL"), Font.BOLD | Font.ITALIC, new Extent(16, Extent.PT)));
-		tituloSuperior.setForeground(new Color(0xd4630c));					
-		tituloSuperior.setText("RANKING");
+		panel.setAlignment(Alignment.ALIGN_CENTER);
+		panel.setBorder(new Border(new Extent(5, Extent.PX), //
+				new Color(0xd4630c), Border.STYLE_DOUBLE));
+		panel.setBackground(Color.BLACK);
+		panel.setBackgroundImage(new FillImage( //
+				new ResourceImageReference("/Images/Mapa/mago_fuego4.jpg"), //
+				new Extent(50, Extent.PERCENT), new Extent(50, Extent.PERCENT), //
+				FillImage.NO_REPEAT));
 
-		//creo el columnLayoutdata para centrar el titulo superior en la columna
-		
-		ColumnLayoutData tituloSuperiorLD = new ColumnLayoutData();
-		tituloSuperiorLD.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
-		tituloSuperior.setLayoutData(tituloSuperiorLD);
-		columnaExterna.add(tituloSuperior);
-		
-		//se podia usar un splitpane como el ejemplo de de Echo3Tutorial/panelchange, usando el separador estatico
-		//creo mas sencillo usar el panel de altura 1pixel y agregarle color
-		
-		Panel lineaSeparadora = new Panel();
-		lineaSeparadora.setEnabled(true);
-		ColumnLayoutData lineaSeparadoraLD = new ColumnLayoutData();
-		lineaSeparadoraLD.setBackground(new Color(0xd4630c));
-		lineaSeparadoraLD.setHeight(new Extent(1, Extent.PX));
-		lineaSeparadora.setLayoutData(lineaSeparadoraLD);
-		columnaExterna.add(lineaSeparadora);
-		
-		//este panel es el que efectivamente muestra el background que se ve en cada pantalla, le modifico el HEIGHT para 947, si no se lo
-		//agregaba no me muestra la imagen completa, me costo que me funcionara la funcion de Fillimage usando el No_Repeat, ya que la estaba usando 
-		//en minusculas
-		
-		Panel panelBackground = new Panel();
-		panelBackground.setEnabled(true);
-		ColumnLayoutData panelBakcgroundLD = new ColumnLayoutData();
-		panelBakcgroundLD.setHeight(new Extent(947, Extent.PX));
-		ResourceImageReference ir = new ResourceImageReference("/Images/Mapa/mago_fuego4.jpg");
-	    panelBakcgroundLD.setBackgroundImage(new FillImage(ir,new Extent(50, Extent.PERCENT), new Extent(50, Extent.PERCENT),FillImage.NO_REPEAT));
-		panelBackground.setLayoutData(panelBakcgroundLD);
-		columnaExterna.add(panelBackground);
-		
-		//este panel contiene la columna que finalmente contiene el boton de regresar a la pantalla inicial
-		//en realidad es overkill usar el panel para una columna con un solo boton, ya que se puede agregar el boton dentro de la columna y se le acomodan 
-		//los insets adecuadamente, pero lo dejo asi por si acaso le agregamos mas botones a cada pantalla, es bastante util
-		
-		Panel panelContenedorCol = new Panel();
-		panelContenedorCol.setInsets(new Insets(new Extent(580, Extent.PX), new Extent(700,Extent.PX), new Extent(0, Extent.PX), new Extent(0, Extent.PX)));
-		panelBackground.add(panelContenedorCol);
-		Column columnaBoton = new Column();
-		columnaBoton.setEnabled(true);
-		columnaBoton.setCellSpacing(new Extent(10, Extent.PX));
-		panelContenedorCol.add(columnaBoton);
-		
-		//el boton de regresar es creado con propiedades rollover y foreground, para el futuro deseo agregarle mas caracteristicas, si es posible  
-		
+		Column col = new Column();
+		col.setCellSpacing(new Extent(10));
+		Row row;
+
+		//agrego titulo superior y características
+
+		Label tituloSuperior = new Label("RANKING");
+		tituloSuperior.setFont(new Font(new Font.Typeface("ARIAL"), //
+				Font.BOLD | Font.ITALIC, new Extent(16, Extent.PT)));
+		tituloSuperior.setForeground(new Color(0xd4630c));
+
+		row = new Row();
+		row.setAlignment(Alignment.ALIGN_CENTER);
+		row.add(tituloSuperior);
+		col.add(row);
+
+		//Crea la tabla que muestra el ranking de jugadores ordenada por nivel
+		tableDtaModel = new TestTableModel();
+		try {
+			setRanking();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		col.add(createRankingTable(tableDtaModel, initTableColModel()));
+
+		//el botón de regresar es creado con propiedades roll-over y foreground,
+		//para el futuro deseo agregarle mas características, si es posible  
+
 		Button returnButton = new Button();
 		returnButton.setText("REGRESAR");
 		returnButton.setStyle(Styles.BOTON_REGRESAR);
 		returnButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			button1Clicked(e);
-				
+			public void actionPerformed(ActionEvent e) {
+				button1Clicked(e);
 			}
 		});
-		columnaBoton.add(returnButton);
-	}
-		private void button1Clicked(ActionEvent e) {
-		
-		removeAll();
-		add(new MapaDesktop(usuario));//muchahos esta parte fue un dolor de cabeza, despues de muchos intentos porfin pude utilizar el actionevent para crear un nuevo panel
-	}
-}
 
-//NOTA: VERAN QUE A CADA ELEMENTO TUVE QUE AGREGARLE LA PROPIEDAD SETENABLED(TRUE), YA QUE PARA USAR LA PROPIEDAD ROLLOVER DEL BOTON NO ME QUERIA 
-//HACER EL EFECTO SIN ESE SETENABLED(TRUE). A SER SINCERO NO ESTOY SEGURO POR QUE ES ASI, PÈRO FUNCIONA :)
+		row = new Row();
+		row.setAlignment(Alignment.ALIGN_CENTER);
+		row.add(returnButton);
+		col.add(row);
+
+		panel.add(col);
+		add(panel);
+
+	}
+
+	private void button1Clicked(ActionEvent e) {
+
+		removeAll();
+		add(new MapaDesktop(usuario));
+		//muchachos esta parte fue un dolor de cabeza,
+		//después de muchos intentos por fin pude
+		//utilizar el action event para crear un nuevo panel
+
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setRanking() throws Exception {
+
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+
+		List<Personaje> list = session.createCriteria( //
+				Personaje.class).addOrder(Order.desc("level")).list();
+
+		for (int i = 0; i < list.size(); i++) {
+
+			Personaje per = new Personaje();
+
+			per.setId(list.get(i).getId());
+			per.setDirImage(list.get(i).getDirImage());
+			per.setFechaFin(list.get(i).getFechaFin());
+			per.setFechaInicio(list.get(i).getFechaInicio());
+			per.setGold(list.get(i).getGold());
+			per.setHp(list.get(i).getHp());
+			per.setLearning(list.get(i).getLearning());
+			per.setLevel(list.get(i).getLevel());
+			per.setMp(list.get(i).getMp());
+			per.setTipo(list.get(i).getTipo());
+			per.setXp(list.get(i).getXp());
+
+			personajes.add(per);
+
+		}
+
+		for (int i = 0; i < 10; i++) {
+			tableDtaModel.add(personajes.get(i));
+		}
+
+		session.getTransaction().commit();
+		session.close();
+
+	}
+
+	public Panel createRankingTable(TestTableModel tableDtaModel, //
+			TableColModel initTableColModel) {
+
+		Panel panel = new Panel();
+		panel.setInsets(new Insets(200, 10, 200, 10));
+		panel.setAlignment(Alignment.ALIGN_CENTER);
+
+		Column col = new Column();
+		col.setInsets(new Insets(0, 0, 0, 0));
+		col.setCellSpacing(new Extent(10));
+
+		// ----------------------------------------
+		// The table models
+		// ----------------------------------------
+
+		TableColModel tableColModel = initTableColModel;
+		TableSelModel tableSelModel = new TableSelModel();
+		tableDtaModel.setEditable(true);
+		tableDtaModel.setPageSize(10);
+
+		// ----------------------------------------
+		// The table
+		// ----------------------------------------
+
+		ETable table = new ETable();
+		table.setTableDtaModel(tableDtaModel);
+		table.setTableColModel(tableColModel);
+		table.setTableSelModel(tableSelModel);
+		table.setEasyview(false);
+		table.setBorder(new Border(1, Color.BLACK, Border.STYLE_NONE));
+		col.add(table);
+
+		// ----------------------------------------
+		// The navigation control
+		// ----------------------------------------
+
+//		Row row = new Row();
+//		row.setAlignment(Alignment.ALIGN_CENTER);
+//
+//		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
+//		tableNavigation.setForeground(Color.WHITE);
+//		row.add(tableNavigation);
+//
+//		col.add(row);
+		panel.add(col);
+		return panel;
+
+	}
+
+	private TableColModel initTableColModel() {
+
+		TableColModel tableColModel = new TableColModel();
+		TableColumn tableColumn;
+
+		LabelCellRenderer headLcr = new LabelCellRenderer();
+		headLcr.setBackground(new Color(87, 205, 211));
+		headLcr.setForeground(Color.WHITE);
+		headLcr.setAlignment(Alignment.ALIGN_CENTER);
+
+		LabelCellRenderer lcr;
+		lcr = new LabelCellRenderer();
+		lcr.setBackground(new Color(226, 211, 161));
+		lcr.setAlignment(Alignment.ALIGN_CENTER);
+
+		tableColumn = new TableColumn() {
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Personaje personaje = (Personaje) element;
+				return personajes.indexOf(personaje) + 1;
+			}
+		};
+		tableColumn.setWidth(new Extent(30));
+		tableColumn.setHeadValue("Ranking");
+		tableColumn.setHeadCellRenderer(headLcr);
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
+
+		tableColumn = new TableColumn() {
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Personaje personaje = (Personaje) element; 
+				return personaje.getId();
+			}
+		};
+		tableColumn.setWidth(new Extent(100));
+		tableColumn.setHeadValue("Id");
+		tableColumn.setHeadCellRenderer(headLcr);
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
+
+		tableColumn = new TableColumn() {
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Personaje personaje = (Personaje) element;
+				return personaje.getLevel();
+			}
+		};
+		tableColumn.setWidth(new Extent(30));
+		tableColumn.setHeadValue("Nivel");
+		tableColumn.setHeadCellRenderer(headLcr);
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
+
+		tableColumn = new TableColumn() {
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Personaje personaje = (Personaje) element;
+				return personaje.getTipo();
+			}
+		};
+		tableColumn.setWidth(new Extent(50));
+		tableColumn.setHeadValue("Tipo");
+		tableColumn.setHeadCellRenderer(headLcr);
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
+
+		return tableColModel;
+
+	}
+
+}
