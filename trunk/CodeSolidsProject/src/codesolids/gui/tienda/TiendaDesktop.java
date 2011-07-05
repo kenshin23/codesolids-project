@@ -26,8 +26,6 @@ import nextapp.echo.app.Row;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-import nextapp.echo.extras.app.TabPane;
-import nextapp.echo.extras.app.layout.TabPaneLayoutData;
 
 import javax.imageio.stream.FileCacheImageOutputStream;
 
@@ -1074,8 +1072,7 @@ public class TiendaDesktop extends ContentPane {
 		}
 		else if(t == 3){
 			listItembuild = new ArrayList<Item>();
-			listItembuild.add(item);
-			
+			listItembuild.add(item);			
 			tableDtaModelBuild.add(item);
 		}
 	}
