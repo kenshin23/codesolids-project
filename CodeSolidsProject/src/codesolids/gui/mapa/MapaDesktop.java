@@ -40,7 +40,6 @@ import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import codesolids.bd.clases.Usuario;
 
-
 /**
  * @author Hector Prada
  * 
@@ -234,6 +233,26 @@ public class MapaDesktop extends ContentPane {
 				}
 			});
 		gridBotones.add(chatBtn);
+		
+		Button logoutBtn = new Button("Cerrar Sesion");
+		logoutBtn.setEnabled(true);
+		logoutBtn.setVisible(true);
+		logoutBtn.setStyle(Styles1.DEFAULT_STYLE);
+		//logoutBtn.setBackgroundImage(new FillImage(chat_des));
+		//logoutBtn.setRolloverEnabled(true);
+		//logoutBtn.setRolloverBackgroundImage(new FillImage(chat_sel));
+		logoutBtn.setHeight(new Extent(15, Extent.PX));
+		logoutBtn.setWidth(new Extent(100, Extent.PX));
+			GridLayoutData LogoutBtnLD = new GridLayoutData();
+			LogoutBtnLD.setInsets(new Insets(new Extent(50, Extent.PX),new Extent(160, Extent.PX), new Extent(0, Extent.PX),new Extent(0, Extent.PX)));
+			LogoutBtnLD.setRowSpan(2);
+			logoutBtn.setLayoutData(LogoutBtnLD);
+			logoutBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					logoutBtnClicked(e);
+				}
+			});
+		gridBotones.add(logoutBtn);
 
 	}
 
@@ -247,6 +266,11 @@ public class MapaDesktop extends ContentPane {
 		
 //	Window win = (Window) getParent();
 //		win.setContent(new Arena());
+	}
+	private void logoutBtnClicked(ActionEvent e) {
+		this.setBackgroundImage(null);
+		removeAll();
+		add(new PrincipalDesktop());
 	}
 	private void perfilBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
@@ -277,9 +301,8 @@ public class MapaDesktop extends ContentPane {
 	}
 	
 	private void chatBtnClicked(ActionEvent e) {
-		this.setBackgroundImage(null);
-		removeAll();
-		add(new Chat(usuario));
+		
+		add(new ChatGui());
 	}
 }
 
@@ -482,5 +505,4 @@ public class MapaDesktop extends ContentPane {
 //		add(new Chat());
 //	}
 //		
-
 

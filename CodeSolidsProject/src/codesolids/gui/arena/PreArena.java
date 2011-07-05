@@ -5,6 +5,7 @@ import java.util.List;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
@@ -32,11 +33,24 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
 
+import com.minotauro.echo.table.base.CellRenderer;
+import com.minotauro.echo.table.base.ETable;
+import com.minotauro.echo.table.base.ETableNavigation;
+import com.minotauro.echo.table.base.TableColModel;
+import com.minotauro.echo.table.base.TableColumn;
+import com.minotauro.echo.table.base.TableSelModel;
+import com.minotauro.echo.table.renderer.BaseCellRenderer;
+import com.minotauro.echo.table.renderer.ImageCellRenderer;
+import com.minotauro.echo.table.renderer.LabelCellRenderer;
+import com.minotauro.echo.table.renderer.NestedCellRenderer;
+
 import codesolids.bd.clases.Invitation;
+import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.style.Styles1;
+import codesolids.util.TestTableModel;
 import codesolids.util.TimedServerPush;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
@@ -50,8 +64,10 @@ import echopoint.layout.HtmlLayoutData;
 public class PreArena extends ContentPane{
 	private Usuario usuario;
 	private Label lblData;
-	List<Usuario> results;
-	List<Invitation> resultsI;
+	private TestTableModel tableDtaModelUsuario;
+	private TestTableModel tableDtaModelInvitacion;
+	List<Usuario> results = new ArrayList<Usuario>();
+	List<Invitation> resultsI = new ArrayList<Invitation>();
 	private Button invite;
 	private Column invitations;
 	private Column colUser;
@@ -85,7 +101,7 @@ public class PreArena extends ContentPane{
 		Row menu = new Row();
 		
 		Button returnButton = new Button();
-		returnButton.setText("REGRESAR");
+		returnButton.setText("Salir");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		returnButton.setHeight(new Extent(15));
 		returnButton.setToolTipText("Regresar al Mapa Principal");
@@ -114,14 +130,9 @@ public class PreArena extends ContentPane{
 		
 		hld = new HtmlLayoutData("central");
 		
-		Grid grid = new Grid(3);
-		invitations = new Column();
-	    colUser = new Column();
-	    colButtons = new Column();
-	    
-	    grid.add(colUser);
-	    grid.add(colButtons);
-	    grid.add(invitations);
+		Row rowCentral = new Row();
+		tableDtaModelUsuario = new TestTableModel();
+		tableDtaModelInvitacion= new TestTableModel();
 	    
 	    UpdateInOfArena();
 	    
@@ -129,9 +140,7 @@ public class PreArena extends ContentPane{
 	    inviteServerPush = new TimedServerPush(1000, app, taskQueue, new Runnable() {
 	    	@Override
 	    	public void run(){
-	    		Session session = null;
-	    		try {
-	    			session = SessionHibernate.getInstance().getSession();
+	    			Session session = SessionHibernate.getInstance().getSession();
 			  	    session.beginTransaction();
 			  	      
 			  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
@@ -140,41 +149,32 @@ public class PreArena extends ContentPane{
 			  		userObj.setArena(1);
 
 			  		// FROM UserObj WHERE arena = 1;
-			  		results = session.createCriteria(Usuario.class).add(Example.create(userObj)).list();
-	    		} finally {
-	    			if (session != null) {
-			  	        if (session.getTransaction() != null) {
-			  	          session.getTransaction().commit();
-			  	        }
-			  	        session.close();
-			  	      }
-	    		}
-	    		colUser.removeAll();
-	    		colButtons.removeAll();
+			  		List<Usuario> list = session.createCriteria(Usuario.class).add(Example.create(userObj)).list();
 	    		
+			  	    session.getTransaction().commit();
+			  	        
+			  	    session.close();
+			  	      
+	    		
+	    		results.clear();
+	    		tableDtaModelUsuario.clear();
+	    		for (int i = 0; i < list.size(); i++) {
+	    			
+	    			Usuario user = new Usuario();
+
+	    			user.setId(list.get(i).getId());
+	    			user.setArena(list.get(i).getArena());
+	    			user.setDateJoin(list.get(i).getDateJoin());
+	    			user.setEmail(list.get(i).getEmail());
+	    			user.setLogin(list.get(i).getLogin());
+	    			user.setPassword(list.get(i).getPassword());
+
+	    			results.add(user);
+
+	    		}
+
 	    		for (int i = 0; i < results.size(); i++) {
-	    			row = new Row();
-			    	lblData = new Label(results.get(i).getLogin());
-			    	lblData.setForeground(Color.WHITE);
-			    	colUser.add(lblData);
-			    	colUser.setCellSpacing(new Extent(25));
-			    	invite = new Button("Invitar");
-			    	invite.setStyle(Styles1.DEFAULT_STYLE);
-			    	final Invitation invitation = new Invitation();
-			    	invitation.setUserGeneratesRef(usuario);
-			    	invitation.setUserReceivesRef(results.get(i));
-			    	invite.setToolTipText("Luchar");
-			    	invite.addActionListener(new ActionListener() {
-			          public void actionPerformed(ActionEvent evt) {
-			            btnInviteClicked(invitation);
-			          }
-			        });
-			    	if(usuario.getLogin() == results.get(i).getLogin()){
-			    		invite.setEnabled(false);
-			    		invite.setFocusedForeground(Color.BLUE);
-			    	}
-			    	colButtons.add(invite);
-	    			colButtons.setCellSpacing(new Extent(20));
+	    			tableDtaModelUsuario.add(results.get(i));
 	    		}
 	    		consultInvitations();
 	    	}
@@ -182,14 +182,210 @@ public class PreArena extends ContentPane{
 		
 	    activate();
 	    
-		grid.setLayoutData(hld);
-		grid.setColumnWidth(0, new Extent(50));
-		grid.setColumnWidth(1, new Extent(50));
-		grid.setColumnWidth(2, new Extent(350));
-		
-		htmlLayout.add(grid);
+	    rowCentral.add(createTable(tableDtaModelUsuario, initTableColModel(1)));
+	    rowCentral.add(createTable(tableDtaModelInvitacion, initTableColModel(2)));
+		rowCentral.setLayoutData(hld);
+		htmlLayout.add(rowCentral);
 		
 		return htmlLayout;		
+	}
+	
+	public Panel createTable(TestTableModel tableDtaModel, TableColModel initTableColModel) {
+
+		Panel panel = new Panel();
+		panel.setInsets(new Insets(100, 0, 100, 0));
+		panel.setAlignment(Alignment.ALIGN_CENTER);
+
+		Column col = new Column();
+		col.setInsets(new Insets(0, 0, 0, 0));
+		col.setCellSpacing(new Extent(10));
+
+		TableColModel tableColModel = initTableColModel;
+		TableSelModel tableSelModel = new TableSelModel();
+		tableDtaModel.setEditable(true);
+		tableDtaModel.setPageSize(20);
+
+		ETable table = new ETable();
+		table.setTableDtaModel(tableDtaModel);
+		table.setTableColModel(tableColModel);
+		table.setTableSelModel(tableSelModel);
+		table.setEasyview(false);
+		table.setBorder(new Border(1, Color.BLACK, Border.STYLE_NONE));
+		col.add(table);
+		
+		Row row = new Row();
+		row.setAlignment(Alignment.ALIGN_CENTER);
+
+		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
+		tableNavigation.setForeground(Color.WHITE);
+		row.add(tableNavigation);
+
+		col.add(row);
+		panel.add(col);
+		return panel;
+
+	}
+	
+	private TableColModel initTableColModel(final int tipo) {
+
+		
+		TableColModel tableColModel = new TableColModel();
+
+	    TableColumn tableColumn;
+	    LabelCellRenderer lcr;
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Object obj = new Object();
+	    		if(tipo == 1){
+		    		Usuario user = (Usuario) element;
+		    		obj = user.getLogin();
+	    		}
+	    		else if(tipo == 2){
+	    			Invitation iv = (Invitation) element;
+	    			obj = iv.getUserGeneratesRef().getLogin();
+	    		}
+	    		return obj;
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Usuario");
+	    
+	    tableColumn = new TableColumn();
+	    tableColumn.setWidth(new Extent(250));
+	    tableColumn.setHeadValue("");
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    tableColumn.setHeadCellRenderer(lcr);
+		
+	    if(tipo == 1)
+	    	tableColumn.setDataCellRenderer(initNestedCellRenderer1());
+	    else if(tipo == 2)
+	    	tableColumn.setDataCellRenderer(initNestedCellRenderer2());
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+		return tableColModel;
+
+	}
+	
+	private CellRenderer initNestedCellRenderer1() {
+		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
+		
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Usuario user = (Usuario) tableDtaModelUsuario.getElementAt(row);
+	          Button ret = new Button("Invitar");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Invitar");
+			  final Invitation invitation = new Invitation();
+			  invitation.setUserGeneratesRef(usuario);
+			  invitation.setUserReceivesRef(user);
+	          if (user.getLogin() != usuario.getLogin() )
+	          {
+	        	  ret.addActionListener(new ActionListener() {
+        			  public void actionPerformed(ActionEvent e) {
+        				  btnInviteClicked(invitation);
+        			  }
+        		  });
+	          }
+	          else{
+	        	  ret.setVisible(false);	        	  
+	          }
+	          return ret;
+	        }
+	    });
+	
+	    return nestedCellRenderer;
+	}
+	
+	private CellRenderer initNestedCellRenderer2() {
+		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
+		
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Invitation inv = (Invitation) tableDtaModelInvitacion.getElementAt(row);
+	          final Button ret = new Button("Acpt");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Aceptar");
+
+	          if (usuario != inv.getUserGeneratesRef() )
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  BtnClicked(row);
+	        			  }	        		  
+	        			  private void BtnClicked(int row) {	        				
+	      	          		inviteServerPush.end();
+	    	          		removeAll();
+	    	          		add(new ArenaDesktop(usuario));
+	        			  }
+	        		  });	        	  
+	          }
+	          else{
+	        	  ret.setVisible(false);	        	  
+	          }
+	          return ret;
+	        }
+	    });
+		
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Invitation inv = (Invitation) tableDtaModelInvitacion.getElementAt(row);
+	          final Button ret = new Button("Rech");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Rechazar");
+	          
+	          if (usuario != inv.getUserGeneratesRef() )
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  BtnClicked(row);
+	        			  }	        		  
+	        			  private void BtnClicked(int row) {	
+	        			  }
+	        		  });	        	  
+	          }
+	          else{
+	        	  ret.setVisible(false);	        	  
+	          }
+	          return ret;
+	        }
+	    });
+	
+	    return nestedCellRenderer;
 	}
 	
 	private void activate(){
@@ -199,48 +395,32 @@ public class PreArena extends ContentPane{
 	
 	private void consultInvitations(){
 		
-	    Session session = null;
-	    try {
-	      session = SessionHibernate.getInstance().getSession();
-	      session.beginTransaction();
+	    Session session = SessionHibernate.getInstance().getSession();
+	    session.beginTransaction();
 	      
-	      usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
 
-	      Invitation obj = new Invitation();
-		  obj.setUserReceivesRef(usuario);
+	    Invitation obj = new Invitation();
+		obj.setUserReceivesRef(usuario);
 
-		  resultsI = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
+		List<Invitation> list = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
 		  
-	    } finally {
-	    	
-	      if (session != null) {
-	        if (session.getTransaction() != null) {
-	          session.getTransaction().commit();
-	        }
-	        session.close();
-	      }
-	    }
-	    invitations.removeAll();
-   	  	for( int i = 0; i < resultsI.size(); i++){
-   	  		if(resultsI.get(i).getUserGeneratesRef().getLogin() != usuario.getLogin()){
-	   	  		row = new Row();
-	   	  		Label lbl = new Label("Usuario   : "+resultsI.get(i).getUserGeneratesRef().getLogin());
-	   	  		lbl.setForeground(Color.WHITE);
-	   	  		row.add(lbl);
-	   	  		Button aceptar = new Button("Aceptar");
-	   	  		aceptar.setStyle(Styles1.DEFAULT_STYLE);
-	   	  		aceptar.setToolTipText("Aceptar la invitacion");
-	   	  		aceptar.addActionListener(new ActionListener() {
-	          	public void actionPerformed(ActionEvent evt) {
-	          		inviteServerPush.end();
-	          		removeAll();
-	          		add(new ArenaDesktop(usuario));
-	          		}	
-	   	  		});
-	   	  		row.add(aceptar);
-	   	  		invitations.add(row);
-	   	  		invitations.setInsets(new Insets(new Extent(110)));
+	    session.getTransaction().commit();
+	    session.close();
+
+	    resultsI.clear();
+	    tableDtaModelInvitacion.clear();
+   	  	for( int i = 0; i < list.size(); i++){
+   	  		if(usuario.getLogin() == list.get(i).getUserReceivesRef().getLogin()){
+	   			Invitation iv = new Invitation();
+	   			iv.setId(list.get(i).getId());
+	   			iv.setUserGeneratesRef(list.get(i).getUserGeneratesRef());
+	   			iv.setUserReceivesRef(list.get(i).getUserReceivesRef());
+				resultsI.add(iv);
    	  		}
+   	  	}
+   	  	for( int i = 0; i < resultsI.size(); i++){
+   			tableDtaModelInvitacion.add(resultsI.get(i));
    	  	}
 	}
 	
@@ -301,10 +481,10 @@ public class PreArena extends ContentPane{
 	      Invitation obj = new Invitation();
 		  obj.setUserReceivesRef(usuario);
 
-		  resultsI = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
-		  for(int i = 0; i < resultsI.size(); i++){
-			  if(resultsI.get(i).getUserGeneratesRef() == usuario ){
-				  session.delete(resultsI.get(i));
+		  List<Invitation> list = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
+		  for(int i = 0; i < list.size(); i++){
+			  if(list.get(i).getUserGeneratesRef() == usuario ){
+				  session.delete(list.get(i));
 			  }
 		  }
 	      
