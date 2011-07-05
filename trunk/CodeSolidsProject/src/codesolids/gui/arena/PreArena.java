@@ -266,7 +266,7 @@ public class PreArena extends ContentPane{
 	    tableColumn.setHeadValue("Usuario");
 	    
 	    tableColumn = new TableColumn();
-	    tableColumn.setWidth(new Extent(250));
+	    tableColumn.setWidth(new Extent(100));
 	    tableColumn.setHeadValue("");
 	    
 	    lcr = new LabelCellRenderer();
