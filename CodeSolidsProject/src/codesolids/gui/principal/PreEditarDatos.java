@@ -44,10 +44,8 @@ public class PreEditarDatos extends WindowPane{
 	private PasswordField editRePasswField;
 	private TextField editUserField;
 	
-	private WindowPane msgError;
-	private WindowPane msgExito;
-
-
+	private WindowPane msgErrorExito;
+	private Label error_Exito;
 
 	Usuarios uno = new Usuarios();
 	
@@ -233,25 +231,9 @@ public class PreEditarDatos extends WindowPane{
 		});
 		
 		filaBtn.add(btnRegresar);
-		
-		msgExito = new WindowPane();
-		msgExito.setHeight(new Extent(100, Extent.PX));
-		msgExito.setWidth(new Extent(200, Extent.PX));
-		msgExito.setStyleName("Default");
-		msgExito.setTitle("*********EXITO********");
-		msgExito.setVisible(false);
-		msgExito.setDefaultCloseOperation(WindowPane.HIDE_ON_CLOSE);
-		msgExito.setBackground(new Color(0x6363b6));
-		msgExito.setMovable(true);
-		add(msgError);
-	
-		Label exito = new Label();
-		exito.setText("EXITO, SU INFORMACION HA SIDO ACTUALIZADA");
-		msgExito.add(exito);
-		
+		add(msgErrorExito);
 	}
 		
-	
 	}
 	
 	public class preEditDatos extends ContentPane{
@@ -345,23 +327,17 @@ public class PreEditarDatos extends WindowPane{
 		});
 		filaBtn.add(btnCancelar);
 		
-		msgError = new WindowPane();
-		msgError.setHeight(new Extent(100, Extent.PX));
-		msgError.setWidth(new Extent(200, Extent.PX));
-		msgError.setStyleName("Default");
-		msgError.setTitle("*********ERROR********");
-		msgError.setVisible(false);
-		msgError.setDefaultCloseOperation(WindowPane.HIDE_ON_CLOSE);
-		msgError.setBackground(new Color(0x6363b6));
-		msgError.setMovable(true);
-		add(msgError);
+		msgErrorExito = new WindowPane();
+		msgErrorExito.setHeight(new Extent(100, Extent.PX));
+		msgErrorExito.setWidth(new Extent(200, Extent.PX));
+		msgErrorExito.setVisible(false);
+		msgErrorExito.setDefaultCloseOperation(WindowPane.HIDE_ON_CLOSE);
+		msgErrorExito.setBackground(new Color(0x6363b6));
+		msgErrorExito.setMovable(true);
+		add(msgErrorExito);
 	
-		Label error = new Label();
-		error.setText("ERROR, PORFAVOR REINGRESE SU INFORMACION");
-		msgError.add(error);
-		
-
-		
+		error_Exito = new Label();
+		msgErrorExito.add(error_Exito);
 
 	}
 		}
@@ -406,7 +382,9 @@ public class PreEditarDatos extends WindowPane{
 		} else {
 			loginField.setText("");
 			passwField.setText("");
-			this.msgError.setVisible(true);
+			this.msgErrorExito.setTitle("**********ERROR**********");
+			this.error_Exito.setText("ERROR, PORFAVOR REINGRESE SU INFORMACION");
+			this.msgErrorExito.setVisible(true);
 
 		}
 	}
@@ -423,9 +401,6 @@ public class PreEditarDatos extends WindowPane{
 		this.editPasswString = (String) e.getNewValue();
 
 	}
-	
-	
-	
 	
 	private void editRePassw(PropertyChangeEvent e) {
 
@@ -485,17 +460,21 @@ public class PreEditarDatos extends WindowPane{
 		
 		if (valid) {
 			
-			//this.msgError.setVisible(false);
-			this.msgExito.setVisible(true);
+			error_Exito.setText("EXITO, SU INFORMACION HA SIDO ACTUALIZADA");
+			msgErrorExito.setTitle("*********EXITO********");
+			this.msgErrorExito.setVisible(true);
 			editUserField.setText("");
 			editPasswField.setText("");
 			editRePasswField.setText("");
 			
 		} else {
+			
 			editUserField.setText("");
 			editPasswField.setText("");
 			editRePasswField.setText("");
-			this.msgError.setVisible(true);
+			this.msgErrorExito.setTitle("**********ERROR**********");
+			this.error_Exito.setText("ERROR, PORFAVOR REINGRESE SU INFORMACION");
+			this.msgErrorExito.setVisible(true);
 
 		}
 	}
