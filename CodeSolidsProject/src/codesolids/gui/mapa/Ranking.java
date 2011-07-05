@@ -6,7 +6,6 @@ package codesolids.gui.mapa;
  * 
  */
 
-import java.util.ArrayList;
 import java.util.List;
 
 import nextapp.echo.app.Alignment;
@@ -32,6 +31,7 @@ import org.hibernate.criterion.Order;
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.gui.style.Styles1;
 import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.ETable;
@@ -46,7 +46,7 @@ public class Ranking extends ContentPane {
 	private Usuario usuario;
 
 	private TestTableModel tableDtaModel;
-	private List<Personaje> personajes = new ArrayList<Personaje>();
+	private List<Personaje> personajes;
 
 	Panel panel = new Panel();
 
@@ -103,8 +103,10 @@ public class Ranking extends ContentPane {
 		//para el futuro deseo agregarle mas características, si es posible  
 
 		Button returnButton = new Button();
-		returnButton.setText("REGRESAR");
-		returnButton.setStyle(Styles.BOTON_REGRESAR);
+		returnButton.setText("Regresar");
+		returnButton.setWidth(new Extent(100));
+		returnButton.setStyle(Styles1.DEFAULT_STYLE);
+		returnButton.setTextAlignment(Alignment.ALIGN_CENTER);
 		returnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				button1Clicked(e);
@@ -137,31 +139,27 @@ public class Ranking extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 
-		List<Personaje> list = session.createCriteria( //
+		personajes = session.createCriteria( //
 				Personaje.class).addOrder(Order.desc("level")).list();
 
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < 10; i++) {
 
 			Personaje per = new Personaje();
 
-			per.setId(list.get(i).getId());
-			per.setDirImage(list.get(i).getDirImage());
-			per.setFechaFin(list.get(i).getFechaFin());
-			per.setFechaInicio(list.get(i).getFechaInicio());
-			per.setGold(list.get(i).getGold());
-			per.setHp(list.get(i).getHp());
-			per.setLearning(list.get(i).getLearning());
-			per.setLevel(list.get(i).getLevel());
-			per.setMp(list.get(i).getMp());
-			per.setTipo(list.get(i).getTipo());
-			per.setXp(list.get(i).getXp());
+			per.setId(personajes.get(i).getId());
+			per.setDirImage(personajes.get(i).getDirImage());
+			per.setFechaFin(personajes.get(i).getFechaFin());
+			per.setFechaInicio(personajes.get(i).getFechaInicio());
+			per.setGold(personajes.get(i).getGold());
+			per.setHp(personajes.get(i).getHp());
+			per.setLearning(personajes.get(i).getLearning());
+			per.setLevel(personajes.get(i).getLevel());
+			per.setMp(personajes.get(i).getMp());
+			per.setTipo(personajes.get(i).getTipo());
+			per.setXp(personajes.get(i).getXp());
 
-			personajes.add(per);
+			tableDtaModel.add(per);
 
-		}
-
-		for (int i = 0; i < 10; i++) {
-			tableDtaModel.add(personajes.get(i));
 		}
 
 		session.getTransaction().commit();
@@ -169,7 +167,7 @@ public class Ranking extends ContentPane {
 
 	}
 
-	public Panel createRankingTable(TestTableModel tableDtaModel, //
+	private Panel createRankingTable(TestTableModel tableDtaModel, //
 			TableColModel initTableColModel) {
 
 		Panel panel = new Panel();
@@ -205,14 +203,14 @@ public class Ranking extends ContentPane {
 		// The navigation control
 		// ----------------------------------------
 
-//		Row row = new Row();
-//		row.setAlignment(Alignment.ALIGN_CENTER);
-//
-//		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
-//		tableNavigation.setForeground(Color.WHITE);
-//		row.add(tableNavigation);
-//
-//		col.add(row);
+		//		Row row = new Row();
+		//		row.setAlignment(Alignment.ALIGN_CENTER);
+		//
+		//		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
+		//		tableNavigation.setForeground(Color.WHITE);
+		//		row.add(tableNavigation);
+		//
+		//		col.add(row);
 		panel.add(col);
 		return panel;
 
