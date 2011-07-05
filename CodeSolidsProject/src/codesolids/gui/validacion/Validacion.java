@@ -7,13 +7,10 @@ package codesolids.gui.validacion;
  */
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ResourceBundle;
-import codesolids.gui.mapa.MapaDesktop;
-import codesolids.gui.mapa.Styles;
+
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
-import nextapp.echo.app.Column;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
@@ -24,15 +21,14 @@ import nextapp.echo.app.Label;
 import nextapp.echo.app.PasswordField;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
-import nextapp.echo.app.Style;
 import nextapp.echo.app.TextField;
 import nextapp.echo.app.Window;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-import nextapp.echo.app.layout.ColumnLayoutData;
 import nextapp.echo.app.layout.GridLayoutData;
 import nextapp.echo.app.layout.RowLayoutData;
+import codesolids.gui.mapa.Styles;
 
 public class Validacion extends ContentPane {
 
