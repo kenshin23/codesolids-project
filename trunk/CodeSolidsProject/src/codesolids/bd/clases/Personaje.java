@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -42,6 +43,8 @@ public class Personaje {
 	protected Calendar fechaInicio;
 	protected Calendar fechaFin;
 	protected List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();
+	
+	protected Usuario usuarioRef;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -145,6 +148,15 @@ public class Personaje {
 
 	public void setPersonajePoderesList(List<PersonajePoderes> personajePoderesList) {
 		this.personajePoderesList = personajePoderesList;
+	}
+
+	@ManyToOne
+	public Usuario getUsuarioRef() {
+		return usuarioRef;
+	}
+
+	public void setUsuarioRef(Usuario usuarioRef) {
+		this.usuarioRef = usuarioRef;
 	}
 	
 }

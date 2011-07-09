@@ -482,7 +482,7 @@ public class TiendaDesktop extends ContentPane {
 
 	          ret.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	              btnVerClicked(row);
+	              btnVerClicked(row, 1);
 	            }
 	          });
 	          return ret;
@@ -550,7 +550,7 @@ public class TiendaDesktop extends ContentPane {
 
 	          ret.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	              btnVerClicked2(row);
+	              btnVerClicked(row, 2);
 	            }
 	          });
 	          return ret;
@@ -623,7 +623,7 @@ public class TiendaDesktop extends ContentPane {
 
 	          ret.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	              btnVerClicked(row);
+	              btnVerClicked(row, 3);
 	            }
 	          });
 	          return ret;
@@ -783,9 +783,15 @@ public class TiendaDesktop extends ContentPane {
 	    return nestedCellRenderer;
 	}
 	
-	private void btnVerClicked(int row) 
+	private void btnVerClicked(int row, int verTipo) 
 	{
-		Item item = (Item) tableDtaModel.getElementAt(row);
+		Item item = new Item();
+		if(verTipo == 1)
+			item = (Item) tableDtaModel.getElementAt(row);
+		if(verTipo == 2)
+			item = (Item) tableDtaModelPlayer.getElementAt(row);
+		if(verTipo == 3)
+			item = (Item) tableDtaModelBuild.getElementAt(row);
 		
 		if (item.getType() == "Armadura")
 			infoItemArmor(item);

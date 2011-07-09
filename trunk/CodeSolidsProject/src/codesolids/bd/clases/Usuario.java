@@ -44,6 +44,8 @@ public class Usuario {
 	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
 	private List<Invitation> invReceivesList = new ArrayList<Invitation>();
 	
+	private List<Personaje> personajeList = new ArrayList<Personaje>();
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int getId() {
@@ -124,6 +126,20 @@ public class Usuario {
 
 	public void setChatRef(Chat chatRef) {
 		this.chatRef = chatRef;
+	}
+
+	@OneToMany(mappedBy = "usuarioRef", orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
+	public List<Personaje> getPersonajeList() {
+		return personajeList;
+	}
+
+	public void setPersonajeList(List<Personaje> personajeList) {
+		this.personajeList = personajeList;
+	}
+	public void addPersonajeList(Personaje personaje) {
+		this.personajeList.add(personaje);
 	}
 	  
 	 
