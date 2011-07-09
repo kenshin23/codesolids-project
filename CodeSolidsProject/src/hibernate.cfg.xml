@@ -97,6 +97,7 @@
 		<mapping class="codesolids.bd.clases.Usuario" />
 		<mapping class="codesolids.bd.clases.Invitation" />
 		<mapping class="codesolids.bd.clases.Personaje" />
+		<mapping class="codesolids.bd.clases.PersonajesDisponibles" />
 		<mapping class="codesolids.bd.clases.PersonajePoderes" />
 		<mapping class="codesolids.bd.clases.Poderes" />
 

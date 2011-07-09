@@ -76,7 +76,7 @@ public class PerfilDesktop extends ContentPane {
 		
 		Row menu = new Row();
 		Button selectButton = new Button();
-		selectButton.setText("SELECCIONE");
+		selectButton.setText("Seleccion");
 		selectButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		selectButton.setHeight(new Extent(15));
 		selectButton.setToolTipText("Seleccionar el perfil a ver");
@@ -90,7 +90,7 @@ public class PerfilDesktop extends ContentPane {
 		menu.setCellSpacing(new Extent(50));
 		
 		Button returnButton = new Button();
-		returnButton.setText("REGRESAR");
+		returnButton.setText("Salir");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		returnButton.setHeight(new Extent(15));
 		returnButton.setToolTipText("Regresar al Mapa Principal");

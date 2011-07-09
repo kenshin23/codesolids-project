@@ -68,11 +68,6 @@ public class PreArena extends ContentPane{
 	private TestTableModel tableDtaModelInvitacion;
 	List<Usuario> results = new ArrayList<Usuario>();
 	List<Invitation> resultsI = new ArrayList<Invitation>();
-	private Button invite;
-	private Column invitations;
-	private Column colUser;
-	private Column colButtons;
-	private Row row;
 	
 	private HtmlLayout htmlLayout;
 	

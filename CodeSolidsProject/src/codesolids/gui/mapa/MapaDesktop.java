@@ -8,6 +8,7 @@ package codesolids.gui.mapa;
 
 import nextapp.echo.app.Grid;
 import codesolids.gui.arena.*;
+import codesolids.gui.perfil.EditarPerfil;
 import codesolids.gui.perfil.PerfilDesktop;
 import codesolids.gui.principal.PrincipalDesktop;
 import codesolids.gui.style.Styles1;
@@ -275,7 +276,7 @@ public class MapaDesktop extends ContentPane {
 	private void perfilBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
 		removeAll();
-		add(new PerfilDesktop(usuario));
+		add(new EditarPerfil(usuario));
 	}
 	private void rankingBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
