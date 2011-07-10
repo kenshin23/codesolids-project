@@ -8,6 +8,7 @@ import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 
 import codesolids.gui.mapa.MapaDesktop;
+import codesolids.gui.seleccion.DesktopSelect;
 import codesolids.gui.style.*;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
@@ -237,7 +238,7 @@ public class PrincipalDesktop extends ContentPane {
                     			pa.setUsuario(usuario);
                     			
                                 removeAll();
-                                add(new MapaDesktop(usuario));
+                                add(new DesktopSelect(usuario));
                         }
                         
                 }finally

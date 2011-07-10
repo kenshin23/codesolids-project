@@ -32,7 +32,7 @@ public class User {
 		poder = new Poder(9,3, "Rueda de Fuego", 1500, 51, 5, 74, "Fuego",false,"Images/Poderes/Fuego/FireSpikeWheel.png", 0);
 		poderes.add(poder);
 		
-		player = new Personaje("player1", 9, 1000, 30000, 5000, 2050, 50, 40, 70, "Fuego", "Images/MagoBB.png", poderes, items);
+		player = new Personaje("player1", 9, 1000, 30000, 5000, 2050, 50, 40, 70, "Fuego", "Images/Personajes/MagoF.png", poderes, items);
 		player.buildItem("Armadura Negra");
 		player.buildItem("Espada Roja");
 		player.buildItem("Bomba Blanca");
@@ -49,7 +49,7 @@ public class User {
 		poder = new Poder(31,8, "Explosión de Tierra", 4700, 146, 10, 176, "Tierra",false,"Images/Poderes/Tierra/EarthBlast.png", 6);
 		poderes.add(poder);
 		
-		player = new Personaje("player2", 3, 1100, 25000, 5000, 2000, 50, 40, 60, "Tierra", "Images/MagoA.png", poderes, items);
+		player = new Personaje("player2", 3, 1100, 25000, 5000, 2000, 50, 40, 60, "Tierra", "Images/Personajes/MagoT.png", poderes, items);
 		player.buildItem("Armadura Negra");
 		player.buildItem("Bomba Blanca");
 		player.buildItem("Bomba Negra");

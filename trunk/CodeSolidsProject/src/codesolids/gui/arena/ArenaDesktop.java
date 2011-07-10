@@ -235,10 +235,10 @@ public class ArenaDesktop extends ContentPane{
 		poder.setName("Llama");
 		listPoder.add(poder);
 
-		p1 = new Personaje("01",5,10000,40,1000,150,"Images/MagoA.png",listPoder);
+		p1 = new Personaje("01",5,10000,40,1000,150,"Images/Personajes/MagoT.png",listPoder);
 
 
-		p2 = new Personaje("02",5,10000,40,1000,150,"Images/MagoB.png",poderesPc);
+		p2 = new Personaje("02",5,10000,40,1000,150,"Images/Personajes/MagoFF.png",poderesPc);
 
 	}
 
