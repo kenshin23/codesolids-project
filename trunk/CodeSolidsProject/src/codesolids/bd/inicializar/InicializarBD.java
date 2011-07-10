@@ -33,9 +33,6 @@ public class InicializarBD {
 
 		PoderesBD initP = new PoderesBD();
 		initP.createList();
-		
-		PDisponiblesBD personajes = new PDisponiblesBD();
-		personajes.createList();
 
 		session.getTransaction().commit();
 		session.close();
@@ -141,58 +138,6 @@ class PoderesBD
 		AsignarDatos(38,10, "Lanza de Hielo", 10400, 260, 10, 10, 301, "Hielo",false,"Images/Poderes/Hielo/WaterSpear.png","Realiza estacas de hielos y atraviesa a tus enemigos.");
 		AsignarDatos(39,10, "Doble Rotura de la Tierra", 10400, 240, 10, 10, 284, "Tierra",false,"Images/Poderes/Tierra/DoubleEarthSmash.png","Aplasta a tus enemigos con el poder de la tierra.");
 		AsignarDatos(40,10, "Ráfaga Golpe Dragón", 10400, 249, 10, 10, 277, "Combo",false,"Images/Poderes/Combo/ThousandViolenceStrike.png","Realiza una ráfagas de golpes destructivos sin dudarlo.");
-	}
-	
-}
-
-class PDisponiblesBD{
-	
-	public void createList(){
-		AsignarDatos(1, 1, 0, 200, 100, 3, 1, 1, 5, 8000, "Combo", "Images/Guerrero.png");
-		AsignarDatos(2, 1, 0, 200, 100, 1, 3, 2, 2, 8000, "Fuego", "Images/MagoB.png");
-		AsignarDatos(3, 1, 0, 200, 100, 1, 3, 2, 2, 8000, "Hielo", "Images/MagoC.png");
-		AsignarDatos(4, 1, 0, 200, 100, 2, 2, 1, 4, 8000, "Tierra", "Images/MagoA.png");
-	}
-	
-	private void AsignarDatos (int id,int nivel, int xp, int vida, int psinergia, int atbasico, int atespecial, //
-			int velocidad, int defensa , int oro, String tipo, String dirImage)
-	{
-				
-		PersonajesDisponibles personaje = new PersonajesDisponibles();
-		
-		personaje.setId(id);
-		personaje.setNivel(nivel);
-		personaje.setExperiencia(xp);
-		personaje.setVida(vida);
-		personaje.setPsinergia(psinergia);
-		personaje.setAtaqueBasico(atbasico);
-		personaje.setAtaqueEspecial(atespecial);
-		personaje.setVelocidad(velocidad);
-		personaje.setDefensa(defensa);
-		personaje.setTipo(tipo);
-		personaje.setDirImage(dirImage);
-		personaje.setOro(oro);
-		
-		Session session = SessionHibernate.getInstance().getSession();
-		session.beginTransaction();
-		
-		PersonajesDisponibles pBean = new PersonajesDisponibles();
-		pBean.setNivel(personaje.getNivel());
-		pBean.setExperiencia(personaje.getExperiencia());
-		pBean.setVida(personaje.getVida());
-		pBean.setPsinergia(personaje.getPsinergia());
-		pBean.setAtaqueBasico(personaje.getAtaqueBasico());
-		pBean.setAtaqueEspecial(personaje.getAtaqueEspecial());
-		pBean.setVelocidad(personaje.getVelocidad());
-		pBean.setDefensa(personaje.getDefensa());
-		pBean.setTipo(personaje.getTipo());
-		pBean.setDirImage(personaje.getDirImage());
-		pBean.setOro(personaje.getOro());
-		
-		session.save(pBean);
-        
-		session.getTransaction().commit();
-		session.close();
 	}
 	
 }

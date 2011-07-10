@@ -276,7 +276,7 @@ public class MapaDesktop extends ContentPane {
 	private void perfilBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
 		removeAll();
-		add(new EditarPerfil(usuario));
+		add(new PerfilDesktop(usuario));
 	}
 	private void rankingBtnClicked(ActionEvent e) {
 		this.setBackgroundImage(null);
