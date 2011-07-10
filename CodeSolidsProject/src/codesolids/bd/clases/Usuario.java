@@ -138,6 +138,7 @@ public class Usuario {
 	public void setPersonajeList(List<Personaje> personajeList) {
 		this.personajeList = personajeList;
 	}
+	
 	public void addPersonajeList(Personaje personaje) {
 		this.personajeList.add(personaje);
 	}
