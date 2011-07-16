@@ -67,6 +67,10 @@ public class Styles {
 	
 	BOTONES_LOGIN_SCREEN = estilo3;
   }
+
+
+}
+
 //  
 //  public static final Style TXT_PASSW_FIELD;
 //  static{
@@ -87,10 +91,6 @@ public class Styles {
 //	
 //	
 //  }
-
-}
-
-
 // style.set(Button.PROPERTY_BORDER, new Border(1, new Color(0xD6, 0xD3, 0xCE), Border.STYLE_SOLID));
 //style.set(Button.PROPERTY_ROLLOVER_FONT, new Font.Typeface("ARIAL"));
 //style.set(Button.PROPERTY_OUTSETS, new Insets(1));
