@@ -24,13 +24,6 @@ public class InicializarBD {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 
-		Personaje player = new Personaje();
-		player.setTipo("Fuego");
-		player.setGold(10000);
-		player.setLevel(8);
-
-		session.save(player);
-
 		PoderesBD initP = new PoderesBD();
 		initP.createList();
 
