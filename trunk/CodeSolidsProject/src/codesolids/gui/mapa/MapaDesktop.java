@@ -45,7 +45,7 @@ public class MapaDesktop extends ContentPane {
 	 private Component initMapa(){
 		
 		try {
-			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("template.html"), "UTF-8");
+			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("templateMapa.html"), "UTF-8");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 			}
