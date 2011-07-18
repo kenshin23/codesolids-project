@@ -10,6 +10,7 @@ import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.Usuario;
 import codesolids.gui.crear.DesktopCreate;
 import codesolids.gui.mapa.MapaDesktop;
+import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
 import codesolids.util.TestTableModel;
 import codesolids.bd.hibernate.SessionHibernate;
@@ -27,6 +28,7 @@ import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
@@ -53,11 +55,15 @@ public class DesktopSelect extends ContentPane{
 	
 	private Usuario usuario;
 	
-	public DesktopSelect(Usuario usuario)
+	public DesktopSelect()
 	{
 		
-		this.usuario = usuario;
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		
+		usuario = app.getUsuario();
+		
 		initGUI();
+		
 	}
 
 	private void initGUI() {
@@ -152,6 +158,31 @@ public class DesktopSelect extends ContentPane{
 	    
 	    tableColumn.setWidth(new Extent(30));
 	    tableColumn.setHeadValue("Nivel");
+	       
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);	    
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(226,211,161));
+	    lcr.setForeground(Color.BLACK);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);    	 
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Personaje personaje = (Personaje) element;
+	    		return personaje.getTipo();
+	    	}
+	    };
+	    
+	    tableColumn.setWidth(new Extent(30));
+	    tableColumn.setHeadValue("Tipo");
 	    
 	    
 	    lcr = new LabelCellRenderer();
@@ -166,7 +197,7 @@ public class DesktopSelect extends ContentPane{
 	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
 	    
 	    tableColumn.setDataCellRenderer(lcr);
-	    tableColModel.getTableColumnList().add(tableColumn);    	 
+	    tableColModel.getTableColumnList().add(tableColumn);
 	    
 	    tableColumn = new TableColumn();
 	    tableColumn.setWidth(new Extent(50));
@@ -282,13 +313,21 @@ public class DesktopSelect extends ContentPane{
 	}
 	
 	private void btnSelectClicked(int row) {
+		
+		Personaje personaje = (Personaje) tableDtaModel.getElementAt(row);
+ 		
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		
+		app.setPersonaje(personaje);
+		
 		removeAll();
 		add(new MapaDesktop(usuario));
+	
 	}
 	
 	private void btnCreateClicked(int row) {
 		removeAll();
-		add(new DesktopCreate(usuario));
+		add(new DesktopCreate());
 	}
 	
 	private void btnDeleteClicked(int row) {
@@ -308,7 +347,7 @@ public class DesktopSelect extends ContentPane{
 		session.close();
 		
 		removeAll();
-		add(new DesktopSelect(usuario));
+		add(new DesktopSelect());
 		
 	}
 	
