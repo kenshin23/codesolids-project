@@ -3,7 +3,26 @@
  */
 package codesolids.gui.perfil;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+
+import com.minotauro.echo.table.base.CellRenderer;
+import com.minotauro.echo.table.base.ETable;
+import com.minotauro.echo.table.base.ETableNavigation;
+import com.minotauro.echo.table.base.TableColModel;
+import com.minotauro.echo.table.base.TableColumn;
+import com.minotauro.echo.table.base.TableSelModel;
+import com.minotauro.echo.table.renderer.BaseCellRenderer;
+import com.minotauro.echo.table.renderer.LabelCellRenderer;
+import com.minotauro.echo.table.renderer.NestedCellRenderer;
+
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
@@ -25,11 +44,16 @@ import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.style.Styles1;
+import codesolids.util.TestTableModel;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 
-import codesolids.gui.perfil.User;
+import codesolids.bd.clases.Invitation;
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.PersonajePoderes;
 import codesolids.bd.clases.Usuario;
+import codesolids.bd.clases.PersonajesDisponibles;
+import codesolids.bd.hibernate.SessionHibernate;
 
 /**
  * 
@@ -38,121 +62,111 @@ import codesolids.bd.clases.Usuario;
  */
 
 @SuppressWarnings("serial")
-public class PerfilDesktop extends ContentPane {
-	
+public class PerfilDesktop extends ContentPane{
 	private Usuario usuario;
+	private Personaje personaje;
+	private Label lblData;
+	Panel descrip = new Panel();
+	List<Personaje> results = new ArrayList<Personaje>();
 	
 	private HtmlLayout htmlLayout;
 	
-	private Label lblImage;
-	private Label lblData;
-	
-	private User user;
-	private int indexPlayer = 0;
-	
-	public PerfilDesktop(Usuario usuario) {
+	public PerfilDesktop(Usuario usuario) {		
 		this.usuario = usuario;
-		initGUI();
-	
+	    initGUI();
 	}
-
+	
 	private void initGUI() {
 		add(initPerfil());
-		
 	}
 
-	private Component initPerfil() {
+	private Component initPerfil(){
 		try {
 			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("templateiu.html"), "UTF-8");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		Session session = SessionHibernate.getInstance().getSession();
+  	    session.beginTransaction();
+  		String queryStr = "FROM Personaje WHERE usuarioRef = :user";
+  		Query query  = session.createQuery(queryStr);
+  		query.setInteger("user", usuario.getId());
+  		
+  		personaje = (Personaje) query.list().get(0);
+  		
+  		session.getTransaction().commit();			  	        
+  	    session.close();
 		
-		ResourceImageReference w = new ResourceImageReference("Images/pergamino.jpg");		
-		ImageReference image = w;
-	
+		
 		HtmlLayoutData hld;
-		hld = new HtmlLayoutData("button");
-		
+		hld = new HtmlLayoutData("head");		
 		Row menu = new Row();
-		Button selectButton = new Button();
-		selectButton.setText("Seleccion");
-		selectButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		selectButton.setHeight(new Extent(15));
-		selectButton.setToolTipText("Seleccionar el perfil a ver");
-		selectButton.setStyle(Styles1.DEFAULT_STYLE);
-		selectButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			button2Clicked(e);				
-			}
-		});
-		menu.add(selectButton);
-		menu.setCellSpacing(new Extent(50));
 		
-		Button returnButton = new Button();
+		Button returnButton = new Button();		
+		returnButton = new Button();
 		returnButton.setText("Salir");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		returnButton.setHeight(new Extent(15));
-		returnButton.setToolTipText("Regresar al Mapa Principal");
+		returnButton.setToolTipText("Regresar al mapa");
 		returnButton.setStyle(Styles1.DEFAULT_STYLE);
 		returnButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			button1Clicked(e);				
+			buttonExitClicked(e);				
 			}
 		});
 		menu.add(returnButton);
 		menu.setLayoutData(hld);
-		htmlLayout.add(menu);		
+		htmlLayout.add(menu);
 		
 		hld = new HtmlLayoutData("body");
 		
-		user = new User();
-		user.setLogin("USUARIO");
-				
+		Row rowCentral = new Row();
+  	    descrip.add(btnSeeClicked());
+		rowCentral.add(descrip);
+		rowCentral.setLayoutData(hld);
+		htmlLayout.add(rowCentral);		
+		
+		return htmlLayout;
+	}
+
+	public Panel btnSeeClicked() {
+
+		Panel panel = new Panel();
+		panel.setInsets(new Insets(20, 35, 20, 20));
+		panel.setAlignment(Alignment.ALIGN_CENTER);
+		
+		ImageReference imgR = new ResourceImageReference("Images/cartel3.png");
+		FillImage imgF = new FillImage(imgR);
+		panel.setWidth(new Extent(950));
+		panel.setHeight(new Extent(350));
+		panel.setBackgroundImage(imgF);
+
+		
 		Panel panelImage= new Panel();
 		Row rowTab = new Row();
+		rowTab.setInsets(new Insets(20, 35, 20, 20));
 		Column colTab = new Column();
+		colTab.setCellSpacing(new Extent(5));
+		Column col = new Column();
+		col.setCellSpacing(new Extent(5));
 		
-	    ResourceImageReference ir = new ResourceImageReference(user.getPlayers().get(indexPlayer).getImage());
+	    ResourceImageReference ir = new ResourceImageReference(personaje.getDirImage());
 		
-		lblImage = new Label(ir);
+		Label lblImage = new Label(ir);
 		panelImage.add(lblImage);
-		FillImage imagep = new FillImage(image);
-		panelImage.setBackgroundImage(imagep);
-		panelImage.setHeight(new Extent(213));
+		panelImage.setHeight(new Extent(255));
 		panelImage.setWidth(new Extent(200));
-		panelImage.setBorder(new Border(new Extent(5, Extent.PX), Color.LIGHTGRAY, Border.STYLE_SOLID));
 
 		lblData = new Label("Datos Generales ");
 		lblData.setBackground(Color.LIGHTGRAY);
 		colTab.add(lblData);
-		lblData = new Label("" + user.getLogin());
+		lblData = new Label("Tipo " + personaje.getTipo());
 		colTab.add(lblData);
-		lblData = new Label("Nombre " + user.getPlayers().get(indexPlayer).getLogin());
+		lblData = new Label("Nivel " + personaje.getLevel());
 		colTab.add(lblData);
-		lblData = new Label("Tipo " + user.getPlayers().get(indexPlayer).getType());
+		lblData = new Label("XP " + personaje.getXp());
 		colTab.add(lblData);
-		lblData = new Label("Nivel " + user.getPlayers().get(indexPlayer).getLevel());
-		colTab.add(lblData);
-		lblData = new Label("XP " + user.getPlayers().get(indexPlayer).getXp());
-		colTab.add(lblData);
-		lblData = new Label("Oro " + user.getPlayers().get(indexPlayer).getGold());
-		colTab.add(lblData);
-		lblData = new Label("Atributos Generales");
-		lblData.setBackground(Color.LIGHTGRAY);
-		colTab.add(lblData);
-		lblData = new Label("Vida "+ user.getPlayers().get(indexPlayer).getLife());
-		colTab.add(lblData);
-		lblData = new Label("Psinergia " + user.getPlayers().get(indexPlayer).getEnergy());
-		colTab.add(lblData);
-		lblData = new Label("Fuerza " + user.getPlayers().get(indexPlayer).getForce());
-		colTab.add(lblData);
-		lblData = new Label("Defenza " + user.getPlayers().get(indexPlayer).getDefense());
-		colTab.add(lblData);
-		lblData = new Label("Velocidad " + user.getPlayers().get(indexPlayer).getSpeed());
-		colTab.add(lblData);
-		lblData = new Label("Atributos Especiales");
-		lblData.setBackground(Color.LIGHTGRAY);
+		lblData = new Label("Oro " + personaje.getGold());
 		colTab.add(lblData);
 		Button btnItem = new Button();
 		btnItem.setText("Objetos");
@@ -163,7 +177,7 @@ public class PerfilDesktop extends ContentPane {
 		btnItem.setStyle(Styles1.DEFAULT_STYLE);
 		btnItem.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			button3Clicked(e);				
+//			buttonItemClicked(e);				
 			}
 		});
 		colTab.add(btnItem);
@@ -176,121 +190,85 @@ public class PerfilDesktop extends ContentPane {
 		btnPoderes.setStyle(Styles1.DEFAULT_STYLE);
 		btnPoderes.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			button4Clicked(e);				
+//			buttonPoderesClicked(e);				
 			}
 		});
 		colTab.add(btnPoderes);
-		colTab.setBackground(Color.WHITE);
-		colTab.setBorder( new Border(new Extent(2), Color.LIGHTGRAY, Border.STYLE_SOLID));
 		rowTab.add(panelImage);
 		rowTab.setCellSpacing(new Extent(15));
 		rowTab.add(colTab);
 		
-		rowTab.setLayoutData(hld);
-		htmlLayout.add(rowTab);
+		lblData = new Label("Atributos Generales");
+		lblData.setBackground(Color.LIGHTGRAY);
+		col.add(lblData);
+		lblData = new Label("Vida "+ personaje.getHp());
+		col.add(lblData);
+		lblData = new Label("Psinergia "+ personaje.getMp());
+		col.add(lblData);
+		lblData = new Label("Defensa ");
+		col.add(lblData);
+		lblData = new Label("Velocidad ");
+		col.add(lblData);
+		lblData = new Label("Ataque Básico ");
+		col.add(lblData);
+		lblData = new Label("Ataque Especial ");
+		col.add(lblData);
+		rowTab.add(col);
 		
+		col = new Column();
+		col.setCellSpacing(new Extent(5));
+		Row row = new Row();
+		lblData = new Label("Subir Ptos - Disponibles 0");
+		col.add(lblData);
+		Button btnS = new Button("Subir");
+		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		Button btnB = new Button("Bajar");
+		btnB.setStyle(Styles1.DEFAULT_STYLE);
+		row.add(btnS);
+		row.add(btnB);
+		col.add(row);
+		btnS = new Button("Subir");
+		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnB = new Button("Bajar");
+		btnB.setStyle(Styles1.DEFAULT_STYLE);
+		row = new Row();
+		row.add(btnS);
+		row.add(btnB);
+		col.add(row);
+		btnS = new Button("Subir");
+		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnB = new Button("Bajar");
+		btnB.setStyle(Styles1.DEFAULT_STYLE);
+		row = new Row();
+		row.add(btnS);
+		row.add(btnB);
+		col.add(row);
+		btnS = new Button("Subir");
+		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnB = new Button("Bajar");
+		btnB.setStyle(Styles1.DEFAULT_STYLE);
+		row = new Row();
+		row.add(btnS);
+		row.add(btnB);
+		col.add(row);
+		btnS = new Button("Subir");
+		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnB = new Button("Bajar");
+		btnB.setStyle(Styles1.DEFAULT_STYLE);
+		row = new Row();
+		row.add(btnS);
+		row.add(btnB);
+		col.add(row);
+
+		rowTab.add(col);
+		panel.add(rowTab);
 		
-		return htmlLayout;
+		return panel;
 	}
 	
-	private void button1Clicked(ActionEvent e) {		
+	private void buttonExitClicked(ActionEvent e) {
 		removeAll();
 		add(new MapaDesktop(usuario));
 	}
 	
-	private void button2Clicked(ActionEvent e) {
-		final WindowPane win = new WindowPane();
-		win.setTitle("Seleccione el perfil");
-		win.setWidth(new Extent(300));
-		win.setMaximumWidth(new Extent(300));
-		win.setMaximumHeight(new Extent(100));
-		win.setMovable(false);
-		win.setResizable(false);
-		Row row = new Row();
-		for( int i = 0; i < user.getPlayers().size(); i++){
-			Button button = new Button();
-			button.setText(user.getPlayers().get(i).getLogin());
-			button.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			button.setHeight(new Extent(15));
-			button.setToolTipText("Seleccione " + user.getPlayers().get(i).getLogin()+ " Tipo " +user.getPlayers().get(i).getType());
-			button.setStyle(Styles1.DEFAULT_STYLE);
-			final int j = i;
-			button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				indexPlayer = j;				
-				removeAll();
-				add(initPerfil());
-				}
-			});
-			row.add(button);
-			row.setCellSpacing(new Extent(10));
-		}
-		row.setAlignment(Alignment.ALIGN_CENTER);
-		row.setInsets(new Insets(15));
-		win.add(row);
-		add(win);
-	}
-	
-	private void button3Clicked(ActionEvent e) {
-		final WindowPane win = new WindowPane();
-		win.setTitle("Objetos que Posee");
-		win.setWidth(new Extent(300));
-		win.setMaximumWidth(new Extent(200));
-		win.setMaximumHeight(new Extent(300));
-		win.setMovable(false);
-		win.setResizable(false);
-		Column col = new Column();
-		for( int i = 0; i < user.getPlayers().get(indexPlayer).getItems().size(); i++){
-			lblData = new Label(user.getPlayers().get(indexPlayer).getItems().get(i).getName());
-			col.add(lblData);			
-		}
-		Button button = new Button();
-		button.setText("Aceptar");
-		button.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		button.setHeight(new Extent(15));
-		button.setWidth( new Extent(60));
-		button.setToolTipText("Regresar al perfil");
-		button.setStyle(Styles1.DEFAULT_STYLE);
-		button.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			win.userClose();
-			}
-		});
-		col.add(button);
-		col.setInsets(new Insets(25));
-		win.add(col);
-		add(win);
-	}
-	
-	private void button4Clicked(ActionEvent e) {
-		final WindowPane win = new WindowPane();
-		win.setTitle("Poderes que Posee");
-		win.setWidth(new Extent(300));
-		win.setMaximumWidth(new Extent(200));
-		win.setMaximumHeight(new Extent(300));
-		win.setMovable(false);
-		win.setResizable(false);
-		Column col = new Column();
-		for( int i = 0; i < user.getPlayers().get(indexPlayer).getPowers().size(); i++){
-			lblData = new Label(user.getPlayers().get(indexPlayer).getPowers().get(i).getName());
-			col.add(lblData);			
-		}
-		Button button = new Button();
-		button.setText("Aceptar");
-		button.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		button.setHeight(new Extent(15));
-		button.setWidth( new Extent(60));
-		button.setToolTipText("Regresar al perfil");
-		button.setStyle(Styles1.DEFAULT_STYLE);
-		button.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			win.userClose();
-			}
-		});
-		col.add(button);
-		col.setInsets(new Insets(25));
-		win.add(col);
-		add(win);
-	}
-
 }

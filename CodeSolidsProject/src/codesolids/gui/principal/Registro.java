@@ -217,7 +217,6 @@ public class Registro extends WindowPane {
 			userBean.setLogin(fieldLogin.getText());
 			userBean.setPassword(fieldPass.getText());
 			userBean.setEmail(fieldEmail.getText());
-			userBean.setArena(0);
 			
 			Calendar fechaRegister = new GregorianCalendar();
 			userBean.setDateJoin(fechaRegister);
