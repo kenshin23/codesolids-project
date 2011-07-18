@@ -12,14 +12,12 @@ import nextapp.echo.app.Window;
 
 public class SeleccionApp extends ApplicationInstance {
 
-	private Usuario usuario;
-	
 	public Window init() {
 		
 		Window ventana = new Window();
 		ventana.setTitle("Seleccion Personaje");
 		
-		DesktopSelect desktop = new DesktopSelect(usuario);
+		DesktopSelect desktop = new DesktopSelect();
 		ventana.setContent(desktop);
 		
 		return ventana;

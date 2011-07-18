@@ -6,12 +6,14 @@ import org.hibernate.criterion.Restrictions;
 
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.Usuario;
+import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.seleccion.DesktopSelect;
 import codesolids.gui.style.Styles1;
 import codesolids.bd.hibernate.SessionHibernate;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
@@ -43,11 +45,9 @@ public class DesktopCreate extends ContentPane{
 	private Label lblDescripcion2;
 	private Label lblDescripcion3;
 	
-	private Usuario usuario;
-	
-	public DesktopCreate(Usuario usuario)
+	public DesktopCreate()
 	{
-		this.usuario = usuario;
+		
 		initGUI();
 	}
 
@@ -273,12 +273,16 @@ public class DesktopCreate extends ContentPane{
 		}
 		else if( type == "Mago Hielo" ){
 			personaje.setTipo("Hielo");
-			personaje.setDirImage("Images/Personajes/MagoHH.png");
+			personaje.setDirImage("Images/Personajes/MagoH.png");
 		}
 		else{
-			personaje.setTipo("Combo");
+			personaje.setTipo("Guerrero");
 			personaje.setDirImage("Images/Personajes/GuerreroG.png");
 		}
+		
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		
+		Usuario usuario = app.getUsuario();
 		
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
@@ -295,7 +299,7 @@ public class DesktopCreate extends ContentPane{
 		session.close();
 		
 		removeAll();
-		add(new DesktopSelect(usuario));
+		add(new DesktopSelect());
 		
 	}	
 	
@@ -368,7 +372,7 @@ public class DesktopCreate extends ContentPane{
 		lblDescripcion.setText("El guerrero es determinado en sus ataques, son muy fuertes y resistentes");
 		lblDescripcion1.setText("en la batalla. Combinan sus puños, espadas y patadas para realizar ");
 		lblDescripcion2.setText("ataques contudentes. Su capacidad es de corto alcance, luchan fuera ");
-		lblDescripcion3.setText("de la ley en busca de la gloria.");
+		lblDescripcion3.setText("de la ley Weyard en busca de la gloria.");
 		
 	}
 

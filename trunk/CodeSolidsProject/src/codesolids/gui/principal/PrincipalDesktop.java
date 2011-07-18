@@ -238,7 +238,7 @@ public class PrincipalDesktop extends ContentPane {
                     			pa.setUsuario(usuario);
                     			
                                 removeAll();
-                                add(new DesktopSelect(usuario));
+                                add(new DesktopSelect());
                         }
                         
                 }finally
