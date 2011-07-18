@@ -1,6 +1,7 @@
 package codesolids.bd.clases;
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -40,7 +41,7 @@ public class Usuario {
 	
 	private Chat chatRef;
 	
-	private int arena;
+	private Timestamp arena;
 	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
 	private List<Invitation> invReceivesList = new ArrayList<Invitation>();
 	
@@ -89,15 +90,15 @@ public class Usuario {
 		this.dateJoin = dateJoin;
 	}
 	
-	  public int getArena() {
+	  public Timestamp getArena() {
 			return arena;
 	  }
 
-	  public void setArena(int arena) {
+	  public void setArena(Timestamp arena) {
 			this.arena = arena;
 	  }
-	
-	  @OneToMany(mappedBy = "userGeneratesRef", orphanRemoval = true)
+
+	@OneToMany(mappedBy = "userGeneratesRef", orphanRemoval = true)
 	  @LazyCollection(LazyCollectionOption.TRUE)
 	  @Cascade({CascadeType.ALL})
 	  public List<Invitation> getInvGeneratesList() {

@@ -1,6 +1,8 @@
 package codesolids.gui.arena;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import nextapp.echo.app.Alignment;
@@ -27,6 +29,7 @@ import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.event.EventListenerList;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -46,6 +49,7 @@ import com.minotauro.echo.table.renderer.NestedCellRenderer;
 
 import codesolids.bd.clases.Invitation;
 import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
@@ -64,6 +68,7 @@ import echopoint.layout.HtmlLayoutData;
 public class PreArena extends ContentPane{
 	private Usuario usuario;
 	private Label lblData;
+	private int actual = 0;
 	private TestTableModel tableDtaModelUsuario;
 	private TestTableModel tableDtaModelInvitacion;
 	List<Usuario> results = new ArrayList<Usuario>();
@@ -128,50 +133,44 @@ public class PreArena extends ContentPane{
 		Row rowCentral = new Row();
 		tableDtaModelUsuario = new TestTableModel();
 		tableDtaModelInvitacion= new TestTableModel();
-	    
-	    UpdateInOfArena();
-	    
+
 	    ApplicationInstance app = ApplicationInstance.getActive();
 	    inviteServerPush = new TimedServerPush(1000, app, taskQueue, new Runnable() {
-	    	@Override
+	    	@SuppressWarnings("unchecked")
+			@Override
 	    	public void run(){
 	    			Session session = SessionHibernate.getInstance().getSession();
 			  	    session.beginTransaction();
-			  	      
+			  	    String queryStr;
+			  	    Query query;
+			  		Calendar cal = Calendar.getInstance(); // La fecha actual
 			  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+			  	    
+			  	    if(actual == 0){
+				  	    queryStr = "UPDATE t_user SET arena = :date WHERE id = :idUser";
+				  	    query = session.createSQLQuery(queryStr);
+				  	    query.setCalendar("date", cal);
+				  	    query.setInteger("idUser", usuario.getId());
+					    query.executeUpdate();
+					    actual = 1;
+			  	    }
+			  	    actual++;
+			  	    if (actual == 29){
+			  	    	actual = 0;
+			  	    }
 
-			  	    Usuario userObj = new Usuario();
-			  		userObj.setArena(1);
+			  		cal.add(Calendar.MINUTE, -1); // La fecha actual menos un minuto
 
-			  		// FROM UserObj WHERE arena = 1;
-			  		List<Usuario> list = session.createCriteria(Usuario.class).add(Example.create(userObj)).list();
+			  		queryStr = "FROM Usuario WHERE arena >= :oneMinuteAgo";
+			  		query = session.createQuery(queryStr);
+			  		query.setCalendar("oneMinuteAgo", cal);
+			  	    
+			  		List<Object> resultQuery =  query.list();
+			  		
+			  	    createListTable(resultQuery); 			  		
 	    		
-			  	    session.getTransaction().commit();
-			  	        
+			  	    session.getTransaction().commit();			  	        
 			  	    session.close();
-			  	      
-	    		
-	    		results.clear();
-	    		tableDtaModelUsuario.clear();
-	    		for (int i = 0; i < list.size(); i++) {
-	    			
-	    			Usuario user = new Usuario();
-
-	    			user.setId(list.get(i).getId());
-	    			user.setArena(list.get(i).getArena());
-	    			user.setDateJoin(list.get(i).getDateJoin());
-	    			user.setEmail(list.get(i).getEmail());
-	    			user.setLogin(list.get(i).getLogin());
-	    			user.setPassword(list.get(i).getPassword());
-
-	    			results.add(user);
-
-	    		}
-
-	    		for (int i = 0; i < results.size(); i++) {
-	    			tableDtaModelUsuario.add(results.get(i));
-	    		}
-	    		consultInvitations();
 	    	}
 	    });
 		
@@ -183,6 +182,24 @@ public class PreArena extends ContentPane{
 		htmlLayout.add(rowCentral);
 		
 		return htmlLayout;		
+	}
+	
+	public void createListTable(List<Object> resultQuery) {
+		Iterator<Object> iter = resultQuery.iterator();
+  	    if (!iter.hasNext()) {
+  	    	return;
+  	    }
+  	    results.clear();
+  	    tableDtaModelUsuario.clear();
+  	    while (iter.hasNext()) {  	        
+			Usuario user = (Usuario) iter.next();
+			results.add(user);  	            
+  	    }
+  	    
+		for (int i = 0; i < results.size(); i++) {
+			tableDtaModelUsuario.add(results.get(i));
+		}
+		consultInvitations();    		
 	}
 	
 	public Panel createTable(TestTableModel tableDtaModel, TableColModel initTableColModel) {
@@ -198,7 +215,7 @@ public class PreArena extends ContentPane{
 		TableColModel tableColModel = initTableColModel;
 		TableSelModel tableSelModel = new TableSelModel();
 		tableDtaModel.setEditable(true);
-		tableDtaModel.setPageSize(20);
+		tableDtaModel.setPageSize(14);
 
 		ETable table = new ETable();
 		table.setTableDtaModel(tableDtaModel);
@@ -222,10 +239,8 @@ public class PreArena extends ContentPane{
 	}
 	
 	private TableColModel initTableColModel(final int tipo) {
-
 		
 		TableColModel tableColModel = new TableColModel();
-
 	    TableColumn tableColumn;
 	    LabelCellRenderer lcr;
 	    
@@ -296,7 +311,7 @@ public class PreArena extends ContentPane{
 			  final Invitation invitation = new Invitation();
 			  invitation.setUserGeneratesRef(usuario);
 			  invitation.setUserReceivesRef(user);
-	          if (user.getLogin() != usuario.getLogin() )
+	          if (usuario.getId() != user.getId() )
 	          {
 	        	  ret.addActionListener(new ActionListener() {
         			  public void actionPerformed(ActionEvent e) {
@@ -324,8 +339,8 @@ public class PreArena extends ContentPane{
 
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          Invitation inv = (Invitation) tableDtaModelInvitacion.getElementAt(row);
-	          final Button ret = new Button("Acpt");
+	          final Invitation inv = (Invitation) tableDtaModelInvitacion.getElementAt(row);
+	          Button ret = new Button("Acpt");
 	          ret.setStyle(Styles1.DEFAULT_STYLE);
 	          ret.setEnabled(editable);
 	          ret.setToolTipText("Aceptar");
@@ -338,6 +353,8 @@ public class PreArena extends ContentPane{
 	        			  }	        		  
 	        			  private void BtnClicked(int row) {	        				
 	      	          		inviteServerPush.end();
+	      	          		btnDeleteClicked(inv);
+	      	          		UpdateOutOfArena();
 	    	          		removeAll();
 	    	          		add(new ArenaDesktop(usuario));
 	        			  }
@@ -353,33 +370,23 @@ public class PreArena extends ContentPane{
 		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
 			@Override
 			public Component getCellRenderer( //
-	            final ETable table, final Object value, final int col, final int row) {
+	          final ETable table, final Object value, final int col, final int row) {
 
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          Invitation inv = (Invitation) tableDtaModelInvitacion.getElementAt(row);
-	          final Button ret = new Button("Rech");
+	          final Invitation inv = (Invitation) tableDtaModelInvitacion.getElementAt(row);
+	          Button ret = new Button("Rech");
 	          ret.setStyle(Styles1.DEFAULT_STYLE);
 	          ret.setEnabled(editable);
-	          ret.setToolTipText("Rechazar");
-	          
-	          if (usuario != inv.getUserGeneratesRef() )
-	          {	  
-	        		  ret.addActionListener(new ActionListener() {
-	        			  public void actionPerformed(ActionEvent e) {
-	        				  BtnClicked(row);
-	        			  }	        		  
-	        			  private void BtnClicked(int row) {	
-	        			  }
-	        		  });	        	  
-	          }
-	          else{
-	        	  ret.setVisible(false);	        	  
-	          }
+	          ret.setToolTipText("Rechazar");	          
+	          ret.addActionListener(new ActionListener() {
+	        		public void actionPerformed(ActionEvent e) {
+	        			  btnDeleteClicked(inv);
+	        		}
+	          });	        	  
 	          return ret;
 	        }
-	    });
-	
+	    });	
 	    return nestedCellRenderer;
 	}
 	
@@ -397,7 +404,6 @@ public class PreArena extends ContentPane{
 
 	    Invitation obj = new Invitation();
 		obj.setUserReceivesRef(usuario);
-
 		List<Invitation> list = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
 		  
 	    session.getTransaction().commit();
@@ -426,7 +432,6 @@ public class PreArena extends ContentPane{
 	      session.beginTransaction();
 	      
 		  Invitation bean = new Invitation();
-
 		  bean.setUserGeneratesRef(invitation.getUserGeneratesRef());
 		  bean.setUserReceivesRef(invitation.getUserReceivesRef());
 
@@ -442,49 +447,16 @@ public class PreArena extends ContentPane{
 	    }
     }
 	
-	private void UpdateInOfArena() {
-			
-		    Session session = null;
-		    try {
-		      session = SessionHibernate.getInstance().getSession();
-		      session.beginTransaction();
-		      
-		      usuario = (Usuario) session.load(Usuario.class, usuario.getId());
-		      usuario.setArena(1);
-
-		      session.update(usuario);
-		    } finally {
-		      if (session != null) {
-		        if (session.getTransaction() != null) {
-		          session.getTransaction().commit();
-		        }
-		        session.close();
-		      }
-		    }
-	}
-	
-	private void UpdateOutOfArena() {
+	private void btnDeleteClicked(Invitation invitation) {  		
 	    Session session = null;
-
 	    try {
 	      session = SessionHibernate.getInstance().getSession();
 	      session.beginTransaction();
 	      
-	      usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+	      session.delete(invitation);		  
 
-	      usuario.setArena(0);
-	      Invitation obj = new Invitation();
-		  obj.setUserReceivesRef(usuario);
-
-		  List<Invitation> list = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
-		  for(int i = 0; i < list.size(); i++){
-			  if(list.get(i).getUserGeneratesRef() == usuario ){
-				  session.delete(list.get(i));
-			  }
-		  }
-	      
-	      session.update(usuario);	      
 	    } finally {
+
 	      if (session != null) {
 	        if (session.getTransaction() != null) {
 	          session.getTransaction().commit();
@@ -492,6 +464,36 @@ public class PreArena extends ContentPane{
 	        session.close();
 	      }
 	    }
+    }
+	
+	private void UpdateOutOfArena() {
+		
+		Session session = SessionHibernate.getInstance().getSession();
+  	    session.beginTransaction();
+  	    String queryStr;
+  	    Query query;
+  		Calendar cal = Calendar.getInstance(); // La fecha actual
+  		cal.add(Calendar.MINUTE, -5);
+  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+  	    
+  	    queryStr = "UPDATE t_user SET arena = :date WHERE id = :idUser";
+  	    query = session.createSQLQuery(queryStr);
+  	    query.setCalendar("date", cal);
+  	    query.setInteger("idUser", usuario.getId());
+	    query.executeUpdate();
+	    
+	    Invitation obj = new Invitation();
+		obj.setUserReceivesRef(usuario);
+
+		List<Invitation> list = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
+		for(int i = 0; i < list.size(); i++){
+			if(list.get(i).getUserGeneratesRef() == usuario ){
+				session.delete(list.get(i));
+			}
+		}
+
+  	    session.getTransaction().commit();			  	        
+  	    session.close();
 }
 	
 	private void buttonExitClicked(ActionEvent e) {	

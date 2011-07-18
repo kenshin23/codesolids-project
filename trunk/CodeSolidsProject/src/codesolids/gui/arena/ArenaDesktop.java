@@ -652,32 +652,8 @@ public class ArenaDesktop extends ContentPane{
 
 		}
 	}
-	private void UpdateOutOfArena() {
-
-	    Session session = null;
-
-	    try {
-	      session = SessionHibernate.getInstance().getSession();
-	      session.beginTransaction();
-	      
-	      usuario = (Usuario) session.load(Usuario.class, usuario.getId());
-
-	      usuario.setArena(0);
-
-	      session.update(usuario);
-	    } finally {
-	      if (session != null) {
-	        if (session.getTransaction() != null) {
-	          session.getTransaction().commit();
-	        }
-
-	        session.close();
-	      }
-	    }
-	}
 	
 	private void btnExitClicked(){
-		UpdateOutOfArena();
 		removeAll();
 		add(new MapaDesktop(usuario));
 		

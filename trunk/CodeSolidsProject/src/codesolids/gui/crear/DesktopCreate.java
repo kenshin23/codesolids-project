@@ -260,17 +260,25 @@ public class DesktopCreate extends ContentPane{
 		personaje.setLevel(1);
 		personaje.setHp(100);
 		personaje.setMp(100);
-		personaje.setGold(100);
+		personaje.setGold(2500);
 		personaje.setXp(0);
 		
-		if( type == "Mago Tierra")
+		if( type == "Mago Tierra"){
 			personaje.setTipo("Tierra");
-		else if( type == "Mago Fuego" )
+			personaje.setDirImage("Images/Personajes/MagoT.png");
+		}
+		else if( type == "Mago Fuego" ){
 			personaje.setTipo("Fuego");
-		else if( type == "Mago Hielo" )
+			personaje.setDirImage("Images/Personajes/MagoF.png");
+		}
+		else if( type == "Mago Hielo" ){
 			personaje.setTipo("Hielo");
-		else
+			personaje.setDirImage("Images/Personajes/MagoHH.png");
+		}
+		else{
 			personaje.setTipo("Combo");
+			personaje.setDirImage("Images/Personajes/GuerreroG.png");
+		}
 		
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
