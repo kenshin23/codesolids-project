@@ -39,6 +39,7 @@ import codesolids.bd.clases.PersonajePoderes;
 import codesolids.util.TestTableModel;
 import codesolids.util.TimedServerPush;
 import codesolids.gui.mapa.MapaDesktop;
+import codesolids.gui.principal.PrincipalApp;
 import codesolids.bd.clases.Usuario;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
@@ -110,12 +111,19 @@ public class AcademiaDesktop extends ContentPane {
 	public AcademiaDesktop() {
 		
 		taskQueue = ApplicationInstance.getActive().createTaskQueue();
+		
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		
+		player = app.getPersonaje();
+		
 		initGUI();
 	
 	}
 
-	private void initGUI() {						
+	private void initGUI() {	
+		
 		add(initAcademia());
+	
 	}
 	
 	private Component initAcademia()
@@ -187,8 +195,7 @@ public class AcademiaDesktop extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		List<Personaje> list = session.createCriteria(Personaje.class).list();
-		player = list.get(0);
+		player = (Personaje) session.load(Personaje.class, player.getId());
 		
 		session.getTransaction().commit();
 		session.close();
@@ -209,15 +216,8 @@ public class AcademiaDesktop extends ContentPane {
 				personajePoderes = (PersonajePoderes) session.createQuery(queryStr).uniqueResult();
 				
 				personajePoderes.setLearnProgreso(false);
-				
-				session.getTransaction().commit();
-				session.close();
-				
-				session = SessionHibernate.getInstance().getSession();
-				session.beginTransaction();
-				
-				list = session.createCriteria(Personaje.class).list();
-				player = list.get(0);
+
+				player = (Personaje) session.load(Personaje.class, player.getId());				
 				
 				player.setLearning(false);
 				
@@ -337,14 +337,14 @@ public class AcademiaDesktop extends ContentPane {
         });
         rowBtn.add(btnEarth);
         
-	    Button btnCombo = new Button("Combo");
-	    btnCombo.setStyle(Styles1.DEFAULT_STYLE);
-	    btnCombo.addActionListener(new ActionListener() {
+	    Button btnWarrior = new Button("Guerrero");
+	    btnWarrior.setStyle(Styles1.DEFAULT_STYLE);
+	    btnWarrior.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              btnComboClicked();
+              btnWarriorClicked();
             }
         });
-        rowBtn.add(btnCombo);        
+        rowBtn.add(btnWarrior);        
               
         
         Panel panel = new Panel();
@@ -362,10 +362,7 @@ public class AcademiaDesktop extends ContentPane {
         Session session = SessionHibernate.getInstance().getSession();
         session.beginTransaction();
         
-        List<Personaje> list = session.createCriteria(Personaje.class).list();
-        
-        player = new Personaje();
-        player = list.get(0);
+		player = (Personaje) session.load(Personaje.class, player.getId());
         
         labelGold = new Label(" "  + player.getGold());
         labelGold.setForeground(Color.YELLOW);
@@ -475,7 +472,6 @@ public class AcademiaDesktop extends ContentPane {
 		row.add(psinergia);
 		
 		col.add(row);
-
 
 		timeTraining = new Label("");
 		timeTraining.setForeground(new Color(128,0,128));
@@ -720,7 +716,6 @@ public class AcademiaDesktop extends ContentPane {
 			@Override    
 			public Component getCellRenderer( //
 	            final ETable table, final Object value, final int col, final int row) {
-
 			
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
@@ -826,10 +821,9 @@ public class AcademiaDesktop extends ContentPane {
 		        					  poderBD = (Poderes) criteria.uniqueResult();
 		        					  
 		        					  poderBD.setUso(true);
+
+		        					  player = (Personaje) session.load(Personaje.class, player.getId());
 		        					  
-		        					  List<Personaje> list = session.createCriteria(Personaje.class).list();
-		        			
-		        					  player = list.get(0);
 		        					  player.setLearning(true);
 
 		        					  player.setGold(player.getGold() - poderBD.getGold());
@@ -841,19 +835,6 @@ public class AcademiaDesktop extends ContentPane {
 		        					  cal = Calendar.getInstance();
 		        					  cal.add(Calendar.HOUR, poderBD.getTimeTraining());
 		        					  player.setFechaFin(cal);
-
-		        					  session.getTransaction().commit();
-		        					  session.close();	 
-		        					  
-		        					  ret.setEnabled(false);
-		        					  poder.setUso(true);
-		        					  
-		        					  session = SessionHibernate.getInstance().getSession();
-		        					  session.beginTransaction();
-		        					 
-		        					  list = session.createCriteria(Personaje.class).list();
-		        					  player = new Personaje();
-		        					  player = list.get(0);
 		        					  
 		        					  poderBD = new Poderes();
 		        					  criteria = session.createCriteria(Poderes.class).add(Restrictions.eq("id",poder.getId()));
@@ -871,6 +852,9 @@ public class AcademiaDesktop extends ContentPane {
 		        					  session.getTransaction().commit();
 		        					  session.close();	 
 		        	
+		        					  ret.setEnabled(false);
+		        					  poder.setUso(true);
+		        					  
 		        					  flag = false;
 		    	        			  
 	    	        			  }
@@ -918,23 +902,11 @@ public class AcademiaDesktop extends ContentPane {
 		        					  
 		        					  poderBD.setUso(true);
 		        					  
-		        					  session.getTransaction().commit();
-		        					  session.close();	 
+		        					  player = (Personaje) session.load(Personaje.class, player.getId());		        					
 		        					  
-		        					  poder.setUso(true);
-		    	        			  ret.setEnabled(false);
-	    	    
-		    	        			  session = SessionHibernate.getInstance().getSession();
-		        					  session.beginTransaction();
-		        					 
-		        					  List<Personaje> list = session.createCriteria(Personaje.class).list();
-		        					  player = new Personaje();
-		        					  player = list.get(0);
-		        					
 		        					  player.setGold(player.getGold() - poder.getGold());
 		        					  labelGold.setText("" + player.getGold());
-		        					  
-		        					  
+		        					  		        					  
 		        					  poderBD = new Poderes();
 		        					  criteria = session.createCriteria(Poderes.class).add(Restrictions.eq("id",poder.getId()));
 			        		          poderBD = (Poderes) criteria.uniqueResult();
@@ -951,6 +923,8 @@ public class AcademiaDesktop extends ContentPane {
 		        					  session.getTransaction().commit();
 		        					  session.close();	 
 		        				
+		        					  poder.setUso(true);
+		    	        			  ret.setEnabled(false);
 		    	        			  
 	    	        			  }
 	    	        			  else if(  player.getLearning() == true )
@@ -1035,20 +1009,9 @@ public class AcademiaDesktop extends ContentPane {
 
 						  personajePoderes.setLearnProgreso(false);
 
-						  session.getTransaction().commit();
-						  session.close();
-
-						  session = SessionHibernate.getInstance().getSession();
-						  session.beginTransaction();
-						  
-						  session = SessionHibernate.getInstance().getSession();
-						  session.beginTransaction();
-						  
-						  List<Personaje> list = session.createCriteria(Personaje.class).list();
-    					  player = new Personaje();
-    					  player = list.get(0);
+						  player = (Personaje) session.load(Personaje.class, player.getId());    					  
     					  
-    					  player.setLearning(false);
+						  player.setLearning(false);
     					  
     					  session.getTransaction().commit();
     					  session.close();	
@@ -1181,7 +1144,7 @@ public class AcademiaDesktop extends ContentPane {
 		else if(poder.getTipo().equals("Tierra"))
 			infoPowerEarth(poder);
 		else
-			infoPowerCombo(poder);
+			infoPowerWarrior(poder);
 		
 	}
 	
@@ -1297,7 +1260,7 @@ public class AcademiaDesktop extends ContentPane {
 
 	}
 	
-	private void btnComboClicked()
+	private void btnWarriorClicked()
 	{
 
 		if ( player.getLearning() == true )
@@ -1315,7 +1278,7 @@ public class AcademiaDesktop extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		Criteria criteria = session.createCriteria(Poderes.class).add(Restrictions.eq("tipo", "Combo")).addOrder(Order.asc("id"));
+		Criteria criteria = session.createCriteria(Poderes.class).add(Restrictions.eq("tipo", "Guerrero")).addOrder(Order.asc("id"));
 		
 		for (Object obj : criteria.list()) {
 			tableDtaModel.add(obj);
@@ -1444,7 +1407,7 @@ public class AcademiaDesktop extends ContentPane {
 		
 	}
 	
-	private void infoPowerCombo(Poderes poder)
+	private void infoPowerWarrior(Poderes poder)
 	{
 
 		colCartel.removeAll();
