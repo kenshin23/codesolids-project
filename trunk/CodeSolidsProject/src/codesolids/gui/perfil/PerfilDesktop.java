@@ -4,7 +4,12 @@
 package codesolids.gui.perfil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
@@ -21,10 +26,14 @@ import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
+import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.PersonajePoderes;
+import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.Usuario;
+import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
@@ -171,8 +180,49 @@ public class PerfilDesktop extends ContentPane{
 		btnPoderes.setStyle(Styles1.DEFAULT_STYLE);
 		btnPoderes.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-//			buttonPoderesClicked(e);				
+			buttonPoderesClicked(e);				
 			}
+
+		private void buttonPoderesClicked(ActionEvent e) {
+			final WindowPane win = new WindowPane();
+			win.setTitle("Poderes que Posee");
+			win.setWidth(new Extent(300));
+			win.setMaximumWidth(new Extent(200));
+			win.setMaximumHeight(new Extent(300));
+			win.setMovable(false);
+			win.setResizable(false);
+			win.setPositionX(new Extent(1000));
+			Column col = new Column();
+			
+			Session session = SessionHibernate.getInstance().getSession();
+			session.beginTransaction();
+			String queryStr = "SELECT personajePoderesList AS pp FROM Personaje WHERE personajeref_id = :idPlayer";
+			Query query  = session.createQuery(queryStr);
+			query.setInteger("idPlayer", personaje.getId());
+			List<Object> listQuery = query.list();
+			createListPoderes(listQuery, col);			
+			
+			session.getTransaction().commit();			  	        
+			session.close();
+			
+			Button button = new Button();
+			button.setText("Aceptar");
+			button.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+			button.setHeight(new Extent(15));
+			button.setWidth( new Extent(60));
+			button.setToolTipText("Regresar al perfil");
+			button.setStyle(Styles1.DEFAULT_STYLE);
+			button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				win.userClose();
+				}
+			});
+			col.add(button);
+			col.setInsets(new Insets(25));
+			win.add(col);
+			add(win);
+			
+		}
 		});
 		colTab.add(btnPoderes);
 		rowTab.add(panelImage);
@@ -255,6 +305,21 @@ public class PerfilDesktop extends ContentPane{
 		panel.add(rowTab);
 		
 		return panel;
+	}
+	
+	private void createListPoderes( List<Object> listQuery, Column col){
+		Iterator<Object> iter = listQuery.iterator();
+  	    if (!iter.hasNext()) {
+  	    	lblData = new Label("Aun no tiene poderes");
+			col.add(lblData); 
+  	    	return;
+  	    }
+  	    while (iter.hasNext()) {  
+  	    	PersonajePoderes p = (PersonajePoderes) iter.next();
+  	    	lblData = new Label(p.getPoderesRef().getName());
+			col.add(lblData);  	            
+  	    }
+  	    
 	}
 	
 	private void buttonExitClicked(ActionEvent e) {
