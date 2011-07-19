@@ -1,5 +1,6 @@
 package codesolids.bd.clases;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -42,9 +43,13 @@ public class Personaje {
 	protected boolean learning;
 	protected Calendar fechaInicio;
 	protected Calendar fechaFin;
-	protected List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();
+	protected List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();	
+	
+	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
+	private List<Invitation> invReceivesList = new ArrayList<Invitation>();
 	
 	protected Usuario usuarioRef;
+	private Timestamp arena;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -158,6 +163,36 @@ public class Personaje {
 	public void setUsuarioRef(Usuario usuarioRef) {
 		this.usuarioRef = usuarioRef;
 	}
+	
+	public Timestamp getArena() {
+		return arena;
+	}
+
+	public void setArena(Timestamp arena) {
+		this.arena = arena;
+	}
+	
+	@OneToMany(mappedBy = "personajeGeneratesRef", orphanRemoval = true)
+	  @LazyCollection(LazyCollectionOption.TRUE)
+	  @Cascade({CascadeType.ALL})
+	  public List<Invitation> getInvGeneratesList() {
+		return invGeneratesList;
+	  }
+
+	  public void setInvGeneratesList(List<Invitation> invGeneratesList) {
+		this.invGeneratesList = invGeneratesList;
+	  }
+	  
+	  @OneToMany(mappedBy = "personajeReceivesRef", orphanRemoval = true)
+	  @LazyCollection(LazyCollectionOption.TRUE)
+	  @Cascade({CascadeType.ALL})
+	  public List<Invitation> getInvReceivesList() {
+		return invReceivesList;
+	  }
+
+	  public void setInvReceivesList(List<Invitation> invReceivesList) {
+		this.invReceivesList = invReceivesList;
+	  }
 	
 }
 

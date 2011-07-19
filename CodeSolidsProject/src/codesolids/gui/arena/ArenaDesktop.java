@@ -11,6 +11,7 @@ import codesolids.gui.style.*;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
@@ -87,8 +88,9 @@ public class ArenaDesktop extends ContentPane{
 	// --------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------
 
-	public ArenaDesktop(Usuario usuario){
-		this.usuario = usuario;
+	public ArenaDesktop(){
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		usuario = app.getUsuario();
 
 		initGUI();
 	}
@@ -655,7 +657,7 @@ public class ArenaDesktop extends ContentPane{
 	
 	private void btnExitClicked(){
 		removeAll();
-		add(new MapaDesktop(usuario));
+		add(new MapaDesktop());
 		
 	}
 	

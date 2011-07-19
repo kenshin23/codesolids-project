@@ -388,7 +388,7 @@ public class AcademiaDesktop extends ContentPane {
         btnExit.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		removeAll();
-        		add(new MapaDesktop(usuario));
+        		add(new MapaDesktop());
         	}
         });
         rowBtn.add(btnExit);

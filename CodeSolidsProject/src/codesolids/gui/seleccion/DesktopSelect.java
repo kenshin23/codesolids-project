@@ -321,7 +321,7 @@ public class DesktopSelect extends ContentPane{
 		app.setPersonaje(personaje);
 		
 		removeAll();
-		add(new MapaDesktop(usuario));
+		add(new MapaDesktop());
 	
 	}
 	

@@ -4,56 +4,32 @@
 package codesolids.gui.perfil;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Example;
-
-import com.minotauro.echo.table.base.CellRenderer;
-import com.minotauro.echo.table.base.ETable;
-import com.minotauro.echo.table.base.ETableNavigation;
-import com.minotauro.echo.table.base.TableColModel;
-import com.minotauro.echo.table.base.TableColumn;
-import com.minotauro.echo.table.base.TableSelModel;
-import com.minotauro.echo.table.renderer.BaseCellRenderer;
-import com.minotauro.echo.table.renderer.LabelCellRenderer;
-import com.minotauro.echo.table.renderer.NestedCellRenderer;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
-import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
-import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
-//import nextapp.echo.app.Font;
-//import nextapp.echo.app.Grid;
+import nextapp.echo.app.Font;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
-import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.Usuario;
 import codesolids.gui.mapa.MapaDesktop;
+import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
-import codesolids.util.TestTableModel;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
-
-import codesolids.bd.clases.Invitation;
-import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.PersonajePoderes;
-import codesolids.bd.clases.Usuario;
-import codesolids.bd.clases.PersonajesDisponibles;
-import codesolids.bd.hibernate.SessionHibernate;
 
 /**
  * 
@@ -71,8 +47,10 @@ public class PerfilDesktop extends ContentPane{
 	
 	private HtmlLayout htmlLayout;
 	
-	public PerfilDesktop(Usuario usuario) {		
-		this.usuario = usuario;
+	public PerfilDesktop() {
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		usuario = app.getUsuario();
+		personaje = app.getPersonaje();
 	    initGUI();
 	}
 	
@@ -86,16 +64,17 @@ public class PerfilDesktop extends ContentPane{
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		Session session = SessionHibernate.getInstance().getSession();
-  	    session.beginTransaction();
-  		String queryStr = "FROM Personaje WHERE usuarioRef = :user";
-  		Query query  = session.createQuery(queryStr);
-  		query.setInteger("user", usuario.getId());
-  		
-  		personaje = (Personaje) query.list().get(0);
-  		
-  		session.getTransaction().commit();			  	        
-  	    session.close();
+//		Session session = SessionHibernate.getInstance().getSession();
+//  	    session.beginTransaction();
+//  		String queryStr = "FROM Personaje WHERE usuarioRef = :user";
+//  		Query query  = session.createQuery(queryStr);
+//  		query.setInteger("user", usuario.getId());
+//  		
+//  		personaje = (Personaje) query.list().get(0);
+//  		
+//  		session.getTransaction().commit();			  	        
+//  	    session.close();
+		
 		
 		
 		HtmlLayoutData hld;
@@ -146,9 +125,9 @@ public class PerfilDesktop extends ContentPane{
 		Row rowTab = new Row();
 		rowTab.setInsets(new Insets(20, 35, 20, 20));
 		Column colTab = new Column();
-		colTab.setCellSpacing(new Extent(5));
+		colTab.setCellSpacing(new Extent(4));
 		Column col = new Column();
-		col.setCellSpacing(new Extent(5));
+		col.setCellSpacing(new Extent(9));
 		
 	    ResourceImageReference ir = new ResourceImageReference(personaje.getDirImage());
 		
@@ -158,7 +137,9 @@ public class PerfilDesktop extends ContentPane{
 		panelImage.setWidth(new Extent(200));
 
 		lblData = new Label("Datos Generales ");
-		lblData.setBackground(Color.LIGHTGRAY);
+		lblData.setFont(new Font(null, 1 , new Extent(12)));
+		colTab.add(lblData);
+		lblData = new Label("Usuario " + usuario.getLogin());
 		colTab.add(lblData);
 		lblData = new Label("Tipo " + personaje.getTipo());
 		colTab.add(lblData);
@@ -199,7 +180,7 @@ public class PerfilDesktop extends ContentPane{
 		rowTab.add(colTab);
 		
 		lblData = new Label("Atributos Generales");
-		lblData.setBackground(Color.LIGHTGRAY);
+		lblData.setFont(new Font(null, 1 , new Extent(12)));
 		col.add(lblData);
 		lblData = new Label("Vida "+ personaje.getHp());
 		col.add(lblData);
@@ -216,14 +197,24 @@ public class PerfilDesktop extends ContentPane{
 		rowTab.add(col);
 		
 		col = new Column();
-		col.setCellSpacing(new Extent(5));
+		col.setCellSpacing(new Extent(4));
 		Row row = new Row();
 		lblData = new Label("Subir Ptos - Disponibles 0");
+		lblData.setFont(new Font(null, 1 , new Extent(12)));
+		
 		col.add(lblData);
 		Button btnS = new Button("Subir");
 		btnS.setStyle(Styles1.DEFAULT_STYLE);
 		Button btnB = new Button("Bajar");
 		btnB.setStyle(Styles1.DEFAULT_STYLE);
+		row.add(btnS);
+		row.add(btnB);
+		col.add(row);
+		btnS = new Button("Subir");
+		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnB = new Button("Bajar");
+		btnB.setStyle(Styles1.DEFAULT_STYLE);
+		row = new Row();
 		row.add(btnS);
 		row.add(btnB);
 		col.add(row);
@@ -268,7 +259,7 @@ public class PerfilDesktop extends ContentPane{
 	
 	private void buttonExitClicked(ActionEvent e) {
 		removeAll();
-		add(new MapaDesktop(usuario));
+		add(new MapaDesktop());
 	}
 	
 }

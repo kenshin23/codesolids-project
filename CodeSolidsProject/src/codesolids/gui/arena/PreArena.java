@@ -14,27 +14,27 @@ import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
-import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
-import nextapp.echo.app.PasswordField;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.TaskQueueHandle;
-import nextapp.echo.app.TextField;
-import nextapp.echo.app.WindowPane;
-import nextapp.echo.app.button.AbstractButton;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-import nextapp.echo.app.event.EventListenerList;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Restrictions;
+
+import codesolids.bd.clases.Invitation;
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.Usuario;
+import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.gui.mapa.MapaDesktop;
+import codesolids.gui.principal.PrincipalApp;
+import codesolids.gui.style.Styles1;
+import codesolids.util.TestTableModel;
+import codesolids.util.TimedServerPush;
 
 import com.minotauro.echo.table.base.CellRenderer;
 import com.minotauro.echo.table.base.ETable;
@@ -43,19 +43,9 @@ import com.minotauro.echo.table.base.TableColModel;
 import com.minotauro.echo.table.base.TableColumn;
 import com.minotauro.echo.table.base.TableSelModel;
 import com.minotauro.echo.table.renderer.BaseCellRenderer;
-import com.minotauro.echo.table.renderer.ImageCellRenderer;
 import com.minotauro.echo.table.renderer.LabelCellRenderer;
 import com.minotauro.echo.table.renderer.NestedCellRenderer;
 
-import codesolids.bd.clases.Invitation;
-import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.Poderes;
-import codesolids.bd.clases.Usuario;
-import codesolids.bd.hibernate.SessionHibernate;
-import codesolids.gui.mapa.MapaDesktop;
-import codesolids.gui.style.Styles1;
-import codesolids.util.TestTableModel;
-import codesolids.util.TimedServerPush;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 
@@ -67,11 +57,12 @@ import echopoint.layout.HtmlLayoutData;
 @SuppressWarnings("serial")
 public class PreArena extends ContentPane{
 	private Usuario usuario;
+	private Personaje personaje;
 	private Label lblData;
 	private int actual = 0;
-	private TestTableModel tableDtaModelUsuario;
+	private TestTableModel tableDtaModelPersonaje;
 	private TestTableModel tableDtaModelInvitacion;
-	List<Usuario> results = new ArrayList<Usuario>();
+	List<Personaje> results = new ArrayList<Personaje>();
 	List<Invitation> resultsI = new ArrayList<Invitation>();
 	
 	private HtmlLayout htmlLayout;
@@ -79,9 +70,11 @@ public class PreArena extends ContentPane{
 	TaskQueueHandle taskQueue;
 	TimedServerPush inviteServerPush;
 	
-	public PreArena(Usuario usuario) {		
+	public PreArena() {
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
 		taskQueue = ApplicationInstance.getActive().createTaskQueue();		
-		this.usuario = usuario;	
+		usuario = app.getUsuario();	
+		personaje = app.getPersonaje();
 	    initGUI();
 	}
 	
@@ -131,8 +124,8 @@ public class PreArena extends ContentPane{
 		hld = new HtmlLayoutData("central");
 		
 		Row rowCentral = new Row();
-		tableDtaModelUsuario = new TestTableModel();
-		tableDtaModelInvitacion= new TestTableModel();
+		tableDtaModelPersonaje = new TestTableModel();
+		tableDtaModelInvitacion = new TestTableModel();
 
 	    ApplicationInstance app = ApplicationInstance.getActive();
 	    inviteServerPush = new TimedServerPush(1000, app, taskQueue, new Runnable() {
@@ -144,13 +137,13 @@ public class PreArena extends ContentPane{
 			  	    String queryStr;
 			  	    Query query;
 			  		Calendar cal = Calendar.getInstance(); // La fecha actual
-			  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+//			  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
 			  	    
 			  	    if(actual == 0){
-				  	    queryStr = "UPDATE t_user SET arena = :date WHERE id = :idUser";
+				  	    queryStr = "UPDATE t_personaje SET arena = :date WHERE id = :idPlayer";
 				  	    query = session.createSQLQuery(queryStr);
 				  	    query.setCalendar("date", cal);
-				  	    query.setInteger("idUser", usuario.getId());
+				  	    query.setInteger("idPlayer", personaje.getId());
 					    query.executeUpdate();
 					    actual = 1;
 			  	    }
@@ -161,7 +154,7 @@ public class PreArena extends ContentPane{
 
 			  		cal.add(Calendar.MINUTE, -1); // La fecha actual menos un minuto
 
-			  		queryStr = "FROM Usuario WHERE arena >= :oneMinuteAgo";
+			  		queryStr = "FROM Personaje WHERE arena >= :oneMinuteAgo ORDER BY id ASC";
 			  		query = session.createQuery(queryStr);
 			  		query.setCalendar("oneMinuteAgo", cal);
 			  	    
@@ -176,7 +169,7 @@ public class PreArena extends ContentPane{
 		
 	    activate();
 	    
-	    rowCentral.add(createTable(tableDtaModelUsuario, initTableColModel(1)));
+	    rowCentral.add(createTable(tableDtaModelPersonaje, initTableColModel(1)));
 	    rowCentral.add(createTable(tableDtaModelInvitacion, initTableColModel(2)));
 		rowCentral.setLayoutData(hld);
 		htmlLayout.add(rowCentral);
@@ -190,14 +183,14 @@ public class PreArena extends ContentPane{
   	    	return;
   	    }
   	    results.clear();
-  	    tableDtaModelUsuario.clear();
+  	    tableDtaModelPersonaje.clear();
   	    while (iter.hasNext()) {  	        
-			Usuario user = (Usuario) iter.next();
-			results.add(user);  	            
+			Personaje per = (Personaje) iter.next();
+			results.add(per);  	            
   	    }
   	    
 		for (int i = 0; i < results.size(); i++) {
-			tableDtaModelUsuario.add(results.get(i));
+			tableDtaModelPersonaje.add(results.get(i));
 		}
 		consultInvitations();    		
 	}
@@ -249,12 +242,12 @@ public class PreArena extends ContentPane{
 	    	public Object getValue(ETable table, Object element) {
 	    		Object obj = new Object();
 	    		if(tipo == 1){
-		    		Usuario user = (Usuario) element;
-		    		obj = user.getLogin();
+		    		Personaje per = (Personaje) element;
+		    		obj = per.getUsuarioRef().getLogin();
 	    		}
 	    		else if(tipo == 2){
 	    			Invitation iv = (Invitation) element;
-	    			obj = iv.getUserGeneratesRef().getLogin();
+	    			obj = iv.getPersonajeGeneratesRef().getUsuarioRef().getLogin();
 	    		}
 	    		return obj;
 	    	}
@@ -274,6 +267,68 @@ public class PreArena extends ContentPane{
 	    
 	    tableColumn.setWidth(new Extent(50));
 	    tableColumn.setHeadValue("Usuario");
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Object obj = new Object();
+	    		if(tipo == 1){
+		    		Personaje per = (Personaje) element;
+		    		obj = per.getTipo();
+	    		}
+	    		else if(tipo == 2){
+	    			Invitation iv = (Invitation) element;
+	    			obj = iv.getPersonajeGeneratesRef().getTipo();
+	    		}
+	    		return obj;
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Tipo");
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Object obj = new Object();
+	    		if(tipo == 1){
+		    		Personaje per = (Personaje) element;
+		    		obj = per.getLevel();
+	    		}
+	    		else if(tipo == 2){
+	    			Invitation iv = (Invitation) element;
+	    			obj = iv.getPersonajeGeneratesRef().getLevel();
+	    		}
+	    		return obj;
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Nivel");
 	    
 	    tableColumn = new TableColumn();
 	    tableColumn.setWidth(new Extent(100));
@@ -303,15 +358,15 @@ public class PreArena extends ContentPane{
 
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          Usuario user = (Usuario) tableDtaModelUsuario.getElementAt(row);
+	          Personaje per = (Personaje) tableDtaModelPersonaje.getElementAt(row);
 	          Button ret = new Button("Invitar");
 	          ret.setStyle(Styles1.DEFAULT_STYLE);
 	          ret.setEnabled(editable);
 	          ret.setToolTipText("Invitar");
 			  final Invitation invitation = new Invitation();
-			  invitation.setUserGeneratesRef(usuario);
-			  invitation.setUserReceivesRef(user);
-	          if (usuario.getId() != user.getId() )
+			  invitation.setPersonajeGeneratesRef(personaje);
+			  invitation.setPersonajeReceivesRef(per);
+	          if (personaje.getUsuarioRef().getId() != per.getUsuarioRef().getId() )
 	          {
 	        	  ret.addActionListener(new ActionListener() {
         			  public void actionPerformed(ActionEvent e) {
@@ -345,7 +400,7 @@ public class PreArena extends ContentPane{
 	          ret.setEnabled(editable);
 	          ret.setToolTipText("Aceptar");
 
-	          if (usuario != inv.getUserGeneratesRef() )
+	          if (personaje.getUsuarioRef() != inv.getPersonajeGeneratesRef().getUsuarioRef() )
 	          {	  
 	        		  ret.addActionListener(new ActionListener() {
 	        			  public void actionPerformed(ActionEvent e) {
@@ -356,7 +411,7 @@ public class PreArena extends ContentPane{
 	      	          		btnDeleteClicked(inv);
 	      	          		UpdateOutOfArena();
 	    	          		removeAll();
-	    	          		add(new ArenaDesktop(usuario));
+	    	          		add(new ArenaDesktop());
 	        			  }
 	        		  });	        	  
 	          }
@@ -400,10 +455,10 @@ public class PreArena extends ContentPane{
 	    Session session = SessionHibernate.getInstance().getSession();
 	    session.beginTransaction();
 	      
-	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+	    personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 
 	    Invitation obj = new Invitation();
-		obj.setUserReceivesRef(usuario);
+		obj.setPersonajeReceivesRef(personaje);
 		List<Invitation> list = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
 		  
 	    session.getTransaction().commit();
@@ -412,11 +467,11 @@ public class PreArena extends ContentPane{
 	    resultsI.clear();
 	    tableDtaModelInvitacion.clear();
    	  	for( int i = 0; i < list.size(); i++){
-   	  		if(usuario.getLogin() == list.get(i).getUserReceivesRef().getLogin()){
+   	  		if(personaje.getId() == list.get(i).getPersonajeReceivesRef().getId()){
 	   			Invitation iv = new Invitation();
 	   			iv.setId(list.get(i).getId());
-	   			iv.setUserGeneratesRef(list.get(i).getUserGeneratesRef());
-	   			iv.setUserReceivesRef(list.get(i).getUserReceivesRef());
+	   			iv.setPersonajeGeneratesRef(list.get(i).getPersonajeGeneratesRef());
+	   			iv.setPersonajeReceivesRef(list.get(i).getPersonajeReceivesRef());
 				resultsI.add(iv);
    	  		}
    	  	}
@@ -432,8 +487,8 @@ public class PreArena extends ContentPane{
 	      session.beginTransaction();
 	      
 		  Invitation bean = new Invitation();
-		  bean.setUserGeneratesRef(invitation.getUserGeneratesRef());
-		  bean.setUserReceivesRef(invitation.getUserReceivesRef());
+		  bean.setPersonajeGeneratesRef(invitation.getPersonajeGeneratesRef());
+		  bean.setPersonajeReceivesRef(invitation.getPersonajeReceivesRef());
 
 		  session.save(bean);
 	    } finally {
@@ -474,20 +529,25 @@ public class PreArena extends ContentPane{
   	    Query query;
   		Calendar cal = Calendar.getInstance(); // La fecha actual
   		cal.add(Calendar.MINUTE, -5);
-  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+//  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
   	    
-  	    queryStr = "UPDATE t_user SET arena = :date WHERE id = :idUser";
+  	    queryStr = "UPDATE t_personaje SET arena = :date WHERE id = :idPlayer";
   	    query = session.createSQLQuery(queryStr);
   	    query.setCalendar("date", cal);
-  	    query.setInteger("idUser", usuario.getId());
+  	    query.setInteger("idPlayer", personaje.getId());
 	    query.executeUpdate();
 	    
+	    personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+	    
 	    Invitation obj = new Invitation();
-		obj.setUserReceivesRef(usuario);
+		obj.setPersonajeReceivesRef(personaje);
 
-		List<Invitation> list = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
+		List<Invitation> list = session.createCriteria(Invitation.class).list();
 		for(int i = 0; i < list.size(); i++){
-			if(list.get(i).getUserGeneratesRef() == usuario ){
+			if(list.get(i).getPersonajeGeneratesRef() == personaje ){
+				session.delete(list.get(i));
+			}
+			if(list.get(i).getPersonajeReceivesRef() == personaje ){
 				session.delete(list.get(i));
 			}
 		}
@@ -499,6 +559,6 @@ public class PreArena extends ContentPane{
 	private void buttonExitClicked(ActionEvent e) {	
 		UpdateOutOfArena();
 		removeAll();
-		add(new MapaDesktop(usuario));
+		add(new MapaDesktop());
 	}
 }

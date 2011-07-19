@@ -9,6 +9,7 @@ package codesolids.gui.mapa;
 import java.util.List;
 
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
@@ -31,6 +32,7 @@ import org.hibernate.criterion.Order;
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
 import codesolids.util.TestTableModel;
 
@@ -44,16 +46,19 @@ import com.minotauro.echo.table.renderer.LabelCellRenderer;
 public class Ranking extends ContentPane {
 
 	private Usuario usuario;
+	private Personaje personaje;
 
 	private TestTableModel tableDtaModel;
 	private List<Personaje> personajes;
 
 	Panel panel = new Panel();
 
-	protected Ranking(Usuario usuario) {
+	protected Ranking() {
 
 		super(); // SIN ESTE SUPER FUE UN DOLOR PARA QUE FUNCIONARA, este salva vidas
-		this.usuario = usuario;
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		usuario = app.getUsuario();
+		personaje = app.getPersonaje();
 		constructorComp();
 
 	}
@@ -126,7 +131,7 @@ public class Ranking extends ContentPane {
 	private void button1Clicked(ActionEvent e) {
 
 		removeAll();
-		add(new MapaDesktop(usuario));
+		add(new MapaDesktop());
 		//muchachos esta parte fue un dolor de cabeza,
 		//después de muchos intentos por fin pude
 		//utilizar el action event para crear un nuevo panel

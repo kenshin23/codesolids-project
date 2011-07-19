@@ -29,10 +29,10 @@ public class Chat extends ContentPane {
 	Panel panel = new Panel();
 	private Usuario usuario;
 	
-	protected Chat(Usuario usuario) {
+	protected Chat() {
 		super(); // SIN ESTE SUPER FUE UN DOLOR PARA QUE FUNCIONARA, este salva vidas
 		
-		this.usuario = usuario;
+		
 		constructorComp();
 	}
 	
@@ -120,7 +120,7 @@ public class Chat extends ContentPane {
 		private void button1Clicked(ActionEvent e) {
 		
 		removeAll();
-		add(new MapaDesktop(usuario));//muchahos esta parte fue un dolor de cabeza, despues de muchos intentos porfin pude utilizar el actionevent para crear un nuevo panel
+		add(new MapaDesktop());//muchahos esta parte fue un dolor de cabeza, despues de muchos intentos porfin pude utilizar el actionevent para crear un nuevo panel
 	}
 }
 

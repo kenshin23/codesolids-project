@@ -7,6 +7,8 @@ package codesolids.gui.mapa;
 
 
 import codesolids.bd.clases.Usuario;
+import codesolids.gui.principal.PrincipalApp;
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Panel;
 import nextapp.echo.app.Extent;
@@ -29,9 +31,10 @@ public class Clanes extends ContentPane {
 	
 	private Usuario usuario;
 	Panel panel = new Panel();
-	protected Clanes(Usuario usuario) {
+	protected Clanes() {
 		super(); // SIN ESTE SUPER FUE UN DOLOR PARA QUE FUNCIONARA, este salva vidas
-		this.usuario = usuario;
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		usuario = app.getUsuario();
 		constructorComp();
 	}
 	
@@ -119,7 +122,7 @@ public class Clanes extends ContentPane {
 		private void button1Clicked(ActionEvent e) {
 		
 		removeAll();
-		add(new MapaDesktop(usuario));//muchahos esta parte fue un dolor de cabeza, despues de muchos intentos porfin pude utilizar el actionevent para crear un nuevo panel
+		add(new MapaDesktop());//muchahos esta parte fue un dolor de cabeza, despues de muchos intentos porfin pude utilizar el actionevent para crear un nuevo panel
 	}
 }
 
