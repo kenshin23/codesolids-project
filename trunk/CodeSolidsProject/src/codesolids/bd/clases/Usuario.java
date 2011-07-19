@@ -41,10 +41,6 @@ public class Usuario {
 	
 	private Chat chatRef;
 	
-	private Timestamp arena;
-	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
-	private List<Invitation> invReceivesList = new ArrayList<Invitation>();
-	
 	private List<Personaje> personajeList = new ArrayList<Personaje>();
 	
 	@Id
@@ -89,36 +85,6 @@ public class Usuario {
 	public void setDateJoin(Calendar dateJoin) {
 		this.dateJoin = dateJoin;
 	}
-	
-	  public Timestamp getArena() {
-			return arena;
-	  }
-
-	  public void setArena(Timestamp arena) {
-			this.arena = arena;
-	  }
-
-	@OneToMany(mappedBy = "userGeneratesRef", orphanRemoval = true)
-	  @LazyCollection(LazyCollectionOption.TRUE)
-	  @Cascade({CascadeType.ALL})
-	  public List<Invitation> getInvGeneratesList() {
-		return invGeneratesList;
-	  }
-
-	  public void setInvGeneratesList(List<Invitation> invGeneratesList) {
-		this.invGeneratesList = invGeneratesList;
-	  }
-	  
-	  @OneToMany(mappedBy = "userReceivesRef", orphanRemoval = true)
-	  @LazyCollection(LazyCollectionOption.TRUE)
-	  @Cascade({CascadeType.ALL})
-	  public List<Invitation> getInvReceivesList() {
-		return invReceivesList;
-	  }
-
-	  public void setInvReceivesList(List<Invitation> invReceivesList) {
-		this.invReceivesList = invReceivesList;
-	  }
 
 	@ManyToOne
 	public Chat getChatRef() {

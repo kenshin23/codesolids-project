@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
@@ -15,7 +16,6 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
-import nextapp.echo.app.Font;
 import nextapp.echo.app.Grid;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
@@ -26,8 +26,11 @@ import nextapp.echo.app.Row;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-
-import javax.imageio.stream.FileCacheImageOutputStream;
+import codesolids.bd.clases.Usuario;
+import codesolids.gui.mapa.MapaDesktop;
+import codesolids.gui.principal.PrincipalApp;
+import codesolids.gui.style.Styles1;
+import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.CellRenderer;
 import com.minotauro.echo.table.base.ETable;
@@ -36,18 +39,10 @@ import com.minotauro.echo.table.base.TableColModel;
 import com.minotauro.echo.table.base.TableColumn;
 import com.minotauro.echo.table.base.TableSelModel;
 import com.minotauro.echo.table.renderer.BaseCellRenderer;
-import com.minotauro.echo.table.renderer.ButtonCellRenderer;
+import com.minotauro.echo.table.renderer.ImageCellRenderer;
 import com.minotauro.echo.table.renderer.LabelCellRenderer;
 import com.minotauro.echo.table.renderer.NestedCellRenderer;
-import com.minotauro.echo.table.renderer.ImageCellRenderer;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
-import codesolids.util.TestTableModel;
-import codesolids.gui.tienda.Item;
-import codesolids.gui.tienda.ImageReferenceCache;
-import codesolids.gui.mapa.MapaDesktop;
-import codesolids.bd.clases.Usuario;
-import codesolids.gui.style.Styles1;
 import echopoint.HtmlLayout;
 import echopoint.ImageIcon;
 import echopoint.layout.HtmlLayoutData;
@@ -61,6 +56,8 @@ import echopoint.layout.HtmlLayoutData;
 public class TiendaDesktop extends ContentPane {
 	
 	private Usuario usuario;
+//	private Personaje personaje;
+	
 	private HtmlLayout htmlLayout;
 	
 	private TestTableModel tableDtaModel;
@@ -97,8 +94,10 @@ public class TiendaDesktop extends ContentPane {
 			"Images/Items/potion1.png","Images/Items/stone3.png","Images/Items/sword2.png","Images/Items/bomb.png",
 			"Images/Items/bomb2.png","Images/Items/bomb3.png","Images/Items/potion2.png","Images/Items/potion1.png"};
 	
-	public TiendaDesktop(Usuario usuario) {
-		this.usuario = usuario;
+	public TiendaDesktop() {
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		usuario = app.getUsuario();
+//		personaje = app.getPersonaje();
 		initGUI();	
 	}
 
@@ -1563,6 +1562,6 @@ public class TiendaDesktop extends ContentPane {
 	
 	private void button1Clicked(ActionEvent e) {		
 		removeAll();
-		add(new MapaDesktop(usuario));
+		add(new MapaDesktop());
 	}	
 }

@@ -21,8 +21,8 @@ public class Invitation{
 
 	private int id;
 
-	private Usuario userGeneratesRef;
-	private Usuario userReceivesRef;
+	private Personaje personajeGeneratesRef;
+	private Personaje personajeReceivesRef;
 	
 	public Invitation() {
 		// Empty
@@ -37,21 +37,23 @@ public class Invitation{
 		this.id = id;
 	}
 	@ManyToOne
-	public Usuario getUserGeneratesRef() {
-		return userGeneratesRef;
+	public Personaje getPersonajeGeneratesRef() {
+		return personajeGeneratesRef;
 	}
 
-	public void setUserGeneratesRef(Usuario userGeneratesRef) {
-		this.userGeneratesRef = userGeneratesRef;
+	public void setPersonajeGeneratesRef(Personaje personajeGeneratesRef) {
+		this.personajeGeneratesRef = personajeGeneratesRef;
 	}
 	@ManyToOne
-	public Usuario getUserReceivesRef() {
-		return userReceivesRef;
+	public Personaje getPersonajeReceivesRef() {
+		return personajeReceivesRef;
 	}
 
-	public void setUserReceivesRef(Usuario userreceivesRef) {
-		this.userReceivesRef = userreceivesRef;
+	public void setPersonajeReceivesRef(Personaje personajeReceivesRef) {
+		this.personajeReceivesRef = personajeReceivesRef;
 	}
+
+	
 
 	
 }

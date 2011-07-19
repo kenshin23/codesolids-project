@@ -5,6 +5,7 @@ package codesolids.gui.mapa;
  * 
  * */
 
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
@@ -18,6 +19,7 @@ import codesolids.gui.academia.AcademiaDesktop;
 import codesolids.gui.arena.PreArena;
 import codesolids.gui.chat.ChatGui;
 import codesolids.gui.perfil.PerfilDesktop;
+import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.principal.PrincipalDesktop;
 import codesolids.gui.style.Styles1;
 import codesolids.gui.tienda.TiendaDesktop;
@@ -31,10 +33,11 @@ public class MapaDesktop extends ContentPane {
 	private Usuario usuario;
 	private HtmlLayout htmlLayout;
 
-	public MapaDesktop(Usuario usuario) {
+	public MapaDesktop() {
 		super();
 		
-		this.usuario = usuario;
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
+		usuario = app.getUsuario();
 		initGUI();
 	}
 
@@ -210,7 +213,7 @@ public class MapaDesktop extends ContentPane {
 	 
 		private void arenaBtnClicked(ActionEvent e) {
 			this.removeAll();
-			add(new PreArena(usuario));
+			add(new PreArena());
 		}
 		private void logoutBtnClicked(ActionEvent e) {
 			removeAll();
@@ -218,19 +221,19 @@ public class MapaDesktop extends ContentPane {
 		}
 		private void perfilBtnClicked(ActionEvent e) {
 			removeAll();
-			add(new PerfilDesktop(usuario));
+			add(new PerfilDesktop());
 		}
 		private void rankingBtnClicked(ActionEvent e) {
 			removeAll();
-			add(new Ranking(usuario));
+			add(new Ranking());
 		}
 		private void clanesBtnClicked(ActionEvent e) {
 			removeAll();
-			add(new Clanes(usuario));
+			add(new Clanes());
 		}
 		private void tiendaBtnClicked(ActionEvent e) {
 			removeAll();
-			add(new TiendaDesktop(usuario));
+			add(new TiendaDesktop());
 		}
 		
 		private void academiaBtnClicked() {
