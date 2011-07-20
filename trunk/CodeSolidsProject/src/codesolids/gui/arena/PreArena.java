@@ -25,6 +25,7 @@ import nextapp.echo.app.event.ActionListener;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Restrictions;
 
 import codesolids.bd.clases.Invitation;
 import codesolids.bd.clases.Personaje;
@@ -160,7 +161,8 @@ public class PreArena extends ContentPane{
 			  	    
 			  		List<Object> resultQuery =  query.list();
 			  		
-			  	    createListTable(resultQuery); 			  		
+			  	    createListTable(resultQuery);
+			  	    consultEstado();
 	    		
 			  	    session.getTransaction().commit();			  	        
 			  	    session.close();
@@ -408,7 +410,8 @@ public class PreArena extends ContentPane{
 	        			  }	        		  
 	        			  private void BtnClicked(int row) {	        				
 	      	          		inviteServerPush.end();
-	      	          		btnDeleteClicked(inv);
+//	      	          		btnDeleteClicked(inv);
+	      	          		UpdateInvitation(inv);
 	      	          		UpdateOutOfArena();
 	    	          		removeAll();
 	    	          		add(new ArenaDesktop());
@@ -450,6 +453,40 @@ public class PreArena extends ContentPane{
 		
 	}
 	
+	private void UpdateInvitation(Invitation inv){
+		Session session = SessionHibernate.getInstance().getSession();
+	    session.beginTransaction();
+	    
+	    inv.setEstado(true);
+	    session.update(inv);
+	    
+	    session.getTransaction().commit();
+	    session.close();
+		
+	}
+	
+	private void consultEstado(){
+	    Session session = SessionHibernate.getInstance().getSession();
+	    session.beginTransaction();
+
+		List<Invitation> listA = session.createCriteria(Invitation.class).list();
+	    
+	    for( int i = 0; i < listA.size(); i++){
+	    	if(listA.get(i).getPersonajeGeneratesRef().getId() == personaje.getId()){
+	    		if(listA.get(i).isEstado() == true){
+	    			inviteServerPush.end();
+	    			UpdateOutOfArena();
+	    			btnDeleteClicked(listA.get(i));
+	    			removeAll();
+	    			add(new ArenaDesktop());
+	    		}
+	    	}
+	    }
+		  
+	    session.getTransaction().commit();
+	    session.close();
+	}
+	
 	private void consultInvitations(){
 		
 	    Session session = SessionHibernate.getInstance().getSession();
@@ -460,7 +497,7 @@ public class PreArena extends ContentPane{
 	    Invitation obj = new Invitation();
 		obj.setPersonajeReceivesRef(personaje);
 		List<Invitation> list = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
-		  
+  
 	    session.getTransaction().commit();
 	    session.close();
 
@@ -544,10 +581,10 @@ public class PreArena extends ContentPane{
 
 		List<Invitation> list = session.createCriteria(Invitation.class).list();
 		for(int i = 0; i < list.size(); i++){
-			if(list.get(i).getPersonajeGeneratesRef() == personaje ){
+			if(list.get(i).getPersonajeGeneratesRef() == personaje && list.get(i).isEstado() == false){
 				session.delete(list.get(i));
 			}
-			if(list.get(i).getPersonajeReceivesRef() == personaje ){
+			if(list.get(i).getPersonajeReceivesRef() == personaje && list.get(i).isEstado() == false){
 				session.delete(list.get(i));
 			}
 		}

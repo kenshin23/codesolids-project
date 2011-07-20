@@ -20,6 +20,8 @@ import org.hibernate.annotations.Proxy;
 public class Invitation{
 
 	private int id;
+	
+	private boolean estado;
 
 	private Personaje personajeGeneratesRef;
 	private Personaje personajeReceivesRef;
@@ -36,6 +38,15 @@ public class Invitation{
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	public boolean isEstado() {
+		return estado;
+	}
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
+
 	@ManyToOne
 	public Personaje getPersonajeGeneratesRef() {
 		return personajeGeneratesRef;
