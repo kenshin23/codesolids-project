@@ -376,9 +376,11 @@ public class PreArena extends ContentPane{
         			  }
         		  });
 	          }
+	          
 	          else{
 	        	  ret.setVisible(false);	        	  
 	          }
+	          consultBtn(ret, invitation);
 	          return ret;
 	        }
 	    });
@@ -410,7 +412,6 @@ public class PreArena extends ContentPane{
 	        			  }	        		  
 	        			  private void BtnClicked(int row) {	        				
 	      	          		inviteServerPush.end();
-//	      	          		btnDeleteClicked(inv);
 	      	          		UpdateInvitation(inv);
 	      	          		UpdateOutOfArena();
 	    	          		removeAll();
@@ -481,6 +482,27 @@ public class PreArena extends ContentPane{
 	    			add(new ArenaDesktop());
 	    		}
 	    	}
+	    }
+		  
+	    session.getTransaction().commit();
+	    session.close();
+	}
+	
+	private void consultBtn(Button btn, Invitation invitation){
+	    Session session = SessionHibernate.getInstance().getSession();
+	    session.beginTransaction();
+
+		List<Invitation> listA = session.createCriteria(Invitation.class).list();
+	    
+	    for( int i = 0; i < listA.size(); i++){
+	    	if(listA.get(i).getPersonajeGeneratesRef().getId() == invitation.getPersonajeGeneratesRef().getId() && //
+	    		listA.get(i).getPersonajeReceivesRef().getId() == invitation.getPersonajeReceivesRef().getId()	){
+	    		btn.setEnabled(false);
+	    	}
+	    	if(listA.get(i).getPersonajeGeneratesRef().getId() == invitation.getPersonajeReceivesRef().getId() && //
+		    		listA.get(i).getPersonajeReceivesRef().getId() == invitation.getPersonajeGeneratesRef().getId()	){
+		    		btn.setEnabled(false);
+		    }
 	    }
 		  
 	    session.getTransaction().commit();
