@@ -6,6 +6,11 @@ package codesolids.gui.tienda;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Border;
@@ -26,7 +31,12 @@ import nextapp.echo.app.Row;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.Usuario;
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.Item;
+import codesolids.bd.clases.PersonajeItem;
+import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
@@ -56,7 +66,9 @@ import echopoint.layout.HtmlLayoutData;
 public class TiendaDesktop extends ContentPane {
 	
 	private Usuario usuario;
-//	private Personaje personaje;
+	private Personaje personaje;
+	private Item itemBD;
+	private PersonajeItem personajeItem;
 	
 	private HtmlLayout htmlLayout;
 	
@@ -75,10 +87,7 @@ public class TiendaDesktop extends ContentPane {
 	
 	WindowPane window;
 
-	private List<Item> listItemtienda;
-	private List<Item> listItemplayer;
-	private List<Item> listItembuild;
-	private Personaje player = new Personaje();
+	private List<Item> listItem;
 	private int indexTab = 0;
 	
 	Button btnBuild5 = new Button();
@@ -97,7 +106,7 @@ public class TiendaDesktop extends ContentPane {
 	public TiendaDesktop() {
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
 		usuario = app.getUsuario();
-//		personaje = app.getPersonaje();
+		personaje = app.getPersonaje();
 		initGUI();	
 	}
 
@@ -163,6 +172,14 @@ public class TiendaDesktop extends ContentPane {
 		panel.setBorder(new Border(new Extent(10, Extent.PX), new Color(0xd4630c), Border.STYLE_NONE));
 		htmlLayout.add(panel);
 		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		session.getTransaction().commit();
+		session.close();
+		
 		return htmlLayout;
 	}
 
@@ -209,8 +226,7 @@ public class TiendaDesktop extends ContentPane {
 	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
 	    grid.add(tableNavigation);
 	    
-	    CreateList(1);
-		rowsArrayItems();
+	    loadBD();
 	    
 		grid.setLayoutData(hld);
 		htmlLayout.add(grid);
@@ -267,8 +283,7 @@ public class TiendaDesktop extends ContentPane {
 	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModelPlayer);
 	    grid.add(tableNavigation);
 	    
-	    CreateListItem(player.getItems());
-		rowsArrayItemsPlayer();
+	    loadItemPlayer();
 		grid.setLayoutData(hld);
 		htmlLayout.add(grid);
 		
@@ -279,63 +294,6 @@ public class TiendaDesktop extends ContentPane {
 	    col.setLayoutData(hld);
 		htmlLayout.add(col);
 		
-		return htmlLayout;
-	}
-	
-	private Component initRefinar()
-	{		
-		try{
-			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("templateiu.html"), "UTF-8");
-		}catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		
-		HtmlLayoutData hld;
-		
-		hld = new HtmlLayoutData("head");
-		Row row = new Row();
-		
-		menu(hld, row);		
-		htmlLayout.add(row);
-		
-		hld = new HtmlLayoutData("central");
-		
-		Grid grid = new Grid(1);
-		
-		grid.add(initTopRowVender());
-		
-		TableColModel tableColModel = initTableColModel(3);
-	    TableSelModel tableSelModel = new TableSelModel();
-
-	    tableDtaModelBuild = new TestTableModel();
-	    tableDtaModelBuild.setEditable(true);
-	    tableDtaModelBuild.setPageSize(6);
-	    
-	    tableBuild = new ETable();
-	    tableBuild.setTableDtaModel(tableDtaModelBuild);
-	    tableBuild.setTableColModel(tableColModel);
-	    tableBuild.setTableSelModel(tableSelModel);
-	    
-	    tableBuild.setBorder(new Border(1, Color.BLACK, Border.STYLE_SOLID));
-	    tableBuild.setInsets(new Insets(5, 2, 5, 2));
-	    
-	    grid.add(tableBuild);
-	    
-	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModelBuild);
-	    grid.add(tableNavigation);
-	    
-	    CreateList(3);
-		rowsArrayItems2();
-		grid.setLayoutData(hld);
-		htmlLayout.add(grid);
-		
-	    Column col = new Column();
-	    col.add(initFoot());
-	    
-	    hld = new HtmlLayoutData("foot");	
-		col.setLayoutData(hld);
-		htmlLayout.add(col);
-
 		return htmlLayout;
 	}
 	
@@ -376,7 +334,7 @@ public class TiendaDesktop extends ContentPane {
 	    	@Override
 	    	public Object getValue(ETable table, Object element) {
 	    		Item item = (Item) element;
-	    		return item.getImage();
+	    		return item.getDirImage();
 	    	}
 	    };
 	    
@@ -456,8 +414,8 @@ public class TiendaDesktop extends ContentPane {
 	    	tableColumn.setDataCellRenderer(initNestedCellRenderer());
 	    else if(tipo == 2)
 	    	tableColumn.setDataCellRenderer(initNestedCellRendererSell());
-	    else if(tipo == 3)
-	    	tableColumn.setDataCellRenderer(initNestedCellRendererBuild());
+//	    else if(tipo == 3)
+//	    	tableColumn.setDataCellRenderer(initNestedCellRendererBuild());
 	    tableColModel.getTableColumnList().add(tableColumn);
 	    
 	    return tableColModel;
@@ -473,7 +431,7 @@ public class TiendaDesktop extends ContentPane {
 	            final ETable table, final Object value, final int col, final int row) {
 
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
-
+	          
 	          Button ret = new Button("Ver");
 	          ret.setStyle(Styles1.DEFAULT_STYLE);
 	          ret.setEnabled(editable);
@@ -501,23 +459,38 @@ public class TiendaDesktop extends ContentPane {
 	          ret.setEnabled(editable);
 	          ret.setToolTipText("Comprar");
 
-	          if (item.getPrice() <= player.getGold() && item.getLevel() <= player.getLevel() )
+	          if ( consultBD(item) )
 	          {	  
 	        		  ret.addActionListener(new ActionListener() {
 	        			  public void actionPerformed(ActionEvent e) {
 	        				  btnBuyClicked(row);
 	        			  }	        		  
-	        			  private void btnBuyClicked(int row) {	        				
+	        			  private void btnBuyClicked(int row) {
+        					  Session session = SessionHibernate.getInstance().getSession();
+        					  session.beginTransaction();
 	        				  Item item = (Item) tableDtaModel.getElementAt(row);
 	        				  
-	        				  player.setGold(player.getGold() - item.getPrice());
-	        				  player.setItems(item);
-	        				  oro = new Label(""+player.getGold());
-	        				  item.setUse(true);	        				  
-	        				  ret.setEnabled(true);
 	        				  
-	        				  removeAll();
-	        				  add(initComprar());
+	        				  personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+	    
+	        				  personaje.setGold(personaje.getGold() - item.getPrice());
+	        				  oro.setText(""+personaje.getGold());
+	        				  
+	        				  personajeItem = new PersonajeItem();
+	        				  personajeItem.setPersonajeRef(personaje);
+	        				  personajeItem.setItemRef(item);
+	        				  personajeItem.setEquipado(false);
+	        				  
+	        				  itemBD = new Item();
+	        				  
+	        				  personaje.getPersonajeItemList().add(personajeItem);
+	        				  itemBD.getPersonajeItemList().add(personajeItem);	        				  
+	        				  
+        					  session.getTransaction().commit();
+        					  session.close();
+	        				  
+	        				  ret.setEnabled(consultBD(item));
+	        				  tableDtaModel.currPageChanged();
 	        			  }
 	        		  });	        	  
 	          }
@@ -531,6 +504,21 @@ public class TiendaDesktop extends ContentPane {
 	    return nestedCellRenderer;
 	}
 	
+	private boolean consultBD(Item item){
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		session.getTransaction().commit();
+		session.close();
+		
+		if(item.getPrice() <= personaje.getGold() && item.getLevel() <= personaje.getLevel()){
+			return true;
+		}
+		else return false;
+	}
+	
 	private CellRenderer initNestedCellRendererSell() {
 		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
 		nestedCellRenderer.setBackground(new Color(226,211,161));
@@ -541,7 +529,7 @@ public class TiendaDesktop extends ContentPane {
 	            final ETable table, final Object value, final int col, final int row) {
 
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
-
+	          
 	          Button ret = new Button("Ver");
 	          ret.setStyle(Styles1.DEFAULT_STYLE);
 	          ret.setEnabled(editable);
@@ -563,14 +551,14 @@ public class TiendaDesktop extends ContentPane {
 
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          Item item = (Item) tableDtaModel.getElementAt(row);
+	          Item item = (Item) tableDtaModelPlayer.getElementAt(row);
 	          
 	          final Button ret = new Button("Vender");
 	          ret.setStyle(Styles1.DEFAULT_STYLE);
 	          ret.setEnabled(editable);
 	          ret.setToolTipText("Vender");
 
-	          if (item.getUse() == false)
+	          if (item.isUso() == false)
 	          {	  
 	        		  ret.addActionListener(new ActionListener() {
 	        			  public void actionPerformed(ActionEvent e) {
@@ -578,19 +566,33 @@ public class TiendaDesktop extends ContentPane {
 	        			  }
 	        		  
 	        			  private void btnSellClicked(int row) {
-	        				
+	        				  int i = 0;
+        					  Session session = SessionHibernate.getInstance().getSession();
+        					  session.beginTransaction();
+        					  
+        					  personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+
 	        				  Item item = (Item) tableDtaModelPlayer.getElementAt(row);
-	        				  tableDtaModelPlayer.del(tableDtaModelPlayer.getElementAt(row));
-	        				  player.setGold(player.getGold() + item.getPrice()/2);
-	        				  Item it = new Item();
-	      					  it = player.searchItem(item.getName());
-	      					  player.removeItem(it);
 	        				  
-	        				  item.setUse(true);	        				  
-	        				  ret.setEnabled(false);
+	        				  List<PersonajeItem> list = session.createCriteria(PersonajeItem.class).addOrder(Order.asc("id")).list();
+	        				  while(i<list.size()){
+	        					  if(list.get(i).getItemRef().getId() == item.getId()){
+	        						  session.delete(list.get(i));
+	        						  i = list.size();
+	        					  }
+	        					  i++;
+	        				  }
+
+	        				  personaje.setGold(personaje.getGold() + item.getPrice()/2);
+	        				  oro.setText(""+personaje.getGold());
+	      					  
+        					  session.getTransaction().commit();
+        					  session.close();
 	        				  
-	        				  removeAll();
-	        				  add(initVender());
+	        				  item.setUso(true);	        				  
+//	        				  ret.setEnabled(false);
+	        				  tableDtaModelPlayer.del(row);
+	        				
 	        			  }
 	        		  });	        	  
 	          }
@@ -604,204 +606,32 @@ public class TiendaDesktop extends ContentPane {
 	    return nestedCellRenderer;
 	}
 	
-	private CellRenderer initNestedCellRendererBuild() {
-		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
-		nestedCellRenderer.setBackground(new Color(226,211,161));
-	    
-		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
-			@Override    
-			public Component getCellRenderer( //
-	            final ETable table, final Object value, final int col, final int row) {
-
-	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
-
-	          Button ret = new Button("Ver");
-	          ret.setStyle(Styles1.DEFAULT_STYLE);
-	          ret.setEnabled(editable);
-	          ret.setToolTipText("Ver");
-
-	          ret.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent e) {
-	              btnVerClicked(row, 3);
-	            }
-	          });
-	          return ret;
-	        }
-	    });
-		
-		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
-			@Override
-			public Component getCellRenderer( //
-	            final ETable table, final Object value, final int col, final int row) {
-
-	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
-
-	          Item item = (Item) tableDtaModelBuild.getElementAt(row);
-	          final Button ret = new Button("Refinar");
-	          ret.setStyle(Styles1.DEFAULT_STYLE);
-	          ret.setEnabled(editable);
-	          ret.setToolTipText("Refinar Este Item");
-
-	          if (item.getLevel() <= player.getLevel() && item.getName() == "Armadura Negra" && //
-	        		  player.contains("Armadura") && player.contains("Piedra Negra"))
-	          {	  
-	        		  ret.addActionListener(new ActionListener() {
-	        			  public void actionPerformed(ActionEvent e) {
-	        				  btnBClicked(row);
-	        			  }
-	        		  
-	        			  private void btnBClicked(int row) {
-	        				
-	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
-	        				  player.setItems(item);
-	        				  Item it;
-	        				  it = player.searchItem("Piedra Negra");
-	        				  player.removeItem(it);
-	        				  it = player.searchItem("Armadura");
-	        				  player.removeItem(it);
-	        				  item.setUse(true);	        				  
-	        				  ret.setEnabled(true);
-	        				  
-	        				  removeAll();
-	        				  add(initRefinar());
-	        			  }
-	        		  });	        	  
-	          }
-	          else if (item.getLevel() <= player.getLevel() && item.getName() == "Espada Roja" && //
-	        		  player.contains("Espada") && player.contains("Piedra Roja"))
-	          {	  
-	        		  ret.addActionListener(new ActionListener() {
-	        			  public void actionPerformed(ActionEvent e) {
-	        				  btnBClicked(row);
-	        			  }
-	        		  
-	        			  private void btnBClicked(int row) {
-	        				
-	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
-	        				  player.setItems(item);
-	        				  Item it;
-	        				  it = player.searchItem("Piedra Roja");
-	        				  player.removeItem(it);
-	        				  it = player.searchItem("Espada");
-	        				  player.removeItem(it);
-	        				  item.setUse(true);	        				  
-	        				  ret.setEnabled(true);
-	        				  
-	        				  removeAll();
-	        				  add(initRefinar());
-	        			  }
-	        		  });	        	  
-	          }
-	          else if (item.getLevel() <= player.getLevel() && item.getName() == "Bomba Roja" && //
-	        		  player.countItem("Piedra Roja") >= 3)
-	          {	  
-	        		  ret.addActionListener(new ActionListener() {
-	        			  public void actionPerformed(ActionEvent e) {
-	        				  btnBClicked(row);
-	        			  }
-	        		  
-	        			  private void btnBClicked(int row) {
-	        				
-	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
-	        				  player.setItems(item);
-	        				  Item it;
-	        				  it = player.searchItem("Piedra Roja");
-	        				  player.removeItem(it);
-	        				  it = player.searchItem("Piedra Roja");
-	        				  player.removeItem(it);
-	        				  it = player.searchItem("Piedra Roja");
-	        				  player.removeItem(it);
-	        				  item.setUse(true);	        				  
-	        				  ret.setEnabled(true);
-	        				  
-	        				  removeAll();
-	        				  add(initRefinar());
-	        			  }
-	        		  });	        	  
-	          }
-	          else if (item.getLevel() <= player.getLevel() && item.getName() == "Bomba Negra" && //
-	        		  player.contains("Piedra Negra") && player.contains("Piedra Roja") && player.contains("Piedra Blanca"))
-	          {	  
-	        		  ret.addActionListener(new ActionListener() {
-	        			  public void actionPerformed(ActionEvent e) {
-	        				  btnBClicked(row);
-	        			  }
-	        		  
-	        			  private void btnBClicked(int row) {	        				
-	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
-	        				  player.setItems(item);
-	        				  Item it;
-	        				  it = player.searchItem("Piedra Negra");
-	        				  player.removeItem(it);
-	        				  it = player.searchItem("Piedra Roja");
-	        				  player.removeItem(it);
-	        				  it = player.searchItem("Piedra Blanca");
-	        				  player.removeItem(it);
-	        				  item.setUse(true);	        				  
-	        				  ret.setEnabled(true);
-	        				  
-	        				  removeAll();
-	        				  add(initRefinar());
-	        			  }
-	        		  });	        	  
-	          }
-	          else if (item.getLevel() <= player.getLevel() && item.getName() == "Bomba Blanca" && //
-	        		  player.countItem("Piedra Blanca") >= 3)
-	          {	  
-	        		  ret.addActionListener(new ActionListener() {
-	        			  public void actionPerformed(ActionEvent e) {
-	        				  btnBClicked(row);
-	        			  }
-	        		  
-	        			  private void btnBClicked(int row) {	        				
-	        				  Item item = (Item) tableDtaModelBuild.getElementAt(row);
-	        				  player.setItems(item);
-	        				  Item it;
-	        				  it = player.searchItem("Piedra Blanca");
-	        				  player.removeItem(it);
-	        				  it = player.searchItem("Piedra Blanca");
-	        				  player.removeItem(it);
-	        				  it = player.searchItem("Piedra Blanca");
-	        				  player.removeItem(it);
-	        				  item.setUse(true);	        				  
-	        				  ret.setEnabled(true);
-	        				  
-	        				  removeAll();
-	        				  add(initRefinar());
-	        			  }
-	        		  });	        	  
-	          }
-	          else{
-	        	  ret.setEnabled(false);	        	  
-	          }
-	          
-	          return ret;
-	        }
-	    });
-	
-	    return nestedCellRenderer;
-	}
-	
-	private void btnVerClicked(int row, int verTipo) 
+	private void btnVerClicked(int row, int t) 
 	{
-		Item item = new Item();
-		if(verTipo == 1)
-			item = (Item) tableDtaModel.getElementAt(row);
-		if(verTipo == 2)
-			item = (Item) tableDtaModelPlayer.getElementAt(row);
-		if(verTipo == 3)
-			item = (Item) tableDtaModelBuild.getElementAt(row);
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
 		
-		if (item.getType() == "Armadura")
-			infoItemArmor(item);
-		else if (item.getType() == "Espada")
-			infoItemSword(item);
-		else if (item.getType() == "Pocion")
-			infoItemPotion(item);
-		else if (item.getType() == "Piedra")
-			infoItemStone(item);
-		else
-			infoItemBomb(item);
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		Item item = new Item();
+		if (t ==1 )
+			item = (Item) tableDtaModel.getElementAt(row);
+		else if (t ==2 )
+			item = (Item) tableDtaModelPlayer.getElementAt(row);
+		
+		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("id", item.getId()));
+		itemBD = (Item) criteria.uniqueResult();
+		
+		session.getTransaction().commit();
+		session.close();
+		
+		if (itemBD.getId() == item.getId())
+		{
+			name.setText("" + itemBD.getName());
+			index.setText("Indice: "+ itemBD.getIndex());
+			description.setText(itemBD.getDescripcion());
+			
+		}
+
 	}
 	
 	private Column initFoot() {		
@@ -925,7 +755,7 @@ public class TiendaDesktop extends ContentPane {
         imgI.setHeight(new Extent(25));
         rowPanel.add(imgI);
         
-        oro = new Label(" "  + player.getGold());
+        oro = new Label(" "  + personaje.getGold());
         oro.setForeground(Color.YELLOW);
         rowPanel.add(oro);
         
@@ -972,7 +802,7 @@ public class TiendaDesktop extends ContentPane {
         imgI.setHeight(new Extent(25));
         rowPanel.add(imgI);
         
-        oro = new Label(" "  + player.getGold());
+        oro = new Label(" "  + personaje.getGold());
         oro.setForeground(Color.YELLOW);
         rowPanel.add(oro);
         
@@ -998,194 +828,26 @@ public class TiendaDesktop extends ContentPane {
 	    return row;
 	}
 	
-	public void testButton(Item it){
-		if(player.contains("Armadura") && player.contains("Piedra Negra") && it.getLevel() <= player.getLevel()){
-			if( it.getName() == "Armadura Negra")
-				btnBuild1.setEnabled(true);						
-		}else
-			btnBuild1.setEnabled(false);
-		if(player.contains("Espada") && player.contains("Piedra Roja") && it.getLevel() <= player.getLevel()){
-			if(it.getName() == "Espada Roja")
-				btnBuild2.setEnabled(true);						
-		}else
-			btnBuild2.setEnabled(false);
-		if(player.countItem("Piedra Blanca") >= 3 && it.getLevel() <= player.getLevel()){
-			if(it.getName() == "Bomba Blanca")
-				btnBuild3.setEnabled(true);						
-		}else
-			btnBuild3.setEnabled(false);
-		if(player.contains("Piedra Blanca") && player.contains("Piedra Roja") && player.contains("Piedra Negra")
-				&& it.getLevel() <= player.getLevel()){
-			if(it.getName() == "Bomba Negra")
-				btnBuild4.setEnabled(true);						
-		}else
-			btnBuild4.setEnabled(false);
-		if(player.countItem("Piedra Roja") >= 3 && it.getLevel() <= player.getLevel()){
-			if(it.getName() == "Bomba Roja")
-				btnBuild5.setEnabled(true);						
-		}else
-			btnBuild5.setEnabled(false);
-	}
-
-	private void rowsArrayItems(){
-		int row = tableDtaModel.getTotalRows();
-		
-		listItemtienda = new ArrayList<Item>();
-		Item item;
-		
-		for(int i = 0; i < row; i++)
-		{
-			item = (Item) tableDtaModel.getElementAt(i);
-			listItemtienda.add(item);
-		}
-	}
-	
-	private void rowsArrayItems2(){
-		int row = tableDtaModelBuild.getTotalRows();
-		
-		listItembuild = new ArrayList<Item>();
-		Item item;
-		
-		for(int i = 0; i < row; i++)
-		{
-			item = (Item) tableDtaModelBuild.getElementAt(i);
-			listItembuild.add(item);
-		}
-	}
-	
-	private void AsignarDatos (int t, int level, String nombre, int precio, int indice, String tipo, String descripcion, boolean uso, String dirImage)
-	{
-		Item item = new Item();
-		
-		item.setLevel(level);
-		item.setName(nombre);
-		item.setPrice(precio);
-		item.setIndex(indice);
-		item.setType(tipo);
-		item.setDescription(descripcion);
-		item.setUse(uso);
-		item.setImage(dirImage);
-		if(t == 1){
-			listItemtienda = new ArrayList<Item>();
-			listItemtienda.add(item);		
-			tableDtaModel.add(item);
-		}
-		else if(t == 2){
-			listItemplayer = new ArrayList<Item>();
-			listItemplayer.add(item);			
-			tableDtaModelPlayer.add(item);			
-		}
-		else if(t == 3){
-			listItembuild = new ArrayList<Item>();
-			listItembuild.add(item);			
-			tableDtaModelBuild.add(item);
-		}
-	}
-	
-	private void CreateList(int tipo)
-	{
-		if(tipo == 1){
-			AsignarDatos(tipo, 1, "Armadura", 1500, 20, "Armadura", "Armadura Básica",false,"Images/Items/armor.png");
-			AsignarDatos(tipo, 1, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png");
-			
-			AsignarDatos(tipo, 2, "Piedra Blanca", 1000, 10, "Piedra", "Piedra mágica de color Blanco",false,"Images/Items/stone1.png");
-			AsignarDatos(tipo, 2, "Medicina20", 800, 20, "Pocion", "Medicina  básica para aumentar la vida",false,"Images/Items/potion1.png");
-			
-			AsignarDatos(tipo, 3, "Piedra Negra", 2500, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png");
-			AsignarDatos(tipo, 3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png");
-			
-			AsignarDatos(tipo, 4, "Energia", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png");
-			AsignarDatos(tipo, 4, "Medicina40", 1800, 40, "Pocion", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png");
-			
-			AsignarDatos(tipo, 5, "Piedra Roja", 3000, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png");
-			AsignarDatos(tipo, 5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png");
-			
-			AsignarDatos(tipo, 6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png");
-			AsignarDatos(tipo, 6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png");
-			
-			AsignarDatos(tipo, 7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png");
-			AsignarDatos(tipo, 7, "Energia Super", 2500, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png");
-			
-			AsignarDatos(tipo, 9, "Medicina Super", 3000, 80, "Pocion", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png");
-		}
-		else if(tipo == 3){
-			AsignarDatos(tipo, 3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png");
-			AsignarDatos(tipo, 5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png");
-			
-			AsignarDatos(tipo, 6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png");
-			AsignarDatos(tipo, 6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png");
-			
-			AsignarDatos(tipo, 7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png");			
-		}
-	}
-	
-	private void CreateListItem(List<Item> it)
-	{
-			for(int i = 0; i < it.size(); i++)
-			{
-				AsignarDatos(2, it.get(i).getLevel(), it.get(i).getName(), it.get(i).getPrice(), it.get(i).getIndex(), //
-						it.get(i).getType(), it.get(i).getDescription(), false,it.get(i).getImage());
-			}
-	}
-	
-	private void btnSeeClicked(Item it) 
-	{
-		  WindowPane win = new WindowPane();
-		  win.setTitle("Descripción");
-		  win.setWidth(new Extent(200));
-		  win.setMaximumWidth(new Extent(200));
-		  win.setMaximumHeight(new Extent(100));
-		  win.setMovable(false);
-		  win.setResizable(false);
-		  Column col = new Column();
-		  col.add(new Label("Objeto   : " + it.getName()));
-		  col.add(new Label("Detalles : " + it.getDescription()));
-		  col.add(new Label("Indice   : " + it.getIndex()));
-		  win.add(col);
-		  win.setModal(true);
-		  add(win);
-	}
-	
-	private void btnVerClicked2(int row) 
-	{
-		Item item = (Item) tableDtaModelPlayer.getElementAt(row);
-		
-		if (item.getType() == "Armadura")
-			infoItemArmor(item);
-		else if (item.getType() == "Espada")
-			infoItemSword(item);
-		else if (item.getType() == "Pocion")
-			infoItemPotion(item);
-		else if (item.getType() == "Piedra")
-			infoItemStone(item);
-		else
-			infoItemBomb(item);
-	}
-	
 	private void btnAllClicked() {
 		
 		name.setText("");
 		index.setText("");
 		description.setText("");
-		tableDtaModel.clear();		
-		for(int i = 0; i < listItemtienda.size(); i++)
-		{
-			tableDtaModel.add(listItemtienda.get(i));					
-		}		
+
+		tableDtaModel.clear();
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		Criteria criteria = session.createCriteria(Item.class).addOrder(Order.asc("id"));
+		
+		for (Object obj : criteria.list()) {
+			tableDtaModel.add(obj);
+		}
+	    session.getTransaction().commit();
+	    session.close();		
 	}
 
-	private void btnAllClicked2() {
-		
-		name.setText("");
-		index.setText("");
-		description.setText("");
-		tableDtaModelPlayer.clear();		
-		for(int i = 0; i < listItemplayer.size(); i++)
-		{
-			tableDtaModelPlayer.add(listItemplayer.get(i));					
-		}		
-	}
-	
 	private void btnArmorClicked() {
 		
 		name.setText("");
@@ -1193,29 +855,16 @@ public class TiendaDesktop extends ContentPane {
 		description.setText("");
 		tableDtaModel.clear();
 		
-		for(int i = 0; i < listItemtienda.size(); i++)
-		{
-			if (listItemtienda.get(i).getType() == "Armadura")
-			{
-				tableDtaModel.add(listItemtienda.get(i));
-			}			
-		}		
-	}
-	
-	private void btnArmorClicked2() {
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
 		
-		name.setText("");
-		index.setText("");
-		description.setText("");
-		tableDtaModelPlayer.clear();
+		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Armadura")).addOrder(Order.asc("id"));
 		
-		for(int i = 0; i < listItemplayer.size(); i++)
-		{
-			if (listItemplayer.get(i).getType() == "Armadura")
-			{
-				tableDtaModelPlayer.add(listItemplayer.get(i));
-			}			
-		}		
+		for (Object obj : criteria.list()) {
+			tableDtaModel.add(obj);
+		}
+	    session.getTransaction().commit();
+	    session.close();		
 	}
 	
 	private void btnSwordClicked() {
@@ -1225,29 +874,16 @@ public class TiendaDesktop extends ContentPane {
 		description.setText("");
 		tableDtaModel.clear();
 		
-		for(int i = 0; i < listItemtienda.size(); i++)
-		{
-			if (listItemtienda.get(i).getType() == "Espada")
-			{
-				tableDtaModel.add(listItemtienda.get(i));
-			}			
-		}
-	}
-	
-	private void btnSwordClicked2() {
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
 		
-		name.setText("");
-		index.setText("");
-		description.setText("");
-		tableDtaModelPlayer.clear();
+		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Espada")).addOrder(Order.asc("id"));
 		
-		for(int i = 0; i < listItemplayer.size(); i++)
-		{
-			if (listItemplayer.get(i).getType() == "Espada")
-			{
-				tableDtaModelPlayer.add(listItemplayer.get(i));
-			}			
+		for (Object obj : criteria.list()) {
+			tableDtaModel.add(obj);
 		}
+	    session.getTransaction().commit();
+	    session.close();
 	}
 	
 	private void btnPotionClicked() {
@@ -1257,29 +893,16 @@ public class TiendaDesktop extends ContentPane {
 		description.setText("");
 		tableDtaModel.clear();
 		
-		for(int i = 0; i < listItemtienda.size(); i++)
-		{
-			if (listItemtienda.get(i).getType() == "Pocion")
-			{
-				tableDtaModel.add(listItemtienda.get(i));
-			}			
-		}
-	}
-	
-	private void btnPotionClicked2() {
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
 		
-		name.setText("");
-		index.setText("");
-		description.setText("");
-		tableDtaModelPlayer.clear();
+		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Pocion")).addOrder(Order.asc("id"));
 		
-		for(int i = 0; i < listItemplayer.size(); i++)
-		{
-			if (listItemplayer.get(i).getType() == "Pocion")
-			{
-				tableDtaModelPlayer.add(listItemplayer.get(i));
-			}			
+		for (Object obj : criteria.list()) {
+			tableDtaModel.add(obj);
 		}
+	    session.getTransaction().commit();
+	    session.close();
 	}
 	
 	private void btnStoneClicked()
@@ -1289,29 +912,16 @@ public class TiendaDesktop extends ContentPane {
 		description.setText("");
 		tableDtaModel.clear();
 		
-		for(int i = 0; i < listItemtienda.size(); i++)
-		{
-			if (listItemtienda.get(i).getType() == "Piedra")
-			{
-				tableDtaModel.add(listItemtienda.get(i));
-			}			
-		}		
-	}
-	
-	private void btnStoneClicked2()
-	{
-		name.setText("");
-		index.setText("");
-		description.setText("");
-		tableDtaModelPlayer.clear();
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
 		
-		for(int i = 0; i < listItemplayer.size(); i++)
-		{
-			if (listItemplayer.get(i).getType() == "Piedra")
-			{
-				tableDtaModelPlayer.add(listItemplayer.get(i));
-			}			
-		}		
+		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Piedra")).addOrder(Order.asc("id"));
+		
+		for (Object obj : criteria.list()) {
+			tableDtaModel.add(obj);
+		}
+	    session.getTransaction().commit();
+	    session.close();		
 	}
 	
 	private void btnBombClicked()
@@ -1321,177 +931,18 @@ public class TiendaDesktop extends ContentPane {
 		description.setText("");
 		tableDtaModel.clear();
 		
-		for(int i = 0; i < listItemtienda.size(); i++)
-		{
-			if (listItemtienda.get(i).getType() == "Bomba")
-			{
-				tableDtaModel.add(listItemtienda.get(i));
-			}			
-		}		
-	}
-	
-	private void btnBombClicked2()
-	{
-		name.setText("");
-		index.setText("");
-		description.setText("");
-		tableDtaModelPlayer.clear();
+		tableDtaModel.clear();
 		
-		for(int i = 0; i < listItemplayer.size(); i++)
-		{
-			if (listItemplayer.get(i).getType() == "Bomba")
-			{
-				tableDtaModelPlayer.add(listItemplayer.get(i));
-			}			
-		}		
-	}
-	
-	private void rowsArrayItemsPlayer(){
-		int row = tableDtaModelPlayer.getTotalRows();
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
 		
-		listItemplayer = new ArrayList<Item>();
-		Item item;
+		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Bomba")).addOrder(Order.asc("id"));
 		
-		for(int i = 0; i < row; i++)
-		{
-			item = (Item) tableDtaModelPlayer.getElementAt(i);
-			listItemplayer.add(item);
+		for (Object obj : criteria.list()) {
+			tableDtaModel.add(obj);
 		}
-	}
-	
-	private void infoItemArmor(Item item)
-	{
-		if (item.getName() == "Armadura")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-		
-		if (item.getName() == "Armadura Negra")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-	}
-	
-	private void infoItemSword(Item item)
-	{
-		if (item.getName() == "Espada")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-		
-		if (item.getName() == "Espada Roja")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-	}
-
-	private void infoItemStone(Item item)
-	{
-		if (item.getName() == "Piedra Blanca")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-		
-		if (item.getName() == "Piedra Negra")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-		
-		if (item.getName() == "Piedra Roja")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-	}
-	
-	private void infoItemPotion(Item item)
-	{
-		if (item.getName() == "Medicina20")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-		
-		if (item.getName() == "Medicina40")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-		
-		if (item.getName() == "Medicina Super")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-		
-		if (item.getName() == "Energia")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-		
-		if (item.getName() == "Energia Super")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-	}
-	
-	private void infoItemBomb(Item item)
-	{
-		if (item.getName() == "Bomba Blanca")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
-		
-		if (item.getName() == "Bomba Negra")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}	
-		
-		if (item.getName() == "Bomba Roja")
-		{
-			description.setText("");
-			name.setText("" + item.getName());
-			index.setText("Indice: " + item.getIndex());
-			description.setText(item.getDescription());
-		}
+	    session.getTransaction().commit();
+	    session.close();	
 	}
 	
 	private void menu(HtmlLayoutData hld , Row row){
@@ -1528,18 +979,6 @@ public class TiendaDesktop extends ContentPane {
 		menu.setCellSpacing(new Extent(15));
 		row.add(menu);
 		
-		Button btnRefinar = new Button();
-		btnRefinar.setText("Refinar");
-		btnRefinar.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnRefinar.setStyle(Styles1.DEFAULT_STYLE);
-		btnRefinar.setToolTipText("Fabricar Items compuestos");		
-		btnRefinar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				removeAll();
-				add(initRefinar());
-			}
-		});
-		menu.add(btnRefinar);
 		menu.setCellSpacing(new Extent(15));
 		row.add(menu);
 		
@@ -1563,5 +1002,70 @@ public class TiendaDesktop extends ContentPane {
 	private void button1Clicked(ActionEvent e) {		
 		removeAll();
 		add(new MapaDesktop());
-	}	
+	}
+	
+	private void loadBD()
+	{
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		List<Item> list = session.createCriteria(Item.class).addOrder(Order.asc("id")).list();
+
+		for(Item obj : list)
+		{
+			Item item = new Item();
+			
+			item.setId(obj.getId());
+			item.setLevel(obj.getLevel());
+			item.setName(obj.getName());
+			item.setPrice(obj.getPrice());
+			item.setIndex(obj.getIndex());
+			item.setTipo(obj.getTipo());
+			item.setDescripcion(obj.getDescripcion());
+			item.setUso(obj.isUso());
+			item.setDirImage(obj.getDirImage());
+			item.setInshop(obj.isInshop());
+
+						
+			tableDtaModel.add(item);
+
+		}			
+		session.getTransaction().commit();
+		session.close();		
+	}
+	
+	private void loadItemPlayer()
+	{
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		List<PersonajeItem> list = session.createCriteria(PersonajeItem.class).addOrder(Order.asc("id")).list();
+
+
+		for(PersonajeItem obj : list)
+		{
+			Item item = new Item();
+			if(obj.getPersonajeRef().getId() == personaje.getId()){
+				item.setId(obj.getItemRef().getId());
+				item.setLevel(obj.getItemRef().getLevel());
+				item.setName(obj.getItemRef().getName());
+				item.setPrice(obj.getItemRef().getPrice());
+				item.setIndex(obj.getItemRef().getIndex());
+				item.setTipo(obj.getItemRef().getTipo());
+				item.setDescripcion(obj.getItemRef().getDescripcion());
+				item.setUso(obj.getItemRef().isUso());
+				item.setDirImage(obj.getItemRef().getDirImage());
+				item.setInshop(obj.getItemRef().isInshop());
+
+				tableDtaModelPlayer.add(item);
+			}
+
+		}			
+		session.getTransaction().commit();
+		session.close();		
+	}
 }

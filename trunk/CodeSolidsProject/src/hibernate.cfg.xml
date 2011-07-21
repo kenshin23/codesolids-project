@@ -97,17 +97,16 @@
 		<mapping class="codesolids.bd.clases.Usuario" />
 		<mapping class="codesolids.bd.clases.Invitation" />
 		<mapping class="codesolids.bd.clases.Personaje" />
-		<mapping class="codesolids.bd.clases.PersonajesDisponibles" />
 		<mapping class="codesolids.bd.clases.PersonajePoderes" />
 		<mapping class="codesolids.bd.clases.Poderes" />
 
-		<mapping class="codesolids.bd.clases.Chat" />
-		
+		<mapping class="codesolids.bd.clases.Chat" />		
 
 		<mapping class="codesolids.bd.clases.Ataque" />
-		<mapping class="codesolids.bd.clases.AtaqueItem" />
-
-		<mapping class="codesolids.bd.clases.Chat" />
+		<mapping class="codesolids.bd.clases.Item" />
+		<mapping class="codesolids.bd.clases.PersonajeItem" />
+		<mapping class="codesolids.bd.clases.Enemigo" />
+		<mapping class="codesolids.bd.clases.PoderEnemigo" />
 
 	</session-factory>
 </hibernate-configuration>

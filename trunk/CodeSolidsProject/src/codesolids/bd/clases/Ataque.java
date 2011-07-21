@@ -33,7 +33,7 @@ public class Ataque {
 	
 //	private Poderes poderesRef;
 //	private Batalla batallaRef;
-//	private List<AtaqueItem> aiList = new ArrayList<AtaqueItem>();
+	private List<Item> itemList = new ArrayList<Item>();
 	
 	public Ataque(){
 		//Empty
@@ -73,6 +73,17 @@ public class Ataque {
 		this.dano = dano;
 	}
 	
+	@OneToMany(mappedBy = "ataqueRef", orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
+	public List<Item> getItemList() {
+		return itemList;
+	}
+
+	public void setItemList(List<Item> itemList) {
+		this.itemList = itemList;
+	}
+	
 //	@ManyToOne
 //	public Poderes getPoderesRef() {
 //		return poderesRef;
@@ -90,13 +101,7 @@ public class Ataque {
 //	public void setBatallaRef(Batalla batallaRef) {
 //		this.batallaRef = batallaRef;
 //	}
-//	@ManyToOne
-//	public AtaqueItem getAtitRef() {
-//		return atitRef;
-//	}
-//
-//	public void setAtitRef(AtaqueItem atitRef) {
-//		this.atitRef = atitRef;
-//	}	
+
+	
 
 }

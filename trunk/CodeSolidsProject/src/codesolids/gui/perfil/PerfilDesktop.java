@@ -30,6 +30,7 @@ import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.PersonajeItem;
 import codesolids.bd.clases.PersonajePoderes;
 import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.Usuario;
@@ -72,19 +73,7 @@ public class PerfilDesktop extends ContentPane{
 			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("templateiu.html"), "UTF-8");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-//		Session session = SessionHibernate.getInstance().getSession();
-//  	    session.beginTransaction();
-//  		String queryStr = "FROM Personaje WHERE usuarioRef = :user";
-//  		Query query  = session.createQuery(queryStr);
-//  		query.setInteger("user", usuario.getId());
-//  		
-//  		personaje = (Personaje) query.list().get(0);
-//  		
-//  		session.getTransaction().commit();			  	        
-//  	    session.close();
-		
-		
+		}		
 		
 		HtmlLayoutData hld;
 		hld = new HtmlLayoutData("head");		
@@ -128,7 +117,6 @@ public class PerfilDesktop extends ContentPane{
 		panel.setWidth(new Extent(950));
 		panel.setHeight(new Extent(350));
 		panel.setBackgroundImage(imgF);
-
 		
 		Panel panelImage= new Panel();
 		Row rowTab = new Row();
@@ -167,8 +155,49 @@ public class PerfilDesktop extends ContentPane{
 		btnItem.setStyle(Styles1.DEFAULT_STYLE);
 		btnItem.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-//			buttonItemClicked(e);				
+			buttonItemClicked(e);				
 			}
+
+		private void buttonItemClicked(ActionEvent e) {
+			final WindowPane win = new WindowPane();
+			win.setTitle("Items que Posee");
+			win.setWidth(new Extent(300));
+			win.setMaximumWidth(new Extent(200));
+			win.setMaximumHeight(new Extent(300));
+			win.setMovable(false);
+			win.setResizable(false);
+			win.setPositionX(new Extent(200));
+			win.setModal(true);
+			Column col = new Column();
+			
+			Session session = SessionHibernate.getInstance().getSession();
+			session.beginTransaction();
+			String queryStr = "SELECT personajeItemList AS pp FROM Personaje WHERE personajeref_id = :idPlayer";
+			Query query  = session.createQuery(queryStr);
+			query.setInteger("idPlayer", personaje.getId());
+			List<Object> listQuery = query.list();
+			createListItems(listQuery, col);			
+			
+			session.getTransaction().commit();			  	        
+			session.close();
+			
+			Button button = new Button();
+			button.setText("Aceptar");
+			button.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+			button.setHeight(new Extent(15));
+			button.setWidth( new Extent(60));
+			button.setToolTipText("Regresar al perfil");
+			button.setStyle(Styles1.DEFAULT_STYLE);
+			button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				win.userClose();
+				}
+			});
+			col.add(button);
+			col.setInsets(new Insets(25));
+			win.add(col);
+			add(win);			
+		}
 		});
 		colTab.add(btnItem);
 		Button btnPoderes = new Button();
@@ -191,7 +220,8 @@ public class PerfilDesktop extends ContentPane{
 			win.setMaximumHeight(new Extent(300));
 			win.setMovable(false);
 			win.setResizable(false);
-			win.setPositionX(new Extent(1000));
+			win.setPositionX(new Extent(200));
+			win.setModal(true);
 			Column col = new Column();
 			
 			Session session = SessionHibernate.getInstance().getSession();
@@ -318,8 +348,20 @@ public class PerfilDesktop extends ContentPane{
   	    	PersonajePoderes p = (PersonajePoderes) iter.next();
   	    	lblData = new Label(p.getPoderesRef().getName());
 			col.add(lblData);  	            
+  	    }  	    
+	}
+	private void createListItems( List<Object> listQuery, Column col){
+		Iterator<Object> iter = listQuery.iterator();
+  	    if (!iter.hasNext()) {
+  	    	lblData = new Label("Aun no tiene items");
+			col.add(lblData); 
+  	    	return;
   	    }
-  	    
+  	    while (iter.hasNext()) {  
+  	    	PersonajeItem p = (PersonajeItem) iter.next();
+  	    	lblData = new Label(p.getItemRef().getName());
+			col.add(lblData);  	            
+  	    }  	    
 	}
 	
 	private void buttonExitClicked(ActionEvent e) {
