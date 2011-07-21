@@ -26,6 +26,9 @@ public class InicializarBD {
 
 		PoderesBD initP = new PoderesBD();
 		initP.createList();
+		
+		ItemsBD initI = new ItemsBD();
+		initI.createList();
 
 		session.getTransaction().commit();
 		session.close();
@@ -133,5 +136,67 @@ class PoderesBD
 		AsignarDatos(40,10, "Ráfaga Golpe Dragón", 10400, 249, 10, 10, 277, "Guerrero",false,"Images/Poderes/Combo/ThousandViolenceStrike.png","Realiza una ráfagas de golpes destructivos sin dudarlo.");
 	}
 	
+}
+
+class ItemsBD{
+	
+	private void AsignarDatos(int id, int level, String nombre, int precio, int indice, String tipo, String descripcion, boolean uso, String dirImage, boolean inShop){
+		Item item = new Item();
+		
+		item.setId(id);
+		item.setLevel(level);
+		item.setName(nombre);
+		item.setPrice(precio);
+		item.setIndex(indice);
+		item.setTipo(tipo);
+		item.setDescripcion(descripcion);
+		item.setUso(uso);
+		item.setDirImage(dirImage);
+		item.setInshop(inShop);
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		Item iBean = new Item();
+		iBean.setLevel(item.getLevel());
+		iBean.setName(item.getName());
+		iBean.setPrice(item.getPrice());
+		iBean.setIndex(item.getIndex());
+		iBean.setTipo(item.getTipo());
+		iBean.setUso(item.isUso());
+		iBean.setDirImage(item.getDirImage());
+		iBean.setDescripcion(item.getDescripcion());
+		iBean.setInshop(item.isInshop());
+		session.save(iBean);
+        
+		session.getTransaction().commit();
+		session.close();		
+	}
+	
+	public void createList(){
+		AsignarDatos(1, 1, "Armadura", 1500, 20, "Armadura", "Armadura Básica",false,"Images/Items/armor.png", true);
+		AsignarDatos(2, 1, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png", true);
+		
+		AsignarDatos(3, 2, "Piedra Blanca", 1000, 10, "Piedra", "Piedra mágica de color Blanco",false,"Images/Items/stone1.png", true);
+		AsignarDatos(4, 2, "Medicina20", 800, 20, "Pocion", "Medicina  básica para aumentar la vida",false,"Images/Items/potion1.png", true);
+		
+		AsignarDatos(5, 3, "Piedra Negra", 2500, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png", true);
+		AsignarDatos(6, 3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png", true);
+		
+		AsignarDatos(7, 4, "Energia", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png", true);
+		AsignarDatos(8, 4, "Medicina40", 1800, 40, "Pocion", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png", true);
+		
+		AsignarDatos(9, 5, "Piedra Roja", 3000, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png", true);
+		AsignarDatos(10, 5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png", true);
+		
+		AsignarDatos(11, 6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png", true);
+		AsignarDatos(12, 6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png", true);
+		
+		AsignarDatos(13, 7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png", true);
+		AsignarDatos(14, 7, "Energia Super", 2500, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png", true);
+		
+		AsignarDatos(15, 9, "Medicina Super", 3000, 80, "Pocion", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png", true);
+	
+	}
 }
 

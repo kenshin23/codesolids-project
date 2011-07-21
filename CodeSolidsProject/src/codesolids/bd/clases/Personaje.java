@@ -43,7 +43,8 @@ public class Personaje {
 	protected boolean learning;
 	protected Calendar fechaInicio;
 	protected Calendar fechaFin;
-	protected List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();	
+	protected List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();
+	protected List<PersonajeItem> personajeItemList = new ArrayList<PersonajeItem>();
 	
 	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
 	private List<Invitation> invReceivesList = new ArrayList<Invitation>();
@@ -193,6 +194,18 @@ public class Personaje {
 	  public void setInvReceivesList(List<Invitation> invReceivesList) {
 		this.invReceivesList = invReceivesList;
 	  }
+
+	@OneToMany(mappedBy = "personajeRef", orphanRemoval = true )
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
+	public List<PersonajeItem> getPersonajeItemList() {
+		return personajeItemList;
+	}
+
+	public void setPersonajeItemList(List<PersonajeItem> personajeItemList) {
+		this.personajeItemList = personajeItemList;
+	}
 	
+	  
 }
 
