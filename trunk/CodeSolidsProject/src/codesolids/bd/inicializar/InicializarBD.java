@@ -184,13 +184,13 @@ class ItemsBD{
 		AsignarDatos(2, 1, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png", true);
 		
 		AsignarDatos(3, 2, "Piedra Blanca", 1000, 10, "Piedra", "Piedra mágica de color Blanco",false,"Images/Items/stone1.png", true);
-		AsignarDatos(4, 2, "Medicina20", 800, 20, "Pocion", "Medicina  básica para aumentar la vida",false,"Images/Items/potion1.png", true);
+		AsignarDatos(4, 2, "Medicina Basica", 800, 20, "Pocion", "Medicina  básica para aumentar la vida",false,"Images/Items/potion1.png", true);
 		
 		AsignarDatos(5, 3, "Piedra Negra", 2500, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png", true);
 		AsignarDatos(6, 3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png", true);
 		
-		AsignarDatos(7, 4, "Energia", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png", true);
-		AsignarDatos(8, 4, "Medicina40", 1800, 40, "Pocion", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png", true);
+		AsignarDatos(7, 4, "Energia Media", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png", true);
+		AsignarDatos(8, 4, "Medicina Media", 1800, 40, "Pocion", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png", true);
 		
 		AsignarDatos(9, 5, "Piedra Roja", 3000, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png", true);
 		AsignarDatos(10, 5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png", true);
