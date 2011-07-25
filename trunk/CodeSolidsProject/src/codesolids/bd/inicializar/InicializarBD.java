@@ -1,15 +1,17 @@
 package codesolids.bd.inicializar;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Restrictions;
 
 import codesolids.bd.clases.*;
 import codesolids.bd.hibernate.SessionHibernate;
 
 /**
  * @author: Antonio López
- * 
+ * @Colaborador Fernando Osuna
  */
 
 public class InicializarBD {
@@ -29,6 +31,10 @@ public class InicializarBD {
 		
 		ItemsBD initI = new ItemsBD();
 		initI.createList();
+		
+		EnemigosBD initE = new EnemigosBD();
+		initE.createList();
+		initE.createPoderes();
 
 		session.getTransaction().commit();
 		session.close();
@@ -197,6 +203,188 @@ class ItemsBD{
 		
 		AsignarDatos(15, 9, "Medicina Super", 3000, 80, "Pocion", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png", true);
 	
+	}
+}
+
+class EnemigosBD{
+	
+	private void AsignarDatos(int id, int level, String nombre, int vida, int xp, int oro, int velocidad, String region, String dirImage){
+		Enemigo enemigo = new Enemigo();
+		
+		enemigo.setId(id);
+		enemigo.setNivel(level);
+		enemigo.setNombre(nombre);
+		enemigo.setVida(vida);
+		enemigo.setOro(oro);
+		enemigo.setXp(xp);
+		enemigo.setVelocidad(velocidad);
+		enemigo.setRegion(region);
+		enemigo.setDirImage(dirImage);
+		
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		Enemigo iBean = new Enemigo();
+		iBean.setNivel(enemigo.getNivel());
+		iBean.setNombre(enemigo.getNombre());
+		iBean.setOro(enemigo.getOro());
+		iBean.setVida(enemigo.getVida());
+		iBean.setRegion(enemigo.getRegion());
+		iBean.setDirImage(enemigo.getDirImage());
+		iBean.setXp(enemigo.getXp());
+		iBean.setVelocidad(enemigo.getVelocidad());
+		session.save(iBean);
+        
+		session.getTransaction().commit();
+		session.close();		
+	}
+	
+	public void createList(){
+		AsignarDatos(1, 1, "Minotauro", 110, 10, 150, 50, "Monte Aleph", "Images/Enemigos/minotauro.png");
+		AsignarDatos(2, 1, "Ogro", 100, 11, 170, 30, "Monte Aleph", "Images/Enemigos/ogro.png");
+		AsignarDatos(3, 2, "Dragon Negro", 120, 15, 190, 80, "Monte Aleph", "Images/Enemigos/dragon_negro.png");
+		AsignarDatos(4, 3, "Dragon OjoNegro", 190, 20, 190, 50, "Monte Aleph", "Images/Enemigos/dragon_ojosnegros.png");
+		AsignarDatos(5, 5, "Dragon Gris", 350, 30, 250, 50, "Monte Aleph", "Images/Enemigos/dragon_gris.png");
+		AsignarDatos(6, 6, "3 Cabezas", 500, 30, 450, 60, "Monte Aleph", "Images/Enemigos/dragon3cabezas.png");
+		
+		AsignarDatos(7, 4, "Dragon Blanco", 400, 19, 150, 50, "Norte Blanco", "Images/Enemigos/dragon_hielo.png");
+		AsignarDatos(8, 4, "Elfo", 350, 40, 410, 120, "Norte Blanco", "Images/Enemigos/elfo.png");
+		AsignarDatos(22, 3, "Guerrero", 300, 40, 410, 120, "Norte Blanco", "Images/Enemigos/metal.png");
+		
+		AsignarDatos(9, 2, "Enano Arquero", 180, 30, 160, 20, "Gloriosa", "Images/Enemigos/enano1.png");
+		AsignarDatos(10, 5, "Enano Dorado", 390, 20, 220, 25, "Gloriosa", "Images/Enemigos/enano2.png");
+		AsignarDatos(11, 1, "Enano Gris", 100, 10, 100, 20, "Gloriosa", "Images/Enemigos/enano3.png");
+		AsignarDatos(12, 7, "Lider Orco", 800, 100, 550, 80, "Gloriosa", "Images/Enemigos/lider_orco.png");
+		AsignarDatos(13, 6, "Orco", 400, 80, 220, 50, "Gloriosa", "Images/Enemigos/orco2.png");
+		AsignarDatos(14, 5, "Orco Verde", 100, 60, 200, 10, "Gloriosa", "Images/Enemigos/orco3d.png");
+		
+		AsignarDatos(15, 4, "Chogall", 100, 10, 150, 10, "Pantano Cocona", "Images/Enemigos/chogall.png");
+		AsignarDatos(16, 9, "Demonio", 2000, 60, 400, 200, "Pantano Cocona", "Images/Enemigos/demon.png");
+		
+		AsignarDatos(17, 1, "Program1", 400, 190, 1000, 200, "Ciudad Programacion", "Images/Enemigos/program1.png");
+		AsignarDatos(18, 3, "Program2", 450, 200, 1000, 250, "Ciudad Programacion", "Images/Enemigos/program2.png");
+		AsignarDatos(19, 4, "Program3", 1000, 300, 1500, 350, "Ciudad Programacion", "Images/Enemigos/program3.png");
+		AsignarDatos(20, 5, "Program4", 2000, 440, 1500, 350, "Ciudad Programacion", "Images/Enemigos/program4.png");
+		AsignarDatos(21, 5, "Program5", 3000, 900, 10000, 350, "Ciudad Programacion", "Images/Enemigos/program5.png");
+	
+	}
+	public void createPoderes(){
+		AsignarPoder("Minotauro", "Directo", 10);
+		AsignarPoder("Minotauro", "Rapido", 20);
+		AsignarPoder("Minotauro", "Del Conio", 25);
+		
+		AsignarPoder("Ogro", "Garrote", 25);
+		AsignarPoder("Ogro", "Doble Garrote", 30);
+		AsignarPoder("Ogro", "Furia", 20);
+		
+		AsignarPoder("Dragon Negro", "Aereo", 30);
+		AsignarPoder("Dragon Negro", "Mordida", 20);
+		AsignarPoder("Dragon Negro", "Golpe de Cola", 40);
+		
+		AsignarPoder("Dragon OjoNegro", "Directo", 40);
+		AsignarPoder("Dragon OjoNegro", "Aliento Dragon", 50);
+		AsignarPoder("Dragon OjoNegro", "Dagas", 55);
+		
+		AsignarPoder("Dragon Gris", "Aereo", 60);
+		AsignarPoder("Dragon Gris", "Furia de Fuego", 80);
+		AsignarPoder("Dragon Gris", "Infernal", 100);
+		
+		AsignarPoder("3 Cabezas", "Triple Mordida", 60);
+		AsignarPoder("3 Cabezas", "Lluvia de Fuego", 150);
+		AsignarPoder("3 Cabezas", "Directo", 300);
+		
+		AsignarPoder("Dragon Blanco", "Rayo de Hielo", 60);
+		AsignarPoder("Dragon Blanco", "Mordida", 70);
+		AsignarPoder("Dragon Blanco", "Directo", 80);
+		
+		
+		AsignarPoder("Elfo", "Golpe Invisible", 60);
+		AsignarPoder("Elfo", "Puñal", 80);
+		AsignarPoder("Elfo", "Combo", 120);
+		
+		AsignarPoder("Guerrero", "Fuerte", 60);
+		AsignarPoder("Guerrero", "Rapido", 80);
+		AsignarPoder("Guerrero", "Combo", 120);
+		
+		AsignarPoder("Enano Arquero", "Disparo", 40);
+		AsignarPoder("Enano Arquero", "Directo", 25);
+		AsignarPoder("Enano Arquero", "Rafaga", 35);
+		
+		AsignarPoder("Enano Dorado", "Directo", 85);
+		AsignarPoder("Enano Dorado", "Puñal", 80);
+		AsignarPoder("Enano Dorado", "Maldicion", 190);
+		
+		AsignarPoder("Enano Gris", "Puño", 5);
+		AsignarPoder("Enano Gris", "Directo", 15);
+		AsignarPoder("Enano Gris", "Directo Doble", 25);
+		
+		AsignarPoder("Lider Orco", "Maldicion Orco", 300);
+		AsignarPoder("Lider Orco", "Garrote", 150);
+		AsignarPoder("Lider Orco", "Bomba", 250);
+		
+		AsignarPoder("Orco", "Directo", 200);
+		AsignarPoder("Orco", "Combo", 190);
+		AsignarPoder("Orco", "Puñal", 250);
+		
+		AsignarPoder("Orco Verde", "Furia", 150);
+		AsignarPoder("Orco Verde", "Directo", 200);
+		AsignarPoder("Orco Verde", "Garrote Doble", 250);
+		
+		AsignarPoder("Chogall", "Fisura", 200);
+		AsignarPoder("Chogall", "Espinas", 190);
+		AsignarPoder("Chogall", "Del Conio", 300);
+		
+		AsignarPoder("Demonio", "Maligno", 1000);
+		AsignarPoder("Demonio", "Invisible", 800);
+		AsignarPoder("Demonio", "Directo", 500);
+		
+		AsignarPoder("Program1", "Java", 100);
+		AsignarPoder("Program1", "Echo", 200);
+		AsignarPoder("Program", "Eclipse", 300);		
+		
+		AsignarPoder("Program2", "Hibernate", 200);
+		AsignarPoder("Program2", "Directo", 300);
+		AsignarPoder("Program2", "Directo", 500);
+		
+		AsignarPoder("Program3", "1", 300);
+		AsignarPoder("Program3", "2", 300);
+		AsignarPoder("Program3", "3", 400);
+		
+		AsignarPoder("Program4", "1", 1000);
+		AsignarPoder("Program4", "2", 2000);
+		AsignarPoder("Program4", "3", 3000);
+		
+		AsignarPoder("Program5", "1", 800);
+		AsignarPoder("Program5", "2", 2500);
+		AsignarPoder("Program5", "3", 3000);	
+	}
+	
+	private void AsignarPoder(String id, String nombre, int indice){
+		PoderEnemigo pe = new PoderEnemigo();
+		
+		pe.setNombre(nombre);
+		pe.setIndice(indice);
+		
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		PoderEnemigo peBean = new PoderEnemigo();
+		Enemigo eBean = new Enemigo();
+		eBean.setNombre(id);
+		
+		Criteria criteria = session.createCriteria(Enemigo.class).add(Restrictions.eq("nombre", eBean.getNombre()));
+		eBean = (Enemigo) criteria.uniqueResult();
+		
+		peBean.setNombre(pe.getNombre());
+		peBean.setIndice(pe.getIndice());
+		
+		peBean.setEnemigoRef(eBean);
+        
+        session.save(peBean);
+		session.getTransaction().commit();
+		session.close();		
 	}
 }
 

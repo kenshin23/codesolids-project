@@ -30,7 +30,7 @@ public class Enemigo {
 	private String nombre;
 	private int nivel;
 	private int vida;
-	private int psinergia;
+	private int xp;
 	private int velocidad;
 	private int oro;
 	private String region;
@@ -72,12 +72,12 @@ public class Enemigo {
 		this.vida = vida;
 	}
 	
-	public int getPsinergia() {
-		return psinergia;
+	public int getXp() {
+		return xp;
 	}
 	
-	public void setPsinergia(int psinergia) {
-		this.psinergia = psinergia;
+	public void setXp(int xp) {
+		this.xp = xp;
 	}
 	
 	public int getVelocidad() {

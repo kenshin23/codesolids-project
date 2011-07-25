@@ -18,6 +18,7 @@ import codesolids.bd.clases.Usuario;
 import codesolids.gui.academia.AcademiaDesktop;
 import codesolids.gui.arena.PreArena;
 import codesolids.gui.chat.ChatGui;
+import codesolids.gui.mision.Mision;
 import codesolids.gui.perfil.PerfilDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.principal.PrincipalDesktop;
@@ -229,7 +230,7 @@ public class MapaDesktop extends ContentPane {
 		}
 		private void clanesBtnClicked(ActionEvent e) {
 			removeAll();
-			add(new Clanes());
+			add(new Mision());
 		}
 		private void tiendaBtnClicked(ActionEvent e) {
 			removeAll();
