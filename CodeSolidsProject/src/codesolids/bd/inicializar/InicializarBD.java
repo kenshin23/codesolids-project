@@ -341,7 +341,7 @@ class EnemigosBD{
 		
 		AsignarPoder("Program1", "Java", 100);
 		AsignarPoder("Program1", "Echo", 200);
-		AsignarPoder("Program", "Eclipse", 300);		
+		AsignarPoder("Program1", "Eclipse", 300);		
 		
 		AsignarPoder("Program2", "Hibernate", 200);
 		AsignarPoder("Program2", "Directo", 300);
