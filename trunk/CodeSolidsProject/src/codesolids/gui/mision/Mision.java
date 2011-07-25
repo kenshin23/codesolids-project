@@ -499,6 +499,8 @@ public class Mision extends ContentPane{
 			windowPane.setVisible(true);
 			windowPane.setEnabled(true);
 			windowPane.setClosable(false);
+			windowPane.setMovable(false);
+			windowPane.setPositionX(new Extent(500));
 		    Button btnClose = new Button();
 		    btnClose.setText("Aceptar");
 		    btnClose.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
@@ -517,7 +519,7 @@ public class Mision extends ContentPane{
 		}
 
 		if(barraVida2.getValues().get(0).intValue() <= 0){
-			int xp = ((int)(Math.random()*(10))+ enemigo.getXp());
+			int xp = ((int)(Math.random()*(10))) + enemigo.getXp();
 			Column colwin = new Column();
 			
 			WindowPane windowPane = new WindowPane();
@@ -533,19 +535,21 @@ public class Mision extends ContentPane{
 			windowPane.setModal(true);
 			windowPane.setVisible(true);
 			windowPane.setClosable(false);
+			windowPane.setMovable(false);
+			windowPane.setPositionX(new Extent(500));
 			Session session = SessionHibernate.getInstance().getSession();
 			session.beginTransaction();
 			
 			personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 			personaje.setGold( personaje.getGold() + enemigo.getOro());
-			xp = xp + personaje.getXp();
-			personaje.setXp(xp);
+			personaje.setXp(personaje.getXp() + xp);
 			if(consultXpLevel(xp) > personaje.getLevel()){
 				
-				personaje.setLevel(consultXpLevel(xp));
+				personaje.setLevel(consultXpLevel(personaje.getXp() + xp));
 				msg = new Label("Ha subido de Nivel.! +" +personaje.getLevel());
 				colwin.add(msg);
 			}
+			session.update(personaje);
 		    
 			session.getTransaction().commit();
 		    session.close();
@@ -848,17 +852,6 @@ public class Mision extends ContentPane{
 			listNumber.add(0);
 			listNumber.add(150);
 			barraVida1.setValues(listNumber);
-			
-
-			//			windowPane.addWindowPaneListener(new WindowPaneListener() {
-			//
-			//				@Override
-			//				public void windowPaneClosing(WindowPaneEvent arg0) {
-			//					col.removeAll();
-			////					add(new Label ("Chao"));
-			//
-			//				}
-			//			}); 
 
 			flag=true;
 		}
@@ -889,8 +882,9 @@ public class Mision extends ContentPane{
 				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - 60) );
 
 				barraVida2.setValues(listNumber);
-				simular(dano);
+				
 		} 
+		simular(dano);
 
 	}
 	
