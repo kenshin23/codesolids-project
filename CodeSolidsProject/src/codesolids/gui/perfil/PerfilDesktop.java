@@ -107,6 +107,12 @@ public class PerfilDesktop extends ContentPane{
 	}
 
 	public Panel btnSeeClicked() {
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		session.getTransaction().commit();
+	    session.close();
 
 		Panel panel = new Panel();
 		panel.setInsets(new Insets(20, 35, 20, 20));
