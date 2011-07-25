@@ -3,13 +3,7 @@
  */
 package codesolids.gui.tienda;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
@@ -31,11 +25,16 @@ import nextapp.echo.app.Row;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-import codesolids.bd.clases.Poderes;
-import codesolids.bd.clases.Usuario;
-import codesolids.bd.clases.Personaje;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+
 import codesolids.bd.clases.Item;
+import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.PersonajeItem;
+import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
