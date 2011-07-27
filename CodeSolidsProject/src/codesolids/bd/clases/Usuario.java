@@ -38,6 +38,7 @@ public class Usuario {
 	private String password;
 	private String email;
 	private Calendar dateJoin;
+	private boolean activo;
 	
 	private Chat chatRef;
 	
@@ -80,6 +81,14 @@ public class Usuario {
 	@Temporal( TemporalType.DATE )
 	public Calendar getDateJoin() {
 		return dateJoin;
+	}
+
+	public boolean isActivo() {
+		return activo;
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
 	}
 
 	public void setDateJoin(Calendar dateJoin) {

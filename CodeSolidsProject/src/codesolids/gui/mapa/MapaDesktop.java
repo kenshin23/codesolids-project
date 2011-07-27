@@ -5,6 +5,10 @@ package codesolids.gui.mapa;
  * 
  * */
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Component;
@@ -15,6 +19,7 @@ import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import codesolids.bd.clases.Usuario;
+import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.academia.AcademiaDesktop;
 import codesolids.gui.arena.PreArena;
 import codesolids.gui.chat.ChatGui;
@@ -243,6 +248,29 @@ public class MapaDesktop extends ContentPane {
 		}
 		
 		private void chatBtnClicked(ActionEvent e) {
+			
+			Session session = null;
+			
+			session = SessionHibernate.getInstance().getSession();
+	        session.beginTransaction();
+	        
+
+			PrincipalApp pa = (PrincipalApp) ApplicationInstance.getActive();
+			Usuario usuario = pa.getUsuario();
+	        
+	        
+	        Criteria criteria = session.createCriteria(Usuario.class).add(//
+	                                               Restrictions.eq("login", usuario.getLogin()));
+
+	        usuario = (Usuario) criteria.uniqueResult();
+			
+			usuario.setActivo(true);
+
+			session.getTransaction().commit();
+			session.close();
+			
+			
+			removeAll();
 			add(new ChatGui());
 		}
 	 
