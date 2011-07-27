@@ -234,6 +234,7 @@ public class PrincipalDesktop extends ContentPane {
                         }
                         else
                         {
+                       
                     			PrincipalApp pa = (PrincipalApp) ApplicationInstance.getActive();
                     			pa.setUsuario(usuario);
                     			
