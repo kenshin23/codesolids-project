@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
@@ -20,6 +22,7 @@ import org.hibernate.annotations.Proxy;
 
 /**
  * @author Fernando Osuna
+ * @Colaborador Eduardo Granados
  */
 
 //DONE
@@ -42,6 +45,11 @@ public class Item {
 	private Ataque ataqueRef;
 	
 	protected List<PersonajeItem> personajeItemList = new ArrayList<PersonajeItem>();
+	
+	private Receta receta;
+	
+	protected List<Receta> isReagent = new ArrayList<Receta>();
+	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -143,6 +151,29 @@ public class Item {
 
 	public void setPersonajeItemList(List<PersonajeItem> personajeItemList) {
 		this.personajeItemList = personajeItemList;
+	}
+
+	@OneToOne
+	@Cascade({CascadeType.ALL})
+	
+	public Receta getReceta() {
+		return receta;
+	}
+
+	public void setReceta(Receta receta) {
+		this.receta = receta;
+	}
+
+	
+	@OneToMany(mappedBy = "reagent", orphanRemoval = true )
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
+	public List<Receta> getIsReagent() {
+		return isReagent;
+	}
+
+	public void setIsReagent(List<Receta> isReagent) {
+		this.isReagent = isReagent;
 	}
 	
 	

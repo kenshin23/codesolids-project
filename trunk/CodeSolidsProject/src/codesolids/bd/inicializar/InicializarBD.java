@@ -12,6 +12,7 @@ import codesolids.bd.hibernate.SessionHibernate;
 /**
  * @author: Antonio López
  * @Colaborador Fernando Osuna
+ * @Colaborador Eduardo Granados
  */
 
 public class InicializarBD {
@@ -31,6 +32,7 @@ public class InicializarBD {
 		
 		ItemsBD initI = new ItemsBD();
 		initI.createList();
+		initI.createListRecetas();
 		
 		EnemigosBD initE = new EnemigosBD();
 		initE.createList();
@@ -202,9 +204,61 @@ class ItemsBD{
 		AsignarDatos(14, 7, "Energia Super", 2500, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png", true);
 		
 		AsignarDatos(15, 9, "Medicina Super", 3000, 80, "Pocion", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png", true);
+		AsignarDatos(16, 3, "Bomba", 500, 20, "Bomba", "Bomba común",false,"Images/Items/bomb3.png", true);
 	
 	}
+	
+	private void asignarReceta(int r,int n, int b, String descripcion, String crear, String reagent){
+	
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		Criteria criteriaItem; 		
+		Item item = new Item();
+		Item item2 = new Item();
+
+		Receta receta = new Receta();
+	
+		receta.setCantRojas(r);
+		receta.setCantNegras(n);
+		receta.setCantBlancas(b);
+		receta.setDescripcion(descripcion);
+
+		criteriaItem = session.createCriteria(Item.class).add(Restrictions.eq("name", crear));
+		item = (Item) criteriaItem.uniqueResult();
+		criteriaItem = session.createCriteria(Item.class).add(Restrictions.eq("name", reagent));
+		item2 = (Item) criteriaItem.uniqueResult();
+		
+		item.setReceta(receta);
+		item2.getIsReagent().add(receta);
+		receta.setReagent(item2);
+		receta.setItemCrear(item);
+		
+		session.save(receta);
+		session.save(item);
+		session.save(item2);
+		
+		session.getTransaction().commit();
+		session.close();
+		
+	}
+	public void createListRecetas(){
+		
+		asignarReceta(1,5,2,"Para crear Armadura Negra", "Armadura Negra", "Armadura");
+		asignarReceta(5,3,1,"Para crear Espada Roja", "Espada Roja", "Espada");
+		asignarReceta(0,0,3,"Para crear Bomba Blanca", "Bomba Blanca", "Bomba");
+		asignarReceta(0,3,0,"Para crear Bomba Negra", "Bomba Negra", "Bomba");
+		asignarReceta(3,0,0,"Para crear Bomba Roja", "Bomba Roja", "Bomba");
+		asignarReceta(2,2,2,"Para crear Medicina Media", "Medicina Media", "Medicina Basica");
+		asignarReceta(5,5,5,"Para crear Energia Super", "Energia Super", "Energia Media");
+		asignarReceta(5,5,5,"Para crear Medicina Super", "Medicina Super", "Medicina Media");
+		
+		
+	}
+	
 }
+
+
 
 class EnemigosBD{
 	

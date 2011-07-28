@@ -3,7 +3,13 @@
  */
 package codesolids.gui.tienda;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
@@ -26,15 +32,11 @@ import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-
-import codesolids.bd.clases.Item;
-import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.PersonajeItem;
+import codesolids.bd.clases.Receta;
 import codesolids.bd.clases.Usuario;
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.Item;
+import codesolids.bd.clases.PersonajeItem;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
@@ -58,7 +60,7 @@ import echopoint.layout.HtmlLayoutData;
 
 /**
  * @author Fernando Osuna
- * 
+ * @Colaborador Eduardo Granados (refineria)
  */
 
 @SuppressWarnings("serial")
@@ -67,6 +69,7 @@ public class TiendaDesktop extends ContentPane {
 	private Usuario usuario;
 	private Personaje personaje;
 	private Item itemBD;
+	private Receta recBD;
 	private PersonajeItem personajeItem;
 	
 	private HtmlLayout htmlLayout;
@@ -74,6 +77,10 @@ public class TiendaDesktop extends ContentPane {
 	private TestTableModel tableDtaModel;
 	private TestTableModel tableDtaModelPlayer;
 	private TestTableModel tableDtaModelBuild;
+	
+	private int cantR=0;		//cantidad Rojas del pj
+	private int cantB=0;		//cantidad Blancas del pj
+	private int cantN=0;		//cantidad Negras del pj
 	
 	private ETable table;
 	private ETable tablePlayer;
@@ -295,6 +302,246 @@ public class TiendaDesktop extends ContentPane {
 		
 		return htmlLayout;
 	}
+
+
+	
+	
+//**********************************************************************************************************************************
+	
+	
+	private Component initRefineria()
+	{		
+		try{
+			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("templateiu.html"), "UTF-8");
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		HtmlLayoutData hld;
+		
+		hld = new HtmlLayoutData("head");
+		Row row = new Row();
+		
+		menu(hld, row);		
+		htmlLayout.add(row);
+		
+		hld = new HtmlLayoutData("central");
+		
+		Grid grid = new Grid(1);
+		
+		grid.add(initTopRowVender());
+		
+		TableColModel tableColModel = initTableColModelBuild();
+	    TableSelModel tableSelModel = new TableSelModel();
+
+	    tableDtaModelBuild = new TestTableModel();
+	    tableDtaModelBuild.setEditable(true);
+	    tableDtaModelBuild.setPageSize(6);
+	    
+	    tableBuild = new ETable();
+	    tableBuild.setTableDtaModel(tableDtaModelBuild);
+	    tableBuild.setTableColModel(tableColModel);
+	    tableBuild.setTableSelModel(tableSelModel);
+	    
+	    tableBuild.setBorder(new Border(1, Color.BLACK, Border.STYLE_SOLID));
+	    tableBuild.setInsets(new Insets(5, 2, 5, 2));
+	    
+	    grid.add(tableBuild);
+	    
+	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModelBuild);
+	    grid.add(tableNavigation);
+	    
+	    loadRecipes();
+	    
+		grid.setLayoutData(hld);
+		htmlLayout.add(grid);
+		
+	    Column col = new Column();
+	    col.add(initFoot());
+	    
+	    hld = new HtmlLayoutData("foot");
+	    col.setLayoutData(hld);
+		htmlLayout.add(col);
+		cantPiedras();
+		return htmlLayout;
+	}
+
+	
+	
+//**********************************************************************************************************************************	
+	
+	
+	
+	
+//**********************************************************************************************************************************	
+	
+
+	
+	private TableColModel initTableColModelBuild() {		
+		
+		TableColModel tableColModel = new TableColModel();
+
+	    TableColumn tableColumn;
+	    LabelCellRenderer lcr;
+	    
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Receta rec = (Receta) element;
+	    		return rec.getItemCrear().getName();
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(226,211,161));
+	    lcr.setForeground(Color.BLACK);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Item Crear");
+	    
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Receta rec = (Receta) element;
+	    		return rec.getCantBlancas();
+	    		//return cantB;
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(226,211,161));
+	    lcr.setForeground(Color.BLACK);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Cantidad Blancas");
+	    
+	    
+	    tableColumn = new TableColumn(){
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Receta rec = (Receta) element;
+	    		return rec.getCantNegras();
+	    		
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(226,211,161));
+	    lcr.setForeground(Color.BLACK);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Cantidad Negras");
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Receta rec = (Receta) element;
+	    		return rec.getCantRojas();
+	    		
+
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(226,211,161));
+	    lcr.setForeground(Color.BLACK);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Cantidad Rojas");
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Receta rec = (Receta) element;
+	    		
+	    		return rec.getReagent().getName();
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(226,211,161));
+	    lcr.setForeground(Color.BLACK);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("Reagent");
+	    
+	    
+	    tableColumn = new TableColumn();
+	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setHeadValue("");
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    tableColumn.setHeadCellRenderer(lcr);
+	    
+	    
+	   	tableColumn.setDataCellRenderer(initNestedCellRendererBuild());
+	    
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    return tableColModel;
+	}
+	
+	
+	//**************************************************************************************************
+	
+	
+	
+	
+	
+	
 	
 	private TableColModel initTableColModel(int tipo) {		
 		
@@ -413,8 +660,8 @@ public class TiendaDesktop extends ContentPane {
 	    	tableColumn.setDataCellRenderer(initNestedCellRenderer());
 	    else if(tipo == 2)
 	    	tableColumn.setDataCellRenderer(initNestedCellRendererSell());
-//	    else if(tipo == 3)
-//	    	tableColumn.setDataCellRenderer(initNestedCellRendererBuild());
+
+	    
 	    tableColModel.getTableColumnList().add(tableColumn);
 	    
 	    return tableColModel;
@@ -575,9 +822,9 @@ public class TiendaDesktop extends ContentPane {
 	        				  
 	        				  List<PersonajeItem> list = session.createCriteria(PersonajeItem.class).addOrder(Order.asc("id")).list();
 	        				  while(i<list.size()){
-	        					  if(list.get(i).getItemRef().getId() == item.getId()){
+	        					  if(list.get(i).getItemRef().getId() == item.getId() && list.get(i).getPersonajeRef().getId()== personaje.getId()){
 	        						  session.delete(list.get(i));
-	        						  i = list.size();
+	        						  break;
 	        					  }
 	        					  i++;
 	        				  }
@@ -588,7 +835,7 @@ public class TiendaDesktop extends ContentPane {
         					  session.getTransaction().commit();
         					  session.close();
 	        				  
-	        				  item.setUso(true);	        				  
+	        				 // item.setUso(true);	        				  
 //	        				  ret.setEnabled(false);
 	        				  tableDtaModelPlayer.del(row);
 	        				
@@ -605,6 +852,226 @@ public class TiendaDesktop extends ContentPane {
 	    return nestedCellRenderer;
 	}
 	
+	
+	
+	
+	//**********************************************************************************************************************************
+	
+	
+	
+	
+	
+	private CellRenderer initNestedCellRendererBuild() {
+		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
+		nestedCellRenderer.setBackground(new Color(226,211,161));
+	    
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override    
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+	          
+	          Button ret = new Button("Ver");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Ver");
+
+	          ret.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	              btnVerClicked(row, 3);
+	            }
+	          });
+	          return ret;
+	        }
+	    });
+		
+		
+		
+		
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          Receta rec = (Receta) tableDtaModelBuild.getElementAt(row);
+	          Item item=rec.getReagent();										
+	          final Button ret = new Button("Crear");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Crear Item");
+
+	          if ( consultBDBuild(item,rec.getCantRojas(),rec.getCantBlancas(),rec.getCantNegras()) )
+	          {	  
+	        		  ret.addActionListener(new ActionListener() {
+	        			  public void actionPerformed(ActionEvent e) {
+	        				  btnBuyClicked(row);
+	        			  }	        		  
+	        			  private void btnBuyClicked(int row) {
+        					  Session session = SessionHibernate.getInstance().getSession();
+        					  session.beginTransaction();
+        					  
+	        				  Receta rec = (Receta) tableDtaModelBuild.getElementAt(row);
+	        				  Item itemCrear=rec.getItemCrear();
+	        				  
+	        				  personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+	    
+	      				  
+	        				  
+	        				  personajeItem = new PersonajeItem();
+	        				  personajeItem.setPersonajeRef(personaje);
+	        				  personajeItem.setItemRef(itemCrear);
+	        				  personajeItem.setEquipado(false);
+	        				  
+	        				  itemBD = new Item();
+	        				  
+	        				  personaje.getPersonajeItemList().add(personajeItem);
+	        				  itemBD.getPersonajeItemList().add(personajeItem);	        				  
+	        				  
+        					  
+	        				  
+	        				  
+	        				  Item itemElim = rec.getReagent();
+	        				  
+	        				  List<PersonajeItem> list = session.createCriteria(PersonajeItem.class).addOrder(Order.asc("id")).list();
+	        				  int i=0;
+	        				  while(i<list.size()){
+	        					  if(list.get(i).getItemRef().getId() == itemElim.getId() && list.get(i).getPersonajeRef().getId()== personaje.getId()){
+	        						  session.delete(list.get(i));
+	        						  break;
+	        					  }
+	        					  i++;
+	        				  }
+
+	        				  eliminarPiedra(rec.getCantRojas(),"Piedra Roja");
+	        				  eliminarPiedra(rec.getCantBlancas(),"Piedra Blanca");
+	        				  eliminarPiedra(rec.getCantNegras(),"Piedra Negra");
+	        				  
+        					  session.getTransaction().commit();
+        					  session.close();
+	        				  
+	        				  
+        					  if ( consultBDBuild(itemElim,rec.getCantRojas(),rec.getCantBlancas(),rec.getCantNegras()) ){
+        						  ret.setEnabled(true);
+        						 }
+        					  else
+        						  ret.setEnabled(false);
+	        			  }
+	        		  });	        	  
+	          }
+	          else{
+	        	  ret.setEnabled(false);	        	  
+	          }
+	          return ret;
+	        }
+	    });
+	
+		
+		
+		
+	    return nestedCellRenderer;
+	}
+	
+	
+	private void eliminarPiedra(int cantidad, String nombre){
+		
+
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		List<PersonajeItem> list = session.createCriteria(PersonajeItem.class).addOrder(Order.asc("id")).list();
+		  int i=0;
+		  int count=0;
+		  while(i<list.size()){
+			  
+			  if (count ==cantidad){
+				  break;
+			  }
+			  if(list.get(i).getItemRef().getName().equals(nombre) && list.get(i).getPersonajeRef().getId()== personaje.getId()){
+				  session.delete(list.get(i));
+				  count++;
+			  }
+			  i++;
+		  }
+		  session.getTransaction().commit();
+		  session.close();
+	}
+	
+	
+	private boolean consultBDBuild(Item item,int r,int b, int n){
+		
+		
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		
+	
+		
+		for (PersonajeItem iterator : personaje.getPersonajeItemList()) {
+			
+				
+				if(iterator.getItemRef().getId()==item.getId()){
+					
+					if(cantR >= r && cantB>=b && cantN >= n){
+							session.close();
+							return true;
+					}
+				}
+				
+		    }
+		
+		session.close();
+		 return false;
+	}
+	
+	
+	
+	
+	private void cantPiedras(){
+		
+		cantR=0;
+		cantB=0;
+		cantN=0;
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		
+		
+		
+		for (PersonajeItem iterator : personaje.getPersonajeItemList()) {
+			
+				
+				if(iterator.getItemRef().getName().equals("Piedra Roja")){
+					cantR=cantR+1;
+				}
+				if(iterator.getItemRef().getName().equals("Piedra Negra")){
+					cantN=cantN+1;
+				}
+				if(iterator.getItemRef().getName().equals("Piedra Blanca")){
+					cantB=cantB+1;
+				}
+				
+				
+		    }
+		
+		session.close();
+	}
+	
+	
+	
+	//**********************************************************************************************************************************
+	
+	
+	
+	
 	private void btnVerClicked(int row, int t) 
 	{
 		Session session = SessionHibernate.getInstance().getSession();
@@ -612,25 +1079,47 @@ public class TiendaDesktop extends ContentPane {
 		
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 		Item item = new Item();
+		Receta rec = new Receta();
 		if (t ==1 )
 			item = (Item) tableDtaModel.getElementAt(row);
 		else if (t ==2 )
 			item = (Item) tableDtaModelPlayer.getElementAt(row);
+		else if (t==3 )
+			 rec= (Receta) tableDtaModelBuild.getElementAt(row);
 		
-		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("id", item.getId()));
-		itemBD = (Item) criteria.uniqueResult();
-		
-		session.getTransaction().commit();
-		session.close();
-		
-		if (itemBD.getId() == item.getId())
-		{
-			name.setText("" + itemBD.getName());
-			index.setText("Indice: "+ itemBD.getIndex());
-			description.setText(itemBD.getDescripcion());
+		if(t==3){
+			
+			Criteria criteria = session.createCriteria(Receta.class).add(Restrictions.eq("id", rec.getId()));
+			recBD = (Receta) criteria.uniqueResult();
+			
+			session.getTransaction().commit();
+			session.close();
+			
+			if (recBD.getId() == rec.getId())
+			{
+				name.setText("++");
+				index.setText("++");
+				description.setText(recBD.getDescripcion());
+			
+			}
 			
 		}
-
+		else
+		{
+			Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("id", item.getId()));
+			itemBD = (Item) criteria.uniqueResult();
+		
+			session.getTransaction().commit();
+			session.close();
+		
+			if (itemBD.getId() == item.getId())
+			{
+				name.setText("" + itemBD.getName());
+				index.setText("Indice: "+ itemBD.getIndex());
+				description.setText(itemBD.getDescripcion());
+			
+			}
+		}
 	}
 	
 	private Column initFoot() {		
@@ -981,6 +1470,33 @@ public class TiendaDesktop extends ContentPane {
 		menu.setCellSpacing(new Extent(15));
 		row.add(menu);
 		
+		
+		
+		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		Button btnRefin = new Button();
+		btnRefin.setText("Refineria");
+		btnRefin.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+		btnRefin.setStyle(Styles1.DEFAULT_STYLE);
+		btnRefin.setToolTipText("Crear Items");		
+		btnRefin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				removeAll();
+				add(initRefineria());
+			}
+		});		
+		menu.add(btnRefin);
+		menu.setCellSpacing(new Extent(15));
+		row.add(menu);
+		
+		menu.setCellSpacing(new Extent(15));
+		row.add(menu);
+		
+		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		
+		
+		
+		
+		
 		Button returnButton = new Button();
 		returnButton.setText("Salir");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
@@ -1067,4 +1583,38 @@ public class TiendaDesktop extends ContentPane {
 		session.getTransaction().commit();
 		session.close();		
 	}
+	
+	
+	
+	
+	
+	
+	private void loadRecipes()
+	{
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		List<Receta> list = session.createCriteria(Receta.class).addOrder(Order.asc("id")).list();
+
+		for(Receta obj : list)
+		{
+
+			tableDtaModelBuild.add(obj);
+			
+		}
+		session.getTransaction().commit();
+		session.close();		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
