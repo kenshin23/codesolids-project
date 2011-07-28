@@ -4,9 +4,11 @@
 package codesolids.gui.tienda;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -32,6 +34,7 @@ import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
+import codesolids.bd.clases.Enemigo;
 import codesolids.bd.clases.Receta;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.clases.Personaje;
@@ -646,10 +649,44 @@ public class TiendaDesktop extends ContentPane {
 	    tableColModel.getTableColumnList().add(tableColumn);
 	    
 	    tableColumn.setWidth(new Extent(50));
-	    tableColumn.setHeadValue("Oro");	    
+	    tableColumn.setHeadValue("Oro");
+	    
+	    if(tipo == 2){
+		    tableColumn = new TableColumn(){      
+		    	@Override
+		    	public Object getValue(ETable table, Object element) {
+		    		Item item = (Item) element;
+		    		Session session = SessionHibernate.getInstance().getSession();
+		    		session.beginTransaction();
+		    		String queryStr = "SELECT personajeItemList FROM Item WHERE personajeref_id = :idPlayer AND name= :nameIt";
+		    		Query query  = session.createQuery(queryStr);
+		    		query.setInteger("idPlayer", personaje.getId());
+		    		query.setString("nameIt", item.getName());
+		    		List<PersonajeItem> list = query.list();
+		    		session.getTransaction().commit();			  	        
+		    		session.close();
+		    		return list.size();
+		    	}
+		    };
+		    
+		    lcr = new LabelCellRenderer();
+		    lcr.setBackground(new Color(87, 205, 211));
+		    lcr.setForeground(Color.WHITE);
+		    tableColumn.setHeadCellRenderer(lcr);
+
+		    lcr = new LabelCellRenderer();
+		    lcr.setBackground(new Color(226,211,161));
+		    lcr.setForeground(Color.BLACK);
+		    
+		    tableColumn.setDataCellRenderer(lcr);
+		    tableColModel.getTableColumnList().add(tableColumn);
+		    
+		    tableColumn.setWidth(new Extent(100));
+		    tableColumn.setHeadValue("Cantidad");
+	    }
 	    
 	    tableColumn = new TableColumn();
-	    tableColumn.setWidth(new Extent(50));
+	    tableColumn.setWidth(new Extent(100));
 	    tableColumn.setHeadValue("");
 	    
 	    lcr = new LabelCellRenderer();
@@ -837,7 +874,22 @@ public class TiendaDesktop extends ContentPane {
 	        				  
 	        				 // item.setUso(true);	        				  
 //	        				  ret.setEnabled(false);
-	        				  tableDtaModelPlayer.del(row);
+        					  session = SessionHibernate.getInstance().getSession();
+        					  session.beginTransaction();
+        					  
+        					  String queryStr = "SELECT personajeItemList FROM Item WHERE personajeref_id = :idPlayer AND name= :nameIt";
+        					  Query query  = session.createQuery(queryStr);
+        					  query.setInteger("idPlayer", personaje.getId());
+        					  query.setString("nameIt", item.getName());
+        					  List<Object> resultQuery = query.list();
+        					  
+        					  if(!(resultQuery.size()>0)){
+    	        				  tableDtaModelPlayer.del(row);        						  
+        					  }
+	        				  tableDtaModelPlayer.currPageChanged();
+	        				  
+	        				  session.getTransaction().commit();
+        					  session.close();
 	        				
 	        			  }
 	        		  });	        	  
@@ -1521,7 +1573,7 @@ public class TiendaDesktop extends ContentPane {
 	
 	private void loadBD()
 	{
-		
+		listItem = new ArrayList<Item>();
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
@@ -1544,6 +1596,7 @@ public class TiendaDesktop extends ContentPane {
 
 						
 			tableDtaModel.add(item);
+			listItem.add(item);
 
 		}			
 		session.getTransaction().commit();
@@ -1556,35 +1609,58 @@ public class TiendaDesktop extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
+		List<Item> listBD = session.createCriteria(Item.class).addOrder(Order.asc("id")).list();
+		session.getTransaction().commit();
+		session.close();
+		
+		session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 		
-		List<PersonajeItem> list = session.createCriteria(PersonajeItem.class).addOrder(Order.asc("id")).list();
-
-
-		for(PersonajeItem obj : list)
-		{
-			Item item = new Item();
-			if(obj.getPersonajeRef().getId() == personaje.getId()){
-				item.setId(obj.getItemRef().getId());
-				item.setLevel(obj.getItemRef().getLevel());
-				item.setName(obj.getItemRef().getName());
-				item.setPrice(obj.getItemRef().getPrice());
-				item.setIndex(obj.getItemRef().getIndex());
-				item.setTipo(obj.getItemRef().getTipo());
-				item.setDescripcion(obj.getItemRef().getDescripcion());
-				item.setUso(obj.getItemRef().isUso());
-				item.setDirImage(obj.getItemRef().getDirImage());
-				item.setInshop(obj.getItemRef().isInshop());
-
-				tableDtaModelPlayer.add(item);
-			}
-
-		}			
+		for(Item item: listBD){
+			Item it = item;
+			
+			String queryStr = "SELECT personajeItemList FROM Item WHERE personajeref_id = :idPlayer AND name= :nameIt";
+			Query query  = session.createQuery(queryStr);
+			query.setInteger("idPlayer", personaje.getId());
+			query.setString("nameIt", it.getName());
+			List<Object> list = query.list();
+			
+			addItemTable(list);
+		}		
+			
 		session.getTransaction().commit();
 		session.close();		
 	}
 	
+	public void addItemTable(List<Object> resultQuery) {
+		Iterator<Object> iter = resultQuery.iterator();
+  	    if (!iter.hasNext()) {
+  	    	return;
+  	    }
+  	    while (iter.hasNext()) {
+			PersonajeItem it = (PersonajeItem) iter.next();
+			cargar(it);
+			return;
+  	    }    		
+	}
 	
+	private void cargar(PersonajeItem obj){
+		Item item = new Item();
+		item.setId(obj.getItemRef().getId());
+		item.setLevel(obj.getItemRef().getLevel());
+		item.setName(obj.getItemRef().getName());
+		item.setPrice(obj.getItemRef().getPrice());
+		item.setIndex(obj.getItemRef().getIndex());
+		item.setTipo(obj.getItemRef().getTipo());
+		item.setDescripcion(obj.getItemRef().getDescripcion());
+		item.setUso(obj.getItemRef().isUso());
+		item.setDirImage(obj.getItemRef().getDirImage());
+		item.setInshop(obj.getItemRef().isInshop());
+
+		tableDtaModelPlayer.add(item);
+	}
 	
 	
 	
