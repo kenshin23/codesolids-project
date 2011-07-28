@@ -429,15 +429,17 @@ public class Mision extends ContentPane{
 		if(personaje.getXp() > enemigo.getVelocidad()){
 			
 			lblAttack1.setText("Turno");
-			lblAttack2.setText(""+personaje.getUsuarioRef().getLogin());
+			lblAttack2.setText(""+personaje.getUsuarioRef().getLogin()+" "+personaje.getHp());
 
 			col.add(CreateButtonSpecial());
 			col.add(CreateButtonBasic());
 		}
 		else{
 			int dano = ((int)(Math.random()*(3)));
-			simular(dano);
-			
+			PoderEnemigo pe = new PoderEnemigo();
+			pe = consultAtaque(dano);
+			simular(pe);
+			FinalBattle();
 			col.add(CreateButtonSpecial());
 			col.add(CreateButtonBasic());
 		}		
@@ -509,6 +511,7 @@ public class Mision extends ContentPane{
 		    btnClose.setStyle(Styles1.DEFAULT_STYLE);
 		    btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				flag = false;
 				removeAll();
 				add(initRegion());
 				}
@@ -563,6 +566,7 @@ public class Mision extends ContentPane{
 		    btnClose.setStyle(Styles1.DEFAULT_STYLE);
 		    btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				flag = false;
 				removeAll();
 				add(initRegion());
 				}
@@ -573,32 +577,32 @@ public class Mision extends ContentPane{
 	}
 	
 	private int consultXpLevel(int num){
-		if(num <= 100){
+		if(num <= 100 && personaje.getLevel() == 1){
 			return 1;
 		}
-		else if(num > 100 && num <=300){
+		else if(num <=300 && personaje.getLevel() == 2 || personaje.getLevel() == 1){
 			return 2;
 		}
 		
-		else if(num > 300 && num <=600){
+		else if(num <=600 && personaje.getLevel() == 3 || personaje.getLevel() == 2) {
 			return 3;
 		}
-		else if(num > 600 && num <=1000){
+		else if(num <=1000 && personaje.getLevel() == 4 || personaje.getLevel() == 3){
 			return 4;
 		}
-		else if(num > 1000 && num <=1500){
+		else if(num <=1500 && personaje.getLevel() == 5 || personaje.getLevel() == 4){
 			return 5;
 		}
-		else if(num > 1500 && num <=2000){
+		else if(num <=2000 && personaje.getLevel() == 6 || personaje.getLevel() == 5){
 			return 6;
 		}
-		else if(num > 2000 && num <=2500){
+		else if(num <=2500 && personaje.getLevel() == 7 || personaje.getLevel() == 6){
 			return 7;
 		}
-		else if(num > 2500 && num <=3000){
+		else if(num <=3000 && personaje.getLevel() == 8 || personaje.getLevel() == 7){
 			return 8;
 		}
-		else if(num > 3000 && num <=3500){
+		else if(num <=3500 && personaje.getLevel() == 9 || personaje.getLevel() == 8){
 			return 9;
 		}
 		else{
@@ -793,24 +797,26 @@ public class Mision extends ContentPane{
 	public void b1Clicked(Poderes poder){
 
 		int dano = ((int)(Math.random()*(3)));
+		PoderEnemigo pe = new PoderEnemigo();
+		pe = consultAtaque(dano);
 
 		if( (barraVida2.getValues().get(0).intValue() - poder.getDamage()<=0) && flag==false ){
 			listNumber = new ArrayList<Number>();
 			listNumber.add(0);
-			listNumber.add(150);
+			listNumber.add(enemigo.getVida());
 			barraVida2.setValues(listNumber);
-			FinalBattle();
 
 			flag=true;
 		}
 
-		else{
+		else if( (barraVida2.getValues().get(0).intValue() - poder.getDamage() > 0) && flag==false ){
 			if(barraPsinergia.getValues().get(0).intValue() < poder.getPsinergia() )
 			{
 				labelCp.setText(personaje.getMp()+"/"+barraPsinergia.getValues().get(0).intValue());
 			}
 
 			else{
+
 				listNumber = new ArrayList<Number>();
 				listNumber.add(barraVida2.getValues().get(0).intValue() - poder.getDamage()); 
 				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - poder.getDamage()) );
@@ -824,12 +830,24 @@ public class Mision extends ContentPane{
 				
 				labelCp.setText(personaje.getMp()+"/"+barraPsinergia.getValues().get(0).intValue());
 
-				simular(dano);
-			}
-		}
-	}
+				simular(pe);
 
-	private void simular(int dano){
+			}
+		} 
+
+		if ( (barraVida1.getValues().get(0).intValue() <=0) && flag==false) {
+
+			listNumber = new ArrayList<Number>();
+			listNumber.add(0);
+			listNumber.add(personaje.getHp());
+			barraVida1.setValues(listNumber);
+
+			flag=true;
+		}
+		FinalBattle();
+	}
+	
+	private PoderEnemigo consultAtaque(int ataque){
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		String queryStr = "FROM PoderEnemigo WHERE enemigoref_id = :idEnemy";
@@ -840,52 +858,55 @@ public class Mision extends ContentPane{
 		session.getTransaction().commit();			  	        
 		session.close();
 		
+		return list.get(ataque);
+	}
+
+	private void simular(PoderEnemigo poder){
+		FinalBattle();
 		listNumber = new ArrayList<Number>();
-		listNumber.add(barraVida1.getValues().get(0).intValue() - list.get(dano).getIndice()); 
-		listNumber.add( personaje.getHp() - (barraVida1.getValues().get(0).intValue() - list.get(dano).getIndice()) );
+		listNumber.add(barraVida1.getValues().get(0).intValue() - poder.getIndice()); 
+		listNumber.add( personaje.getHp() - (barraVida1.getValues().get(0).intValue() - poder.getIndice()) );
 
 		barraVida1.setValues(listNumber);
 		
-		if ( (barraVida1.getValues().get(0).intValue() - list.get(dano).getIndice() <=0) && flag==false) {
+		lblAttack1.setText(""+barraVida1.getValues().get(0).intValue()+" "+enemigo.getNombre());
+		lblAttack2.setText("Lanzo ataque "+poder.getNombre() +" -"+ poder.getIndice());
+	}
+	
+	private void btnHitClicked()
+	{		
+		int dano = ((int)(Math.random()*(3)));
+		PoderEnemigo pe = new PoderEnemigo();
+		pe = consultAtaque(dano);
+
+		if( (barraVida2.getValues().get(0).intValue() - 40<=0) && flag==false ){
+			listNumber = new ArrayList<Number>();
+			listNumber.add(0);
+			listNumber.add(enemigo.getVida());
+			barraVida2.setValues(listNumber);
+
+			flag=true;
+		}
+
+		else if( (barraVida2.getValues().get(0).intValue() - 40 > 0) && flag==false ){
+				listNumber = new ArrayList<Number>();
+				listNumber.add(barraVida2.getValues().get(0).intValue() - 40); 
+				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - 40) );
+
+				barraVida2.setValues(listNumber);
+				simular(pe);
+		} 
+
+		if ( (barraVida1.getValues().get(0).intValue() <=0) && flag==false) {
 
 			listNumber = new ArrayList<Number>();
 			listNumber.add(0);
-			listNumber.add(150);
+			listNumber.add(personaje.getHp());
 			barraVida1.setValues(listNumber);
 
 			flag=true;
 		}
 		FinalBattle();
-		lblAttack1.setText(""+enemigo.getNombre());
-		lblAttack2.setText("Lanzo ataque "+list.get(dano).getNombre());
-	}
-	
-	private void btnHitClicked()
-	{
-		
-		int dano = ((int)(Math.random()*(3)));
-
-		if( (barraVida2.getValues().get(0).intValue() - 60<=0) && flag==false ){
-			listNumber = new ArrayList<Number>();
-			listNumber.add(0);
-			listNumber.add(150);
-			barraVida2.setValues(listNumber);
-			
-			FinalBattle();
-
-			flag=true;
-		}
-
-		else{
-				listNumber = new ArrayList<Number>();
-				listNumber.add(barraVida2.getValues().get(0).intValue() - 60); 
-				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - 60) );
-
-				barraVida2.setValues(listNumber);
-				
-		} 
-		simular(dano);
-
 	}
 	
 	private void consultItemEnergia(){
@@ -934,9 +955,10 @@ public class Mision extends ContentPane{
 	{		
 		
 		int dano = ((int)(Math.random()*(3)));
+		PoderEnemigo pe = new PoderEnemigo();
+		pe = consultAtaque(dano);		
 		
-		
-		if((barraPsinergia.getValues().get(0).intValue() + obj.getItemRef().getIndex()) >= 100)
+		if((barraPsinergia.getValues().get(0).intValue() + obj.getItemRef().getIndex()) >= personaje.getMp())
 		{	
 			labelCp.setText(personaje.getMp()+"/"+personaje.getMp());	
 			
@@ -945,7 +967,7 @@ public class Mision extends ContentPane{
 			listNumber.add(0);
 			barraPsinergia.setValues(listNumber);
 			
-			simular(dano);
+			simular(pe);
 		}
 		else
 		{
@@ -960,16 +982,24 @@ public class Mision extends ContentPane{
 			
 			labelCp.setText(personaje.getMp()+"/"+barraPsinergia.getValues().get(0).intValue());
 			
-			simular(dano);
+			simular(pe);
 		}
+		if ( (barraVida1.getValues().get(0).intValue() <=0) && flag==false) {
+
+			listNumber = new ArrayList<Number>();
+			listNumber.add(0);
+			listNumber.add(personaje.getHp());
+			barraVida1.setValues(listNumber);
+
+			flag=true;
+		}
+		FinalBattle();
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		session.delete(obj);
 
 		session.getTransaction().commit();			  	        
-		session.close();
-		
-		
+		session.close();		
 	}
 	
 	private void consultItemMedicina(){
@@ -1017,12 +1047,13 @@ public class Mision extends ContentPane{
 	}
 	
 	private void btnLoadHpClicked(PersonajeItem obj)
-	{		
-		
+	{				
 		int dano = ((int)(Math.random()*(3)));
+		PoderEnemigo pe = new PoderEnemigo();
+		pe = consultAtaque(dano);
 		
 		
-		if((barraVida1.getValues().get(0).intValue() + obj.getItemRef().getIndex()) >= 100)
+		if((barraVida1.getValues().get(0).intValue() + obj.getItemRef().getIndex()) >= personaje.getHp())
 		{	
 			labelCp.setText(personaje.getHp()+"/"+personaje.getHp());	
 			
@@ -1031,7 +1062,7 @@ public class Mision extends ContentPane{
 			listNumber.add(0);
 			barraVida1.setValues(listNumber);
 			
-			simular(dano);
+			simular(pe);
 		}
 		else
 		{
@@ -1046,8 +1077,18 @@ public class Mision extends ContentPane{
 			
 			labelCp.setText(personaje.getHp()+"/"+barraVida1.getValues().get(0).intValue());
 			
-			simular(dano);
+			simular(pe);
 		}
+		if ( (barraVida1.getValues().get(0).intValue() <=0) && flag==false) {
+
+			listNumber = new ArrayList<Number>();
+			listNumber.add(0);
+			listNumber.add(personaje.getHp());
+			barraVida1.setValues(listNumber);
+
+			flag=true;
+		}
+		FinalBattle();
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		session.delete(obj);
@@ -1104,27 +1145,38 @@ public class Mision extends ContentPane{
 	{
 
 		int dano = ((int)(Math.random()*(3)));
+		PoderEnemigo pe = new PoderEnemigo();
+		pe = consultAtaque(dano);
 
 		if( (barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()<=0) && flag==false ){
 			listNumber = new ArrayList<Number>();
 			listNumber.add(0);
-			listNumber.add(150);
+			listNumber.add(enemigo.getVida());
 			barraVida2.setValues(listNumber);
-
-			FinalBattle();
 
 			flag=true;
 		}
 
-		else{
+		else if( (barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()>0) && flag==false ){
 				listNumber = new ArrayList<Number>();
 				listNumber.add(barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()); 
 				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()) );
 
 				barraVida2.setValues(listNumber);
 
-				simular(dano);
+				simular(pe);
 			}
+		if ( (barraVida1.getValues().get(0).intValue()<=0) && flag==false) {
+
+			listNumber = new ArrayList<Number>();
+			listNumber.add(0);
+			listNumber.add(personaje.getHp());
+			barraVida1.setValues(listNumber);
+			
+
+			flag=true;
+		}
+		FinalBattle();
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		String queryStr = "FROM Item WHERE tipo = :tipoB";
