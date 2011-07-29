@@ -1,6 +1,7 @@
 package com.minotauro.echo.table.renderer;
 
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
@@ -13,6 +14,9 @@ import nextapp.echo.app.layout.GridLayoutData;
 
 import com.minotauro.echo.table.base.CellRenderer;
 import com.minotauro.echo.table.base.ETable;
+
+import codesolids.gui.principal.PrincipalApp;
+import codesolids.gui.tienda.ImageReferenceCache;
 
 import echopoint.ImageIcon;
 
@@ -40,9 +44,9 @@ public class ImageCellRenderer implements CellRenderer {
 	@Override
 	public Component getCellRenderer(ETable table, Object value, int col,
 			int row) {
-		
 		ImageReference img = new ResourceImageReference(value.toString());
-		ImageIcon retImg = new ImageIcon(img);
+		ImageIcon retImg = new ImageIcon();
+		retImg.setIcon(ImageReferenceCache.getInstance().getImageReference(value.toString()));
 		
 		if (foreground != null) {
 			retImg.setForeground(foreground);

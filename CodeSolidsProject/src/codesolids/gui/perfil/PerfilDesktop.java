@@ -38,6 +38,7 @@ import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
+import codesolids.gui.tienda.ImageReferenceCache;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 
@@ -118,7 +119,7 @@ public class PerfilDesktop extends ContentPane{
 		panel.setInsets(new Insets(20, 35, 20, 20));
 		panel.setAlignment(Alignment.ALIGN_CENTER);
 		
-		ImageReference imgR = new ResourceImageReference("Images/cartel3.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/cartel3.png");
 		FillImage imgF = new FillImage(imgR);
 		panel.setWidth(new Extent(950));
 		panel.setHeight(new Extent(350));
@@ -132,7 +133,7 @@ public class PerfilDesktop extends ContentPane{
 		Column col = new Column();
 		col.setCellSpacing(new Extent(9));
 		
-	    ResourceImageReference ir = new ResourceImageReference(personaje.getDirImage());
+	    ImageReference ir = ImageReferenceCache.getInstance().getImageReference(personaje.getDirImage());
 		
 		Label lblImage = new Label(ir);
 		panelImage.add(lblImage);
@@ -272,20 +273,20 @@ public class PerfilDesktop extends ContentPane{
 		col.add(lblData);
 		lblData = new Label("Psinergia "+ personaje.getMp());
 		col.add(lblData);
-		lblData = new Label("Defensa ");
+		lblData = new Label("Defensa " + personaje.getDefensa());
 		col.add(lblData);
-		lblData = new Label("Velocidad ");
+		lblData = new Label("Velocidad " + personaje.getSpeed());
 		col.add(lblData);
-		lblData = new Label("Ataque Básico ");
+		lblData = new Label("Ataque Básico "+ personaje.getAtaqueBasico());
 		col.add(lblData);
-		lblData = new Label("Ataque Especial ");
+		lblData = new Label("Ataque Especial "+personaje.getAtaqueEspecial());
 		col.add(lblData);
 		rowTab.add(col);
 		
 		col = new Column();
 		col.setCellSpacing(new Extent(4));
 		Row row = new Row();
-		lblData = new Label("Subir Ptos - Disponibles 0");
+		lblData = new Label("Subir Ptos - Disponibles " +personaje.getPuntos());
 		lblData.setFont(new Font(null, 1 , new Extent(12)));
 		
 		col.add(lblData);
