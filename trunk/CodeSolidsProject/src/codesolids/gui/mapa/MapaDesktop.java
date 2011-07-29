@@ -80,6 +80,8 @@ public class MapaDesktop extends ContentPane {
 		ImageReference tienda_des =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/tienda_des.png");
 		ImageReference chat_sel =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/chat_sel.png");
 		ImageReference chat_des =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/chat_des.png");
+		ImageReference misiones_sel =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/misiones_sel.png");
+		ImageReference misiones_des =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/misiones_des.png");
 		
 
 		hld = new HtmlLayoutData("botonPerfil");
@@ -87,8 +89,8 @@ public class MapaDesktop extends ContentPane {
 		perfilBtn.setEnabled(true);
 		perfilBtn.setVisible(true);
 		perfilBtn.setRolloverEnabled(true);
-		perfilBtn.setHeight(new Extent(204, Extent.PX));
-		perfilBtn.setWidth(new Extent(204, Extent.PX));
+		perfilBtn.setHeight(new Extent(80, Extent.PX));
+		perfilBtn.setWidth(new Extent(177, Extent.PX));
 		perfilBtn.setBackgroundImage(new FillImage(perfil_sel));
 		perfilBtn.setRolloverBackgroundImage(new FillImage(perfil_des));
 		perfilBtn.addActionListener(new ActionListener() {
@@ -107,8 +109,8 @@ public class MapaDesktop extends ContentPane {
 		academiaBtn.setBackgroundImage(new FillImage(academia_des));
 		academiaBtn.setRolloverEnabled(true);
 		academiaBtn.setRolloverBackgroundImage(new FillImage(academia_sel));
-		academiaBtn.setHeight(new Extent(312, Extent.PX));
-		academiaBtn.setWidth(new Extent(346, Extent.PX));
+		academiaBtn.setHeight(new Extent(349, Extent.PX));
+		academiaBtn.setWidth(new Extent(329, Extent.PX));
 		academiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				academiaBtnClicked();
@@ -121,11 +123,11 @@ public class MapaDesktop extends ContentPane {
 		Button rankingBtn = new Button();
 		rankingBtn.setEnabled(true);
 		rankingBtn.setRolloverBackgroundImage(new FillImage(ranking_sel));
-		rankingBtn.setHeight(new Extent(260, Extent.PX));
+		rankingBtn.setHeight(new Extent(124, Extent.PX));
 		rankingBtn.setVisible(true);
 		rankingBtn.setBackgroundImage(new FillImage(ranking_des));
 		rankingBtn.setRolloverEnabled(true);
-		rankingBtn.setWidth(new Extent(149, Extent.PX));
+		rankingBtn.setWidth(new Extent(236, Extent.PX));
 		rankingBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					rankingBtnClicked(e);
@@ -140,8 +142,8 @@ public class MapaDesktop extends ContentPane {
 		arenaBtn.setRolloverBackgroundImage(new FillImage(arena_sel));
 		arenaBtn.setBackgroundImage(new FillImage(arena_des));
 		arenaBtn.setRolloverEnabled(true);
-		arenaBtn.setWidth(new Extent(196, Extent.PX));
-		arenaBtn.setHeight(new Extent(146, Extent.PX));
+		arenaBtn.setWidth(new Extent(272, Extent.PX));
+		arenaBtn.setHeight(new Extent(205, Extent.PX));
 		arenaBtn.setVisible(true);
 		arenaBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -157,9 +159,9 @@ public class MapaDesktop extends ContentPane {
 		clanesBtn.setRolloverBackgroundImage(new FillImage(clanes_sel));
 		clanesBtn.setBackgroundImage(new FillImage(clanes_des));
 		clanesBtn.setRolloverEnabled(true);
-		clanesBtn.setHeight(new Extent(179, Extent.PX));
+		clanesBtn.setHeight(new Extent(80, Extent.PX));
 		clanesBtn.setVisible(true);
-		clanesBtn.setWidth(new Extent(285, Extent.PX));
+		clanesBtn.setWidth(new Extent(149, Extent.PX));
 		clanesBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					clanesBtnClicked(e);
@@ -174,8 +176,8 @@ public class MapaDesktop extends ContentPane {
 		tiendaBtn.setRolloverBackgroundImage(new FillImage(tienda_sel));
 		tiendaBtn.setBackgroundImage(new FillImage(tienda_des));
 		tiendaBtn.setRolloverEnabled(true);
-		tiendaBtn.setHeight(new Extent(208, Extent.PX));
-		tiendaBtn.setWidth(new Extent(229, Extent.PX));
+		tiendaBtn.setHeight(new Extent(137, Extent.PX));
+		tiendaBtn.setWidth(new Extent(231, Extent.PX));
 		tiendaBtn.setVisible(true);
 		tiendaBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -192,8 +194,8 @@ public class MapaDesktop extends ContentPane {
 		chatBtn.setBackgroundImage(new FillImage(chat_des));
 		chatBtn.setRolloverEnabled(true);
 		chatBtn.setRolloverBackgroundImage(new FillImage(chat_sel));
-		chatBtn.setHeight(new Extent(139, Extent.PX));
-		chatBtn.setWidth(new Extent(144, Extent.PX));
+		chatBtn.setHeight(new Extent(47, Extent.PX));
+		chatBtn.setWidth(new Extent(47, Extent.PX));
 		chatBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					chatBtnClicked(e);
@@ -201,6 +203,23 @@ public class MapaDesktop extends ContentPane {
 			});
 		chatBtn.setLayoutData(hld);	
 		htmlLayout.add(chatBtn);
+		
+		hld = new HtmlLayoutData("botonMisiones");
+		Button misionesBtn = new Button();
+		misionesBtn.setEnabled(true);
+		misionesBtn.setVisible(true);
+		misionesBtn.setRolloverEnabled(true);
+		misionesBtn.setHeight(new Extent(205, Extent.PX));
+		misionesBtn.setWidth(new Extent(249, Extent.PX));
+		misionesBtn.setBackgroundImage(new FillImage(misiones_des));
+		misionesBtn.setRolloverBackgroundImage(new FillImage(misiones_sel));
+		misionesBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				misionesBtnClicked();
+			}
+		});
+		misionesBtn.setLayoutData(hld);
+		htmlLayout.add(misionesBtn);
 		
 		hld = new HtmlLayoutData("botonLogout");
 		
@@ -210,7 +229,7 @@ public class MapaDesktop extends ContentPane {
 		Button btnEditarDatos = new Button("Editar Datos");
 		btnEditarDatos.setStyle(Styles1.DEFAULT_STYLE);
 		btnEditarDatos.setHeight(new Extent(15));
-		btnEditarDatos.setWidth(new Extent(65));    
+		btnEditarDatos.setWidth(new Extent(73));    
 		btnEditarDatos.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -226,7 +245,7 @@ public class MapaDesktop extends ContentPane {
 		logoutBtn.setVisible(true);
 		logoutBtn.setStyle(Styles1.DEFAULT_STYLE);
 		logoutBtn.setHeight(new Extent(15, Extent.PX));
-		logoutBtn.setWidth(new Extent(100, Extent.PX));
+		logoutBtn.setWidth(new Extent(80, Extent.PX));
 		logoutBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					logoutBtnClicked(e);
@@ -268,7 +287,7 @@ public class MapaDesktop extends ContentPane {
 		
 		private void clanesBtnClicked(ActionEvent e) {
 			removeAll();
-			add(new Mision());
+			add(new Clanes());
 		}
 		
 		private void tiendaBtnClicked(ActionEvent e) {
@@ -279,6 +298,11 @@ public class MapaDesktop extends ContentPane {
 		private void academiaBtnClicked() {
 			removeAll();
 			add(new AcademiaDesktop());
+		}
+		
+		private void misionesBtnClicked() {
+			removeAll();
+			add(new Mision());
 		}
 		
 		private void chatBtnClicked(ActionEvent e) {
