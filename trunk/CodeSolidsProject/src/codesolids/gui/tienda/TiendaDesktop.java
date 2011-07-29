@@ -131,7 +131,7 @@ public class TiendaDesktop extends ContentPane {
 		}		
 //		ResourceImageReference ir = new ResourceImageReference("Images/Items/tienda.jpg");
 //		htmlLayout.setBackgroundImage(ir);
-		ResourceImageReference w = new ResourceImageReference("Images/Items/pergamino.png");
+		ImageReference w = ImageReferenceCache.getInstance().getImageReference("Images/Items/pergamino.png");
 		
 		ImageReference image = w;
 	
@@ -1288,7 +1288,7 @@ public class TiendaDesktop extends ContentPane {
         Row rowPanel = new Row();
         rowPanel.setCellSpacing(new Extent(10));
         
-        ImageReference imgR = new ResourceImageReference("Images/Util/sacomoneda.png");
+        ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/sacomoneda.png");
         ImageIcon imgI = new ImageIcon(imgR);
         imgI.setWidth(new Extent(25));
         imgI.setHeight(new Extent(25));
@@ -1335,7 +1335,7 @@ public class TiendaDesktop extends ContentPane {
         Row rowPanel = new Row();
         rowPanel.setCellSpacing(new Extent(10));
         
-        ImageReference imgR = new ResourceImageReference("Images/Util/sacomoneda.png");
+        ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/sacomoneda.png");
         ImageIcon imgI = new ImageIcon(imgR);
         imgI.setWidth(new Extent(25));
         imgI.setHeight(new Extent(25));

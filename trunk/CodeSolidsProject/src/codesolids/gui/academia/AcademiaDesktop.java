@@ -38,6 +38,7 @@ import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.PersonajePoderes;
 import codesolids.util.TestTableModel;
 import codesolids.util.TimedServerPush;
+import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.bd.clases.Usuario;
@@ -353,7 +354,7 @@ public class AcademiaDesktop extends ContentPane {
         Row rowPanel = new Row();
         rowPanel.setCellSpacing(new Extent(10));
         
-        ImageReference imgR = new ResourceImageReference("Images/Util/sacomoneda.png");
+        ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/sacomoneda.png");
         ImageIcon imgI = new ImageIcon(imgR);
         imgI.setWidth(new Extent(25));
         imgI.setHeight(new Extent(25));
@@ -398,7 +399,7 @@ public class AcademiaDesktop extends ContentPane {
 		
 		Panel panel = new Panel();
 
-		ImageReference imgR = new ResourceImageReference("Images/Fondos/cartel.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Fondos/cartel.png");
 		FillImage imgF = new FillImage(imgR);
 		
 		panel.setWidth(new Extent(505));

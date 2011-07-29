@@ -145,7 +145,7 @@ public class Ranking extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 
-		personajes = session.createCriteria(Personaje.class).addOrder(Order.desc("level")).list();
+		personajes = session.createCriteria(Personaje.class).addOrder(Order.desc("level")).addOrder(Order.desc("xp")).list();
 
 		for (int i = 0; i < 10; i++) {
 

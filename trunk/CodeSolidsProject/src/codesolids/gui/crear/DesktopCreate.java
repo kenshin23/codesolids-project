@@ -9,6 +9,7 @@ import codesolids.bd.clases.Usuario;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.seleccion.DesktopSelect;
 import codesolids.gui.style.Styles1;
+import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.bd.hibernate.SessionHibernate;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
@@ -130,16 +131,16 @@ public class DesktopCreate extends ContentPane{
 		Row row = new Row(); 
 		row.setCellSpacing(new Extent(15));
 		
-		ImageReference imgR = new ResourceImageReference("Images/Personajes/MagoT.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoT.png");
 		row.add(initColPersonaje(imgR,"Mago Tierra"));
 		
-		imgR = new ResourceImageReference("Images/Personajes/MagoF.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoF.png");
 		row.add(initColPersonaje(imgR,"Mago Fuego"));		
 		
-		imgR = new ResourceImageReference("Images/Personajes/MagoHH.png");
+		imgR =  ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoHH.png");
 		row.add(initColPersonaje(imgR,"Mago Hielo"));		
 		
-		imgR = new ResourceImageReference("Images/Personajes/GuerreroG.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/GuerreroGG.png");
 		row.add(initColPersonaje(imgR,"Guerrero"));
 		
 		return row;
@@ -199,7 +200,7 @@ public class DesktopCreate extends ContentPane{
 		
 		Panel panel = new Panel();
 
-		ImageReference imgR = new ResourceImageReference("Images/Fondos/cartel.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Fondos/cartel.png");
 		FillImage imgF = new FillImage(imgR);
 		
 		panel.setWidth(new Extent(505));
@@ -260,8 +261,13 @@ public class DesktopCreate extends ContentPane{
 		personaje.setLevel(1);
 		personaje.setHp(100);
 		personaje.setMp(100);
-		personaje.setGold(2500);
+		personaje.setGold(300);
 		personaje.setXp(0);
+		personaje.setAtaqueBasico(0);
+		personaje.setAtaqueEspecial(0);
+		personaje.setSpeed(0);
+		personaje.setDefensa(0);
+		personaje.setPuntos(0);
 		
 		if( type == "Mago Tierra"){
 			personaje.setTipo("Tierra");
@@ -277,7 +283,7 @@ public class DesktopCreate extends ContentPane{
 		}
 		else{
 			personaje.setTipo("Guerrero");
-			personaje.setDirImage("Images/Personajes/GuerreroG.png");
+			personaje.setDirImage("Images/Personajes/GuerreroGG.png");
 		}
 		
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();

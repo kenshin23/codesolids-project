@@ -42,6 +42,7 @@ import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
+import codesolids.gui.tienda.ImageReferenceCache;
 import echopoint.HtmlLayout;
 import echopoint.ImageIcon;
 import echopoint.layout.HtmlLayoutData;
@@ -231,7 +232,7 @@ public class Mision extends ContentPane{
 		
 		region.add(btnEnemigos(nombreR));
 		
-		ImageReference imgR = new ResourceImageReference("Images/Enemigos/cartel4.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Enemigos/cartel4.png");
 		FillImage imgF = new FillImage(imgR);
 		region.setWidth(new Extent(1180));
 		region.setHeight(new Extent(480));
@@ -265,7 +266,7 @@ public class Mision extends ContentPane{
 			Column col = new Column();
 			col.setCellSpacing(new Extent(9));
 			
-		    ResourceImageReference ir = new ResourceImageReference(obj.getDirImage());
+		    ImageReference ir = ImageReferenceCache.getInstance().getImageReference(obj.getDirImage());
 	        ImageIcon imgI = new ImageIcon(ir);
 	        imgI.setWidth(new Extent(150));
 	        imgI.setHeight(new Extent(150));
@@ -334,12 +335,12 @@ public class Mision extends ContentPane{
 
 		Panel panelAtaque = new Panel();
 		Panel panelEstado = new Panel();
-		ImageReference imgR = new ResourceImageReference("Images/p_ataque.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/p_ataque.png");
 		FillImage imgF = new FillImage(imgR);
 		panelAtaque.setWidth(new Extent(120));
 		panelAtaque.setHeight(new Extent(70));
 		panelAtaque.setBackgroundImage(imgF);
-		imgR = new ResourceImageReference("Images/p_estado.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/p_estado.png");
 		imgF = new FillImage(imgR);
 		panelEstado.setWidth(new Extent(260));
 		panelEstado.setHeight(new Extent(104));
@@ -426,10 +427,10 @@ public class Mision extends ContentPane{
 		colA.setCellSpacing(new Extent(5));
 
 		col.add(row);
-		if(personaje.getXp() > enemigo.getVelocidad()){
+		if(personaje.getSpeed() >= enemigo.getVelocidad()){
 			
 			lblAttack1.setText("Turno");
-			lblAttack2.setText(""+personaje.getUsuarioRef().getLogin()+" "+personaje.getHp());
+			lblAttack2.setText(""+personaje.getUsuarioRef().getLogin());
 
 			col.add(CreateButtonSpecial());
 			col.add(CreateButtonBasic());
@@ -545,11 +546,17 @@ public class Mision extends ContentPane{
 			
 			personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 			personaje.setGold( personaje.getGold() + enemigo.getOro());
-			personaje.setXp(personaje.getXp() + xp);
-			if(consultXpLevel(xp) > personaje.getLevel()){
-				
+			int aux = personaje.getXp() + xp;
+			if(consultXpLevel(aux) > personaje.getLevel()){
+				int aux2 = consultXp(personaje.getLevel());
 				personaje.setLevel(consultXpLevel(personaje.getXp() + xp));
+				personaje.setXp(aux - aux2);
+				personaje.setPuntos(personaje.getPuntos() + 3);
+				personaje.setHp(personaje.getHp() + 70);
+				personaje.setMp(personaje.getMp() + 90);
 				msg = new Label("Ha subido de Nivel.! +" +personaje.getLevel());
+				colwin.add(msg);
+				msg = new Label("+3 Ptos.!  + 70 Vida.! + 90 Psinergia.!");
 				colwin.add(msg);
 			}
 			session.update(personaje);
@@ -691,7 +698,7 @@ public class Mision extends ContentPane{
   	    while (iter.hasNext()) {  
   	    	final PersonajePoderes p = (PersonajePoderes) iter.next();
 			
-			ResourceImageReference ir = new ResourceImageReference(p.getPoderesRef().getDirImage());
+			ImageReference ir = ImageReferenceCache.getInstance().getImageReference(p.getPoderesRef().getDirImage());
 			
 			btnAttack1 = new Button();
 			btnAttack1.setIcon(ir);
@@ -800,7 +807,7 @@ public class Mision extends ContentPane{
 		PoderEnemigo pe = new PoderEnemigo();
 		pe = consultAtaque(dano);
 
-		if( (barraVida2.getValues().get(0).intValue() - poder.getDamage()<=0) && flag==false ){
+		if( (barraVida2.getValues().get(0).intValue() - poder.getDamage() - personaje.getAtaqueEspecial()<=0) && flag==false ){
 			listNumber = new ArrayList<Number>();
 			listNumber.add(0);
 			listNumber.add(enemigo.getVida());
@@ -809,7 +816,7 @@ public class Mision extends ContentPane{
 			flag=true;
 		}
 
-		else if( (barraVida2.getValues().get(0).intValue() - poder.getDamage() > 0) && flag==false ){
+		else if( (barraVida2.getValues().get(0).intValue() - poder.getDamage() - personaje.getAtaqueEspecial() > 0) && flag==false ){
 			if(barraPsinergia.getValues().get(0).intValue() < poder.getPsinergia() )
 			{
 				labelCp.setText(personaje.getMp()+"/"+barraPsinergia.getValues().get(0).intValue());
@@ -817,8 +824,8 @@ public class Mision extends ContentPane{
 
 			else{
 				listNumber = new ArrayList<Number>();
-				listNumber.add(barraVida2.getValues().get(0).intValue() - poder.getDamage()); 
-				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - poder.getDamage()) );
+				listNumber.add(barraVida2.getValues().get(0).intValue() - poder.getDamage() - personaje.getAtaqueEspecial()); 
+				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - poder.getDamage() - personaje.getAtaqueEspecial()) );
 
 				barraVida2.setValues(listNumber);
 
@@ -862,13 +869,13 @@ public class Mision extends ContentPane{
 	private void simular(PoderEnemigo poder){
 		FinalBattle();
 		listNumber = new ArrayList<Number>();
-		listNumber.add(barraVida1.getValues().get(0).intValue() - poder.getIndice()); 
-		listNumber.add( personaje.getHp() - (barraVida1.getValues().get(0).intValue() - poder.getIndice()) );
+		listNumber.add(barraVida1.getValues().get(0).intValue() + personaje.getDefensa() - poder.getIndice()); 
+		listNumber.add( personaje.getHp() - (barraVida1.getValues().get(0).intValue() + personaje.getDefensa() - poder.getIndice()) );
 
 		barraVida1.setValues(listNumber);
 		
 		lblAttack1.setText(""+barraVida1.getValues().get(0).intValue()+" "+enemigo.getNombre());
-		lblAttack2.setText("Lanzo ataque "+poder.getNombre() +" -"+ poder.getIndice());
+		lblAttack2.setText("Lanzo ataque "+poder.getNombre());
 	}
 	
 	private void btnHitClicked()
@@ -877,7 +884,7 @@ public class Mision extends ContentPane{
 		PoderEnemigo pe = new PoderEnemigo();
 		pe = consultAtaque(dano);
 
-		if( (barraVida2.getValues().get(0).intValue() - 40<=0) && flag==false ){
+		if( (barraVida2.getValues().get(0).intValue() - 20 - personaje.getAtaqueBasico()<=0) && flag==false ){
 			listNumber = new ArrayList<Number>();
 			listNumber.add(0);
 			listNumber.add(enemigo.getVida());
@@ -886,10 +893,10 @@ public class Mision extends ContentPane{
 			flag=true;
 		}
 
-		else if( (barraVida2.getValues().get(0).intValue() - 40 > 0) && flag==false ){
+		else if( (barraVida2.getValues().get(0).intValue() - 20 - personaje.getAtaqueBasico() > 0) && flag==false ){
 				listNumber = new ArrayList<Number>();
-				listNumber.add(barraVida2.getValues().get(0).intValue() - 40); 
-				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - 40) );
+				listNumber.add(barraVida2.getValues().get(0).intValue() - 20 - personaje.getAtaqueBasico()); 
+				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - 20 - personaje.getAtaqueBasico()) );
 
 				barraVida2.setValues(listNumber);
 				simular(pe);
@@ -950,8 +957,7 @@ public class Mision extends ContentPane{
 	}
 	
 	private void btnLoadMpClicked(PersonajeItem obj)
-	{		
-		
+	{				
 		int dano = ((int)(Math.random()*(3)));
 		PoderEnemigo pe = new PoderEnemigo();
 		pe = consultAtaque(dano);		

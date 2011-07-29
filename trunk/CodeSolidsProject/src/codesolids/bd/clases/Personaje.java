@@ -32,19 +32,25 @@ import org.hibernate.annotations.Proxy;
 
 public class Personaje {
 
-	protected int id;
-	protected int level;
-	protected int gold;
-	protected int xp;
-	protected int hp;
-	protected int mp;
-	protected String tipo;
-	protected String dirImage;
-	protected boolean learning;
-	protected Calendar fechaInicio;
-	protected Calendar fechaFin;
-	protected List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();
-	protected List<PersonajeItem> personajeItemList = new ArrayList<PersonajeItem>();
+	private int id;
+	private int level;
+	private int gold;
+	private int xp;
+	private int hp;
+	private int mp;
+	private float ataqueBasico;
+	private float ataqueEspecial;
+	private int speed;
+	private int defensa;
+	private int puntos;
+	
+	private String tipo;
+	private String dirImage;
+	private boolean learning;
+	private Calendar fechaInicio;
+	private Calendar fechaFin;
+	private List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();
+	private List<PersonajeItem> personajeItemList = new ArrayList<PersonajeItem>();
 	
 	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
 	private List<Invitation> invReceivesList = new ArrayList<Invitation>();
@@ -102,6 +108,46 @@ public class Personaje {
 		this.mp = mp;
 	}
 	
+	public float getAtaqueBasico() {
+		return ataqueBasico;
+	}
+
+	public void setAtaqueBasico(float ataqueBasico) {
+		this.ataqueBasico = ataqueBasico;
+	}
+
+	public float getAtaqueEspecial() {
+		return ataqueEspecial;
+	}
+
+	public void setAtaqueEspecial(float ataqueEspecial) {
+		this.ataqueEspecial = ataqueEspecial;
+	}
+
+	public int getPuntos() {
+		return puntos;
+	}
+
+	public void setPuntos(int puntos) {
+		this.puntos = puntos;
+	}
+
+	public int getDefensa() {
+		return defensa;
+	}
+
+	public void setDefensa(int defensa) {
+		this.defensa = defensa;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+
 	public String getTipo() {
 		return tipo;
 	}
