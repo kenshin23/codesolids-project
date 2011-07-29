@@ -1,16 +1,11 @@
 package codesolids.gui.chat;
 
-import java.sql.ResultSet;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
-import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
@@ -18,42 +13,28 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
-import nextapp.echo.app.FillImageBorder;
-import nextapp.echo.app.Grid;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
-import nextapp.echo.app.Label;
-import nextapp.echo.app.Pane;
 import nextapp.echo.app.Panel;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
-import nextapp.echo.app.SplitPane;
-import nextapp.echo.app.Style;
 import nextapp.echo.app.TaskQueueHandle;
 import nextapp.echo.app.TextArea;
-import nextapp.echo.app.Window;
-import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-import nextapp.echo.app.event.WindowPaneEvent;
-import nextapp.echo.app.event.WindowPaneListener;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import codesolids.bd.clases.Chat;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
-import codesolids.bd.clases.Chat;
-import codesolids.gui.academia.TimedServerPush;
-
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.GUIStyles;
+import codesolids.util.TimedServerPush;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 
