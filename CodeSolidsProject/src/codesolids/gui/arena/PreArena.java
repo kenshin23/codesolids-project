@@ -519,7 +519,7 @@ public class PreArena extends ContentPane{
 	    			UpdateOutOfArena();
 	    			btnDeleteClicked(listA.get(i));
 	    			removeAll();
-	    			add(new ArenaDesktop());
+	    			add(new Desktop());
 	    		}
 	    	}
 	    }

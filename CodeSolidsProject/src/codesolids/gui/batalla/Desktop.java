@@ -239,10 +239,7 @@ public class Desktop extends ContentPane{
 				Session session = SessionHibernate.getInstance().getSession();
 				session.beginTransaction();
 
-				battle = (Batalla) session.load(Batalla.class, battle.getId());
-				
-				Criteria criteria = session.createCriteria(Ataque.class).add(Restrictions.eq("batallaRef", battle)).addOrder(Order.desc("id"));
-				List<Ataque> listAtaque = criteria.list();
+				battle = (Batalla) session.load(Batalla.class, battle.getId());				
 				
 				session.getTransaction().commit();
 				session.close();
