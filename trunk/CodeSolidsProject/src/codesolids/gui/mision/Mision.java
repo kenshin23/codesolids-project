@@ -584,67 +584,127 @@ public class Mision extends ContentPane{
 	}
 	
 	private int consultXpLevel(int num){
-		if(num <= 100 && personaje.getLevel() == 1){
+		if(num <= 200 && personaje.getLevel() == 1){
 			return 1;
 		}
-		else if(num <=300 && personaje.getLevel() == 2 || personaje.getLevel() == 1){
+		else if(num <=400 && personaje.getLevel() == 2 || personaje.getLevel() == 1){
 			return 2;
 		}
 		
-		else if(num <=600 && personaje.getLevel() == 3 || personaje.getLevel() == 2) {
+		else if(num <=800 && personaje.getLevel() == 3 || personaje.getLevel() == 2) {
 			return 3;
 		}
-		else if(num <=1000 && personaje.getLevel() == 4 || personaje.getLevel() == 3){
+		else if(num <=1200 && personaje.getLevel() == 4 || personaje.getLevel() == 3){
 			return 4;
 		}
-		else if(num <=1500 && personaje.getLevel() == 5 || personaje.getLevel() == 4){
+		else if(num <=2000 && personaje.getLevel() == 5 || personaje.getLevel() == 4){
 			return 5;
 		}
-		else if(num <=2000 && personaje.getLevel() == 6 || personaje.getLevel() == 5){
+		else if(num <=2800 && personaje.getLevel() == 6 || personaje.getLevel() == 5){
 			return 6;
 		}
-		else if(num <=2500 && personaje.getLevel() == 7 || personaje.getLevel() == 6){
+		else if(num <=3800 && personaje.getLevel() == 7 || personaje.getLevel() == 6){
 			return 7;
 		}
-		else if(num <=3000 && personaje.getLevel() == 8 || personaje.getLevel() == 7){
+		else if(num <=4800 && personaje.getLevel() == 8 || personaje.getLevel() == 7){
 			return 8;
 		}
-		else if(num <=3500 && personaje.getLevel() == 9 || personaje.getLevel() == 8){
+		else if(num <=6800 && personaje.getLevel() == 9 || personaje.getLevel() == 8){
 			return 9;
 		}
-		else{
+		else if(num <=8800 && personaje.getLevel() == 10 || personaje.getLevel() == 9){
 			return 10;
-		}		
+		}	
+		else if(num <=10600 && personaje.getLevel() == 11 || personaje.getLevel() == 10){
+			return 11;
+		}
+		else if(num <=13400 && personaje.getLevel() == 12 || personaje.getLevel() == 11){
+			return 12;
+		}
+		else if(num <=17200 && personaje.getLevel() == 13 || personaje.getLevel() == 12){
+			return 13;
+		}
+		else if(num <=21000 && personaje.getLevel() == 14 || personaje.getLevel() == 13){
+			return 14;
+		}
+		else if(num <=25800 && personaje.getLevel() == 15 || personaje.getLevel() == 14){
+			return 15;
+		}
+		else if(num <=30600 && personaje.getLevel() == 16 || personaje.getLevel() == 15){
+			return 16;
+		}
+		else if(num <=37400 && personaje.getLevel() == 17 || personaje.getLevel() == 16){
+			return 17;
+		}
+		else if(num <=44200 && personaje.getLevel() == 18 || personaje.getLevel() == 17){
+			return 18;
+		}
+		else if(num <=53000 && personaje.getLevel() == 19 || personaje.getLevel() == 18){
+			return 19;
+		}
+		else{
+			return 20;		
+		}
 	}
 	
 	private int consultXp(int num){
 		if(num == 1){
-			return 100;
+			return 200;
 		}
 		else if(num == 2){
-			return 300;
+			return 400;
 		}
 		
 		else if(num == 3){
-			return 600;
+			return 800;
 		}
 		else if(num == 4){
-			return 1000;
+			return 1200;
 		}
 		else if(num == 5){
-			return 1500;
-		}
-		else if(num == 6){
 			return 2000;
 		}
+		else if(num == 6){
+			return 2800;
+		}
 		else if(num == 7){
-			return 2500;
+			return 3800;
 		}
 		else if(num == 8){
-			return 3000;
+			return 4800;
 		}
 		else if(num == 9){
-			return 3500;
+			return 6800;
+		}
+		else if(num == 10){
+			return 8800;
+		}
+		else if(num == 11){
+			return 10600;
+		}
+		else if(num == 12){
+			return 13400;
+		}
+		else if(num == 13){
+			return 17200;
+		}
+		else if(num == 14){
+			return 21000;
+		}
+		else if(num == 15){
+			return 25800;
+		}
+		else if(num == 16){
+			return 30600;
+		}
+		else if(num == 17){
+			return 37400;
+		}
+		else if(num == 18){
+			return 44200;
+		}
+		else if(num == 19){
+			return 53000;
 		}
 		else{
 			return num;
