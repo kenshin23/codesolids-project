@@ -37,6 +37,7 @@ import codesolids.gui.style.Styles1;
 import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.ETable;
+import com.minotauro.echo.table.base.ETableNavigation;
 import com.minotauro.echo.table.base.TableColModel;
 import com.minotauro.echo.table.base.TableColumn;
 import com.minotauro.echo.table.base.TableSelModel;
@@ -144,8 +145,7 @@ public class Ranking extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 
-		personajes = session.createCriteria( //
-				Personaje.class).addOrder(Order.desc("level")).list();
+		personajes = session.createCriteria(Personaje.class).addOrder(Order.desc("level")).list();
 
 		for (int i = 0; i < 10; i++) {
 
@@ -208,14 +208,14 @@ public class Ranking extends ContentPane {
 		// The navigation control
 		// ----------------------------------------
 
-		//		Row row = new Row();
-		//		row.setAlignment(Alignment.ALIGN_CENTER);
-		//
-		//		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
-		//		tableNavigation.setForeground(Color.WHITE);
-		//		row.add(tableNavigation);
-		//
-		//		col.add(row);
+		Row row = new Row();
+		row.setAlignment(Alignment.ALIGN_CENTER);
+
+		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
+		tableNavigation.setForeground(Color.WHITE);
+		row.add(tableNavigation);
+		
+		col.add(row);
 		panel.add(col);
 		return panel;
 
@@ -239,11 +239,17 @@ public class Ranking extends ContentPane {
 		tableColumn = new TableColumn() {
 			@Override
 			public Object getValue(ETable table, Object element) {
-				Personaje personaje = (Personaje) element;
-				return personajes.indexOf(personaje) + 1;
+				Personaje per = (Personaje) element;
+				int lugar = 0;
+				for(int i = 0; i < personajes.size(); i++){
+					if(personajes.get(i).getId() == per.getId()){
+						lugar = i +1;
+					}
+				}
+				return lugar;
 			}
 		};
-		tableColumn.setWidth(new Extent(30));
+		tableColumn.setWidth(new Extent(20));
 		tableColumn.setHeadValue("Ranking");
 		tableColumn.setHeadCellRenderer(headLcr);
 		tableColumn.setDataCellRenderer(lcr);
@@ -252,12 +258,20 @@ public class Ranking extends ContentPane {
 		tableColumn = new TableColumn() {
 			@Override
 			public Object getValue(ETable table, Object element) {
-				Personaje personaje = (Personaje) element; 
-				return personaje.getId();
+				Personaje per = (Personaje) element;
+				Session session = SessionHibernate.getInstance().getSession();
+				session.beginTransaction();
+
+				per = (Personaje) session.load(Personaje.class, per.getId());
+				
+				session.getTransaction().commit();
+				session.close();
+
+				return per.getUsuarioRef().getLogin();
 			}
 		};
-		tableColumn.setWidth(new Extent(100));
-		tableColumn.setHeadValue("Id");
+		tableColumn.setWidth(new Extent(20));
+		tableColumn.setHeadValue("Usuario");
 		tableColumn.setHeadCellRenderer(headLcr);
 		tableColumn.setDataCellRenderer(lcr);
 		tableColModel.getTableColumnList().add(tableColumn);
@@ -265,11 +279,11 @@ public class Ranking extends ContentPane {
 		tableColumn = new TableColumn() {
 			@Override
 			public Object getValue(ETable table, Object element) {
-				Personaje personaje = (Personaje) element;
-				return personaje.getLevel();
+				Personaje per = (Personaje) element;
+				return per.getLevel();
 			}
 		};
-		tableColumn.setWidth(new Extent(30));
+		tableColumn.setWidth(new Extent(20));
 		tableColumn.setHeadValue("Nivel");
 		tableColumn.setHeadCellRenderer(headLcr);
 		tableColumn.setDataCellRenderer(lcr);
@@ -278,11 +292,11 @@ public class Ranking extends ContentPane {
 		tableColumn = new TableColumn() {
 			@Override
 			public Object getValue(ETable table, Object element) {
-				Personaje personaje = (Personaje) element;
-				return personaje.getTipo();
+				Personaje per = (Personaje) element;
+				return per.getTipo();
 			}
 		};
-		tableColumn.setWidth(new Extent(50));
+		tableColumn.setWidth(new Extent(20));
 		tableColumn.setHeadValue("Tipo");
 		tableColumn.setHeadCellRenderer(headLcr);
 		tableColumn.setDataCellRenderer(lcr);

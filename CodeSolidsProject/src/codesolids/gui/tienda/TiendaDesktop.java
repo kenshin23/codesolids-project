@@ -7,12 +7,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Border;
@@ -34,12 +28,17 @@ import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
-import codesolids.bd.clases.Enemigo;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+
+import codesolids.bd.clases.Item;
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.PersonajeItem;
 import codesolids.bd.clases.Receta;
 import codesolids.bd.clases.Usuario;
-import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.Item;
-import codesolids.bd.clases.PersonajeItem;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;

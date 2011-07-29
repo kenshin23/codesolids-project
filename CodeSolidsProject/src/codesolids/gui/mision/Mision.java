@@ -365,9 +365,9 @@ public class Mision extends ContentPane{
 		row = new Row();
 		row.setCellSpacing(new Extent(10));
 		row.add(new Label("XP"));
-		barraXp = crearBarraVida1(Color.GREEN,Color.WHITE,personaje.getXp(), consultXp(personaje.getXp()) - personaje.getXp());
+		barraXp = crearBarraVida1(Color.GREEN,Color.WHITE,personaje.getXp(), consultXp(personaje.getLevel()) - personaje.getXp());
 		row.add(barraXp);
-		row.add(new Label(consultXp(personaje.getXp())+"/"+personaje.getXp()));
+		row.add(new Label(consultXp(personaje.getLevel())+"/"+personaje.getXp()));
 		colEstado.add(row);
 
 		row = new Row();
@@ -611,32 +611,32 @@ public class Mision extends ContentPane{
 	}
 	
 	private int consultXp(int num){
-		if(num <= 100){
+		if(num == 1){
 			return 100;
 		}
-		else if(num > 100 && num <=300){
+		else if(num == 2){
 			return 300;
 		}
 		
-		else if(num > 300 && num <=600){
+		else if(num == 3){
 			return 600;
 		}
-		else if(num > 600 && num <=1000){
+		else if(num == 4){
 			return 1000;
 		}
-		else if(num > 1000 && num <=1500){
+		else if(num == 5){
 			return 1500;
 		}
-		else if(num > 1500 && num <=2000){
+		else if(num == 6){
 			return 2000;
 		}
-		else if(num > 2000 && num <=2500){
+		else if(num == 7){
 			return 2500;
 		}
-		else if(num > 2500 && num <=3000){
+		else if(num == 8){
 			return 3000;
 		}
-		else if(num > 3000 && num <=3500){
+		else if(num == 9){
 			return 3500;
 		}
 		else{
@@ -816,7 +816,6 @@ public class Mision extends ContentPane{
 			}
 
 			else{
-
 				listNumber = new ArrayList<Number>();
 				listNumber.add(barraVida2.getValues().get(0).intValue() - poder.getDamage()); 
 				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - poder.getDamage()) );
@@ -831,7 +830,6 @@ public class Mision extends ContentPane{
 				labelCp.setText(personaje.getMp()+"/"+barraPsinergia.getValues().get(0).intValue());
 
 				simular(pe);
-
 			}
 		} 
 
@@ -1050,8 +1048,7 @@ public class Mision extends ContentPane{
 	{				
 		int dano = ((int)(Math.random()*(3)));
 		PoderEnemigo pe = new PoderEnemigo();
-		pe = consultAtaque(dano);
-		
+		pe = consultAtaque(dano);		
 		
 		if((barraVida1.getValues().get(0).intValue() + obj.getItemRef().getIndex()) >= personaje.getHp())
 		{	
@@ -1094,9 +1091,7 @@ public class Mision extends ContentPane{
 		session.delete(obj);
 
 		session.getTransaction().commit();			  	        
-		session.close();
-		
-		
+		session.close();			
 	}
 	
 	private void consultItemArmas(){
@@ -1143,7 +1138,6 @@ public class Mision extends ContentPane{
 	
 	private void btnLoadArmorClicked(PersonajeItem obj)
 	{
-
 		int dano = ((int)(Math.random()*(3)));
 		PoderEnemigo pe = new PoderEnemigo();
 		pe = consultAtaque(dano);
@@ -1156,7 +1150,6 @@ public class Mision extends ContentPane{
 
 			flag=true;
 		}
-
 		else if( (barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()>0) && flag==false ){
 				listNumber = new ArrayList<Number>();
 				listNumber.add(barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()); 
@@ -1171,8 +1164,7 @@ public class Mision extends ContentPane{
 			listNumber = new ArrayList<Number>();
 			listNumber.add(0);
 			listNumber.add(personaje.getHp());
-			barraVida1.setValues(listNumber);
-			
+			barraVida1.setValues(listNumber);			
 
 			flag=true;
 		}
