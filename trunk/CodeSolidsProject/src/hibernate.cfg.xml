@@ -110,6 +110,7 @@
 		<mapping class="codesolids.bd.clases.PoderEnemigo" />
 		<mapping class="codesolids.bd.clases.Receta" />
 		<mapping class="codesolids.bd.clases.Nivel"/>
+		<mapping class="codesolids.bd.clases.Batalla"/>
 
 	</session-factory>
 </hibernate-configuration>
