@@ -335,12 +335,12 @@ public class Mision extends ContentPane{
 
 		Panel panelAtaque = new Panel();
 		Panel panelEstado = new Panel();
-		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/p_ataque.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/p_ataque.png");
 		FillImage imgF = new FillImage(imgR);
 		panelAtaque.setWidth(new Extent(120));
 		panelAtaque.setHeight(new Extent(70));
 		panelAtaque.setBackgroundImage(imgF);
-		imgR = ImageReferenceCache.getInstance().getImageReference("Images/p_estado.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/p_estadoBattle.png");
 		imgF = new FillImage(imgR);
 		panelEstado.setWidth(new Extent(260));
 		panelEstado.setHeight(new Extent(104));
