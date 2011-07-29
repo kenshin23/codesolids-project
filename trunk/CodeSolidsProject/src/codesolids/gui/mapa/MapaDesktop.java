@@ -25,6 +25,7 @@ import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.academia.AcademiaDesktop;
 import codesolids.gui.arena.ArenaDesktop;
+import codesolids.gui.arena.PreArena;
 import codesolids.gui.chat.ChatGui;
 import codesolids.gui.editar.EditarDatos;
 import codesolids.gui.mision.Mision;
@@ -243,7 +244,7 @@ public class MapaDesktop extends ContentPane {
 	 
 		private void arenaBtnClicked(ActionEvent e) {
 			this.removeAll();
-			add(new ArenaDesktop());
+			add(new PreArena());
 		}
 		
 		private void logoutBtnClicked(ActionEvent e) {
