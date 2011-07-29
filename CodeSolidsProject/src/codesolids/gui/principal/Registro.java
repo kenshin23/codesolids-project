@@ -1,29 +1,20 @@
 package codesolids.gui.principal;
 
-
-import java.awt.GridLayout;
-
-import codesolids.bd.clases.Usuario;
-import codesolids.bd.hibernate.SessionHibernate;
-import codesolids.gui.style.StyleWindow;
-import codesolids.gui.style.Styles1;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nextapp.echo.app.Alignment;
-import nextapp.echo.app.Border;
-import nextapp.echo.app.Border.Side;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
-import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
-import nextapp.echo.app.Font;
-import nextapp.echo.app.Grid;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
-import nextapp.echo.app.Panel;
 import nextapp.echo.app.PasswordField;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
@@ -31,26 +22,15 @@ import nextapp.echo.app.TextField;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-import nextapp.echo.app.event.WindowPaneEvent;
-import nextapp.echo.app.event.WindowPaneListener;
-import nextapp.echo.app.layout.GridLayoutData;
-
-
-import echopoint.HtmlLayout;
-import echopoint.ImageIcon;
-import echopoint.layout.HtmlLayoutData;
-import echopoint.util.ExtentKit;
-
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import codesolids.bd.clases.Usuario;
+import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.gui.style.StyleWindow;
+import codesolids.gui.style.Styles1;
 
 /**
 * @author Karla Moreno
@@ -60,21 +40,16 @@ import org.hibernate.criterion.Restrictions;
 public class Registro extends WindowPane {
 	
 	private Column col;
-	private String input;
 	
 	private TextField fieldLogin;
 	private TextField fieldEmail;
 	private PasswordField fieldPass;
 	private PasswordField fieldPass2;
 	
-	private Label lblText;
-	
 	public Registro(){
 
 		initGUI();
 	}
-
-	// --------------------------------------------------------------------------------
 
 	public void initGUI() {
 
@@ -163,8 +138,7 @@ public class Registro extends WindowPane {
 
 		
 		});
-		
-	
+			
 		row.add(btnOk);
 		
 		col.add(row);
@@ -177,12 +151,12 @@ public class Registro extends WindowPane {
 	
 //************************ METODO PARA VALIDAR CORREO ****************************************************
 	public boolean isEmail(String input) {
+		
 		Pattern pat = null;
 		Matcher mat = null;        
 		pat = Pattern.compile("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$");
 		mat = pat.matcher(input);
 		if (mat.find()) {
-			//System.out.println("[" + mat.group() + "]");
 			return true;
 		}else{
 			return false;
@@ -190,14 +164,35 @@ public class Registro extends WindowPane {
 	}
 
 //*****************************************************************************************************************		  
+
+	private boolean isPassEquals()
+	{
+		if(fieldPass.getText().equals(fieldPass2.getText()))
+			return true;
+		else
+			return false;
+	}
+	
 	private void btnRegistrarClicked() {
 
+		
 		if (!validateCampo())
 		{
 			//Aqui debe ir Mensaje de Advertencia
+//			CrearVentana2();
 			return;
 		}
-				
+		else if( !isPassEquals() )
+		{
+//			CrearVentana2();
+			return;
+		}
+		else if( !isEmail(fieldEmail.getText()) )
+		{
+//			CrearVentana2();
+			return;
+		}
+		
 		Session session = null;
 		
 		try{
@@ -206,11 +201,10 @@ public class Registro extends WindowPane {
 			session.beginTransaction();
 			
 			if(!checkUserEmail(session))
-			{
-				
+			{				
 				//Aqui debe ir Mensaje de Advertencia
 				return;
-			}
+			}	
 			
 			Usuario userBean = new Usuario();
 			
@@ -222,10 +216,11 @@ public class Registro extends WindowPane {
 			userBean.setDateJoin(fechaRegister);
 			
 			session.save(userBean);
-						
-			this.userClose();
 			
-		}finally
+			this.userClose();
+			}
+			
+		finally
 		{
 			if(session != null)
 			{
@@ -237,28 +232,7 @@ public class Registro extends WindowPane {
 				session.close();
 			}
 		}
-		
-		
-/*		if ((fieldLogin != null) && (fieldEmail != null) && (fieldPass != null) && (fieldPass2 != null) && (fieldPass.getText() == fieldPass2.getText()) && (isEmail(fieldEmail.getText())))
-		{
-			Label lblText = new Label();
-			lblText.setForeground(Color.CYAN);
-			lblText.setText("La cuenta ha sido creada");
-			lblText.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-			col.add(lblText);
-			//CrearVentana();		  				
-		}		
-		else
-		{
-			Label lblText = new Label();
-			lblText.setForeground(Color.CYAN);
-			lblText.setText("La cuenta NO ha sido creada");
-			lblText.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-			col.add(lblText);
-			//CrearVentana2();
-		}*/							  
-	}	  
-
+	}
 //************************ METODO PARA CREAR VENTANA (DATOS CORRECTOS) ****************************************************
 
 	public void CrearVentana()
@@ -340,7 +314,7 @@ public class Registro extends WindowPane {
 		colPane.add(rowBtn);
 
 		ventana.add(colPane);
-		add(ventana);
+		this.add(ventana);
 
 	}
 	
@@ -378,10 +352,5 @@ public class Registro extends WindowPane {
 		
 		return true;
 	}
-		
-	
+			
 }
-
-
-
-
