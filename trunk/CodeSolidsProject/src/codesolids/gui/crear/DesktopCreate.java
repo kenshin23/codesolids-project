@@ -94,7 +94,7 @@ public class DesktopCreate extends ContentPane{
 		
 		Panel panel = new Panel();
 
-		ImageReference imgR = new ResourceImageReference("Images/cartel3.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/cartel3.png");
 		FillImage imgF = new FillImage(imgR);
 		
 		panel.setWidth(new Extent(950));
