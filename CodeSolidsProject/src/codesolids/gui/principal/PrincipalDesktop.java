@@ -173,21 +173,7 @@ public class PrincipalDesktop extends ContentPane {
                 btnObjetos.setHeight(new Extent(15));
                 btnObjetos.setWidth(new Extent(65));
                 row.add(btnObjetos);
-                
-                Button btnEditarDatos = new Button("Editar Datos");
-                btnObjetos.setStyle(Styles1.DEFAULT_STYLE);
-                btnObjetos.setHeight(new Extent(15));
-                btnObjetos.setWidth(new Extent(65));
-                btnEditarDatos.addActionListener(new ActionListener() {
-                    
-                    @Override
-                    public void actionPerformed(ActionEvent arg0) {
-                            btnEditarDatosClicked();
-                            
-                    }
-            });
-                row.add(btnEditarDatos);
-                
+                                
                 row.setLayoutData(hld);
                 
                 htmllayaut.add(row);
@@ -196,9 +182,8 @@ public class PrincipalDesktop extends ContentPane {
                 
         }
         
-        
 
-        // --------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------
         
         
         private void btnAccederClicked() {
@@ -261,11 +246,6 @@ public class PrincipalDesktop extends ContentPane {
                 Info inf = new Info();
                 add(inf.initHistoria());
                 
-        }
-        
-        private void btnEditarDatosClicked() {
-            	add(new PreEditarDatos());
-            
         }
         
         private void btnRegistroClicked(){
