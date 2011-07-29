@@ -40,9 +40,10 @@ public class Usuario {
 	private Calendar dateJoin;
 	private boolean activo;
 	
-	private Chat chatRef;
 	
 	private List<Personaje> personajeList = new ArrayList<Personaje>();
+	
+	private List<Chat> chatList = new ArrayList<Chat>();
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -95,13 +96,14 @@ public class Usuario {
 		this.dateJoin = dateJoin;
 	}
 
-	@ManyToOne
-	public Chat getChatRef() {
-		return chatRef;
+	@OneToMany(mappedBy = "usuarioRef", orphanRemoval = true)
+	  @LazyCollection(LazyCollectionOption.TRUE)
+	  @Cascade({CascadeType.ALL})
+	public List<Chat> getChatList() {
+		return chatList;
 	}
-
-	public void setChatRef(Chat chatRef) {
-		this.chatRef = chatRef;
+	public void setChatList(List<Chat> chatList) {
+		this.chatList = chatList;
 	}
 
 	@OneToMany(mappedBy = "usuarioRef", orphanRemoval = true)
