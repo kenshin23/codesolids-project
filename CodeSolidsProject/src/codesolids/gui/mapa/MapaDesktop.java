@@ -11,6 +11,7 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
+import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.event.ActionEvent;
@@ -27,6 +28,7 @@ import codesolids.gui.arena.ArenaDesktop;
 import codesolids.gui.chat.ChatGui;
 import codesolids.gui.editar.EditarDatos;
 import codesolids.gui.mision.Mision;
+import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.gui.perfil.PerfilDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.principal.PrincipalDesktop;
@@ -63,20 +65,20 @@ public class MapaDesktop extends ContentPane {
 		HtmlLayoutData hld;
 		
 		
-		ResourceImageReference perfil_des = new ResourceImageReference("/Images/Mapa/perfil_sel.png");
-		ResourceImageReference perfil_sel = new ResourceImageReference("/Images/Mapa/perfil_des.png");
-		ResourceImageReference academia_sel = new ResourceImageReference("/Images/Mapa/academia_sel.png");
-		ResourceImageReference academia_des = new ResourceImageReference("/Images/Mapa/academia_des.png");
-		ResourceImageReference ranking_sel = new ResourceImageReference("/Images/Mapa/ranking_sel.png");
-		ResourceImageReference ranking_des = new ResourceImageReference("/Images/Mapa/ranking_des.png");
-		ResourceImageReference arena_sel = new ResourceImageReference("/Images/Mapa/arena_sel.png");
-		ResourceImageReference arena_des = new ResourceImageReference("/Images/Mapa/arena_des.png");
-		ResourceImageReference clanes_sel = new ResourceImageReference("/Images/Mapa/clanes_sel.png");
-		ResourceImageReference clanes_des = new ResourceImageReference("/Images/Mapa/clanes_des.png");
-		ResourceImageReference tienda_sel = new ResourceImageReference("/Images/Mapa/tienda_sel.png");
-		ResourceImageReference tienda_des = new ResourceImageReference("/Images/Mapa/tienda_des.png");
-		ResourceImageReference chat_sel = new ResourceImageReference("/Images/Mapa/chat_sel.png");
-		ResourceImageReference chat_des = new ResourceImageReference("/Images/Mapa/chat_des.png");
+		ImageReference perfil_des = ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/perfil_sel.png");
+		ImageReference perfil_sel = ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/perfil_des.png");
+		ImageReference academia_sel = ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/academia_sel.png");
+		ImageReference academia_des = ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/academia_des.png");
+		ImageReference ranking_sel =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/ranking_sel.png");
+		ImageReference ranking_des =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/ranking_des.png");
+		ImageReference arena_sel =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/arena_sel.png");
+		ImageReference arena_des =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/arena_des.png");
+		ImageReference clanes_sel =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/clanes_sel.png");
+		ImageReference clanes_des =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/clanes_des.png");
+		ImageReference tienda_sel =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/tienda_sel.png");
+		ImageReference tienda_des =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/tienda_des.png");
+		ImageReference chat_sel =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/chat_sel.png");
+		ImageReference chat_des =  ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/chat_des.png");
 		
 
 		hld = new HtmlLayoutData("botonPerfil");
