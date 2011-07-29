@@ -49,11 +49,15 @@ public class Personaje {
 	private boolean learning;
 	private Calendar fechaInicio;
 	private Calendar fechaFin;
+	
 	private List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();
 	private List<PersonajeItem> personajeItemList = new ArrayList<PersonajeItem>();
 	
 	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
 	private List<Invitation> invReceivesList = new ArrayList<Invitation>();
+	
+	protected List<Batalla> creadores = new ArrayList<Batalla>();
+	protected List<Batalla> retadores = new ArrayList<Batalla>();
 	
 	protected Usuario usuarioRef;
 	private Timestamp arena;
@@ -218,28 +222,51 @@ public class Personaje {
 	public void setArena(Timestamp arena) {
 		this.arena = arena;
 	}
-	
+
 	@OneToMany(mappedBy = "personajeGeneratesRef", orphanRemoval = true)
-	  @LazyCollection(LazyCollectionOption.TRUE)
-	  @Cascade({CascadeType.ALL})
-	  public List<Invitation> getInvGeneratesList() {
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
+	public List<Invitation> getInvGeneratesList() {
 		return invGeneratesList;
-	  }
+	}
 
-	  public void setInvGeneratesList(List<Invitation> invGeneratesList) {
+	public void setInvGeneratesList(List<Invitation> invGeneratesList) {
 		this.invGeneratesList = invGeneratesList;
-	  }
-	  
-	  @OneToMany(mappedBy = "personajeReceivesRef", orphanRemoval = true)
-	  @LazyCollection(LazyCollectionOption.TRUE)
-	  @Cascade({CascadeType.ALL})
-	  public List<Invitation> getInvReceivesList() {
-		return invReceivesList;
-	  }
+	}
 
-	  public void setInvReceivesList(List<Invitation> invReceivesList) {
+	@OneToMany(mappedBy = "personajeReceivesRef", orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
+	public List<Invitation> getInvReceivesList() {
+		return invReceivesList;
+	}
+
+	public void setInvReceivesList(List<Invitation> invReceivesList) {
 		this.invReceivesList = invReceivesList;
-	  }
+	}
+
+	@OneToMany( mappedBy = "jugadorCreadorRef", orphanRemoval = true )
+	@LazyCollection( LazyCollectionOption.TRUE )
+	@Cascade( {CascadeType.ALL} )
+	public List<Batalla> getCreadores() {
+		return creadores;
+	}
+
+	public void setCreadores(List<Batalla> creadores) {
+		this.creadores = creadores;
+	}
+
+	@OneToMany( mappedBy = "jugadorRetadorRef", orphanRemoval = true )
+	@LazyCollection( LazyCollectionOption.TRUE )
+	@Cascade( {CascadeType.ALL} )
+	public List<Batalla> getRetadores() {
+		return retadores;
+	}
+
+	public void setRetadores(List<Batalla> retadores) {
+		this.retadores = retadores;
+	}  
+
 
 	@OneToMany(mappedBy = "personajeRef", orphanRemoval = true )
 	@LazyCollection(LazyCollectionOption.TRUE)
@@ -251,7 +278,7 @@ public class Personaje {
 	public void setPersonajeItemList(List<PersonajeItem> personajeItemList) {
 		this.personajeItemList = personajeItemList;
 	}
-	
+
 	  
 }
 
