@@ -33,6 +33,7 @@ import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.gui.perfil.PerfilDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.principal.PrincipalDesktop;
+import codesolids.gui.ranking.Ranking;
 import codesolids.gui.style.Styles1;
 import codesolids.gui.tienda.TiendaDesktop;
 import echopoint.HtmlLayout;
@@ -64,8 +65,7 @@ public class MapaDesktop extends ContentPane {
 			throw new RuntimeException(e);
 			}
 		HtmlLayoutData hld;
-		
-		
+				
 		ImageReference perfil_des = ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/perfil_sel.png");
 		ImageReference perfil_sel = ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/perfil_des.png");
 		ImageReference academia_sel = ImageReferenceCache.getInstance().getImageReference("/Images/Mapa/academia_sel.png");
