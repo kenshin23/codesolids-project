@@ -21,6 +21,7 @@ public class PersonajePoderes {
 
 	private int id;
 	private boolean equipado;
+	private int orderEquipado;
 	private boolean learnProgreso;
 	private Personaje personajeRef;
 	private Poderes poderesRef;
@@ -42,6 +43,14 @@ public class PersonajePoderes {
 	
 	public void setEquipado(boolean equipado) {
 		this.equipado = equipado;
+	}
+	
+	public int getOrderEquipado() {
+		return orderEquipado;
+	}
+
+	public void setOrderEquipado(int orderEquipado) {
+		this.orderEquipado = orderEquipado;
 	}
 	
 	public boolean getLearnProgreso() {

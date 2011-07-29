@@ -35,6 +35,8 @@ import codesolids.bd.clases.PersonajePoderes;
 import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.gui.inventario.DesktopItem;
+import codesolids.gui.inventario.DesktopPoder;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
@@ -166,47 +168,12 @@ public class PerfilDesktop extends ContentPane{
 			}
 
 		private void buttonItemClicked(ActionEvent e) {
-			final WindowPane win = new WindowPane();
-			win.setTitle("Items que Posee");
-			win.setWidth(new Extent(300));
-			win.setMaximumWidth(new Extent(200));
-			win.setMaximumHeight(new Extent(300));
-			win.setMovable(false);
-			win.setResizable(false);
-			win.setPositionX(new Extent(200));
-			win.setModal(true);
-			Column col = new Column();
-			
-			Session session = SessionHibernate.getInstance().getSession();
-			session.beginTransaction();
-			String queryStr = "SELECT personajeItemList AS pp FROM Personaje WHERE personajeref_id = :idPlayer";
-			Query query  = session.createQuery(queryStr);
-			query.setInteger("idPlayer", personaje.getId());
-			List<Object> listQuery = query.list();
-			createListItems(listQuery, col);			
-			
-			session.getTransaction().commit();			  	        
-			session.close();
-			
-			Button button = new Button();
-			button.setText("Aceptar");
-			button.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			button.setHeight(new Extent(15));
-			button.setWidth( new Extent(60));
-			button.setToolTipText("Regresar al perfil");
-			button.setStyle(Styles1.DEFAULT_STYLE);
-			button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				win.userClose();
-				}
-			});
-			col.add(button);
-			col.setInsets(new Insets(25));
-			win.add(col);
-			add(win);			
+			removeAll();
+			add(new DesktopItem());
 		}
 		});
 		colTab.add(btnItem);
+		
 		Button btnPoderes = new Button();
 		btnPoderes.setText("Poderes");
 		btnPoderes.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
@@ -218,49 +185,14 @@ public class PerfilDesktop extends ContentPane{
 		public void actionPerformed(ActionEvent e) {
 			buttonPoderesClicked(e);				
 			}
-
-		private void buttonPoderesClicked(ActionEvent e) {
-			final WindowPane win = new WindowPane();
-			win.setTitle("Poderes que Posee");
-			win.setWidth(new Extent(300));
-			win.setMaximumWidth(new Extent(200));
-			win.setMaximumHeight(new Extent(300));
-			win.setMovable(false);
-			win.setResizable(false);
-			win.setPositionX(new Extent(200));
-			win.setModal(true);
-			Column col = new Column();
-			
-			Session session = SessionHibernate.getInstance().getSession();
-			session.beginTransaction();
-			String queryStr = "SELECT personajePoderesList AS pp FROM Personaje WHERE personajeref_id = :idPlayer";
-			Query query  = session.createQuery(queryStr);
-			query.setInteger("idPlayer", personaje.getId());
-			List<Object> listQuery = query.list();
-			createListPoderes(listQuery, col);			
-			
-			session.getTransaction().commit();			  	        
-			session.close();
-			
-			Button button = new Button();
-			button.setText("Aceptar");
-			button.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			button.setHeight(new Extent(15));
-			button.setWidth( new Extent(60));
-			button.setToolTipText("Regresar al perfil");
-			button.setStyle(Styles1.DEFAULT_STYLE);
-			button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				win.userClose();
-				}
-			});
-			col.add(button);
-			col.setInsets(new Insets(25));
-			win.add(col);
-			add(win);
-			
-		}
+		
+			private void buttonPoderesClicked(ActionEvent e) 
+			{
+				removeAll();
+				add(new DesktopPoder());
+			}
 		});
+		
 		colTab.add(btnPoderes);
 		rowTab.add(panelImage);
 		rowTab.setCellSpacing(new Extent(15));
@@ -344,19 +276,6 @@ public class PerfilDesktop extends ContentPane{
 		return panel;
 	}
 	
-	private void createListPoderes( List<Object> listQuery, Column col){
-		Iterator<Object> iter = listQuery.iterator();
-  	    if (!iter.hasNext()) {
-  	    	lblData = new Label("Aun no tiene poderes");
-			col.add(lblData); 
-  	    	return;
-  	    }
-  	    while (iter.hasNext()) {  
-  	    	PersonajePoderes p = (PersonajePoderes) iter.next();
-  	    	lblData = new Label(p.getPoderesRef().getName());
-			col.add(lblData);  	            
-  	    }  	    
-	}
 	private void createListItems( List<Object> listQuery, Column col){
 		Iterator<Object> iter = listQuery.iterator();
   	    if (!iter.hasNext()) {
