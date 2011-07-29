@@ -39,6 +39,7 @@ import codesolids.gui.style.Styles1;
 import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.ETable;
+import com.minotauro.echo.table.base.ETableNavigation;
 import com.minotauro.echo.table.base.TableColModel;
 import com.minotauro.echo.table.base.TableColumn;
 import com.minotauro.echo.table.base.TableSelModel;
@@ -236,88 +237,102 @@ public class Ranking extends ContentPane {
 		// The navigation control
 		// ----------------------------------------
 
-		//		Row row = new Row();
-		//		row.setAlignment(Alignment.ALIGN_CENTER);
-		//
-		//		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
-		//		tableNavigation.setForeground(Color.WHITE);
-		//		row.add(tableNavigation);
-		//
-		//		col.add(row);
+		Row row = new Row();
+		row.setAlignment(Alignment.ALIGN_CENTER);
+
+		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
+		tableNavigation.setForeground(Color.WHITE);
+		row.add(tableNavigation);
+		
+		col.add(row);
 		panel.add(col);
 		return panel;
 
 	}
 
-	private TableColModel initTableColModel() {
+	private TableColModel initTableColModel(){ 
 
-		TableColModel tableColModel = new TableColModel();
-		TableColumn tableColumn;
+	TableColModel tableColModel = new TableColModel();
+	TableColumn tableColumn;
 
-		LabelCellRenderer headLcr = new LabelCellRenderer();
-		headLcr.setBackground(new Color(87, 205, 211));
-		headLcr.setForeground(Color.WHITE);
-		headLcr.setAlignment(Alignment.ALIGN_CENTER);
+	LabelCellRenderer headLcr = new LabelCellRenderer();
+	headLcr.setBackground(new Color(87, 205, 211));
+	headLcr.setForeground(Color.WHITE);
+	headLcr.setAlignment(Alignment.ALIGN_CENTER);
 
-		LabelCellRenderer lcr;
-		lcr = new LabelCellRenderer();
-		lcr.setBackground(new Color(226, 211, 161));
-		lcr.setAlignment(Alignment.ALIGN_CENTER);
+	LabelCellRenderer lcr;
+	lcr = new LabelCellRenderer();
+	lcr.setBackground(new Color(226, 211, 161));
+	lcr.setAlignment(Alignment.ALIGN_CENTER);
 
-		tableColumn = new TableColumn() {
-			@Override
-			public Object getValue(ETable table, Object element) {
-				Personaje personaje = (Personaje) element;
-				return personajes.indexOf(personaje) + 1;
+	tableColumn = new TableColumn() {
+		@Override
+		public Object getValue(ETable table, Object element) {
+			Personaje per = (Personaje) element;
+			int lugar = 0;
+			for(int i = 0; i < personajes.size(); i++){
+				if(personajes.get(i).getId() == per.getId()){
+					lugar = i +1;
+				}
 			}
-		};
-		tableColumn.setWidth(new Extent(30));
-		tableColumn.setHeadValue("Ranking");
-		tableColumn.setHeadCellRenderer(headLcr);
-		tableColumn.setDataCellRenderer(lcr);
-		tableColModel.getTableColumnList().add(tableColumn);
+			return lugar;
+		}
+	};
+	tableColumn.setWidth(new Extent(20));
+	tableColumn.setHeadValue("Ranking");
+	tableColumn.setHeadCellRenderer(headLcr);
+	tableColumn.setDataCellRenderer(lcr);
+	tableColModel.getTableColumnList().add(tableColumn);
 
-		tableColumn = new TableColumn() {
-			@Override
-			public Object getValue(ETable table, Object element) {
-				Personaje personaje = (Personaje) element; 
-				return personaje.getId();
-			}
-		};
-		tableColumn.setWidth(new Extent(100));
-		tableColumn.setHeadValue("Id");
-		tableColumn.setHeadCellRenderer(headLcr);
-		tableColumn.setDataCellRenderer(lcr);
-		tableColModel.getTableColumnList().add(tableColumn);
+	tableColumn = new TableColumn() {
+		@Override
+		public Object getValue(ETable table, Object element) {
+			Personaje per = (Personaje) element;
+			Session session = SessionHibernate.getInstance().getSession();
+			session.beginTransaction();
 
-		tableColumn = new TableColumn() {
-			@Override
-			public Object getValue(ETable table, Object element) {
-				Personaje personaje = (Personaje) element;
-				return personaje.getLevel();
-			}
-		};
-		tableColumn.setWidth(new Extent(30));
-		tableColumn.setHeadValue("Nivel");
-		tableColumn.setHeadCellRenderer(headLcr);
-		tableColumn.setDataCellRenderer(lcr);
-		tableColModel.getTableColumnList().add(tableColumn);
+			per = (Personaje) session.load(Personaje.class, per.getId());
+			
+			session.getTransaction().commit();
+			session.close();
 
-		tableColumn = new TableColumn() {
-			@Override
-			public Object getValue(ETable table, Object element) {
-				Personaje personaje = (Personaje) element;
-				return personaje.getTipo();
-			}
-		};
-		tableColumn.setWidth(new Extent(50));
-		tableColumn.setHeadValue("Tipo");
-		tableColumn.setHeadCellRenderer(headLcr);
-		tableColumn.setDataCellRenderer(lcr);
-		tableColModel.getTableColumnList().add(tableColumn);
+			return per.getUsuarioRef().getLogin();
+		}
+	};
+	tableColumn.setWidth(new Extent(20));
+	tableColumn.setHeadValue("Usuario");
+	tableColumn.setHeadCellRenderer(headLcr);
+	tableColumn.setDataCellRenderer(lcr);
+	tableColModel.getTableColumnList().add(tableColumn);
 
-		return tableColModel;
+	tableColumn = new TableColumn() {
+		@Override
+		public Object getValue(ETable table, Object element) {
+			Personaje per = (Personaje) element;
+			return per.getLevel();
+		}
+	};
+	tableColumn.setWidth(new Extent(20));
+	tableColumn.setHeadValue("Nivel");
+	tableColumn.setHeadCellRenderer(headLcr);
+	tableColumn.setDataCellRenderer(lcr);
+	tableColModel.getTableColumnList().add(tableColumn);
 
-	}
+	tableColumn = new TableColumn() {
+		@Override
+		public Object getValue(ETable table, Object element) {
+			Personaje per = (Personaje) element;
+			return per.getTipo();
+		}
+	};
+	tableColumn.setWidth(new Extent(20));
+	tableColumn.setHeadValue("Tipo");
+	tableColumn.setHeadCellRenderer(headLcr);
+	tableColumn.setDataCellRenderer(lcr);
+	tableColModel.getTableColumnList().add(tableColumn);
+
+	return tableColModel;
+
+}
 
 }
