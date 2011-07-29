@@ -5,10 +5,6 @@ package codesolids.gui.mapa;
  * 
  * */
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Component;
@@ -16,13 +12,20 @@ import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.ResourceImageReference;
+import nextapp.echo.app.Row;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.academia.AcademiaDesktop;
-import codesolids.gui.arena.PreArena;
+import codesolids.gui.arena.ArenaDesktop;
 import codesolids.gui.chat.ChatGui;
+import codesolids.gui.editar.EditarDatos;
 import codesolids.gui.mision.Mision;
 import codesolids.gui.perfil.PerfilDesktop;
 import codesolids.gui.principal.PrincipalApp;
@@ -31,7 +34,6 @@ import codesolids.gui.style.Styles1;
 import codesolids.gui.tienda.TiendaDesktop;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
-import nextapp.echo.app.Column;
 
 @SuppressWarnings("serial")
 public class MapaDesktop extends ContentPane {
@@ -198,6 +200,24 @@ public class MapaDesktop extends ContentPane {
 		htmlLayout.add(chatBtn);
 		
 		hld = new HtmlLayoutData("botonLogout");
+		
+		Row row = new Row();
+		row.setCellSpacing(new Extent(20));
+		
+		Button btnEditarDatos = new Button("Editar Datos");
+		btnEditarDatos.setStyle(Styles1.DEFAULT_STYLE);
+		btnEditarDatos.setHeight(new Extent(15));
+		btnEditarDatos.setWidth(new Extent(65));    
+		btnEditarDatos.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				btnEditarDatosClicked();
+
+			}
+		});
+		row.add(btnEditarDatos);
+
+		
 		Button logoutBtn = new Button("Cerrar Sesion");
 		logoutBtn.setEnabled(true);
 		logoutBtn.setVisible(true);
@@ -209,8 +229,10 @@ public class MapaDesktop extends ContentPane {
 					logoutBtnClicked(e);
 				}
 			});
-		logoutBtn.setLayoutData(hld);
-		htmlLayout.add(logoutBtn);
+		row.add(logoutBtn);
+		
+		row.setLayoutData(hld);
+		htmlLayout.add(row);
 
 		return htmlLayout;
 	 }
@@ -219,24 +241,33 @@ public class MapaDesktop extends ContentPane {
 	 
 		private void arenaBtnClicked(ActionEvent e) {
 			this.removeAll();
-			add(new PreArena());
+			add(new ArenaDesktop());
 		}
+		
 		private void logoutBtnClicked(ActionEvent e) {
 			removeAll();
 			add(new PrincipalDesktop());
 		}
+		
+        private void btnEditarDatosClicked() {
+        	add(new EditarDatos());
+        }
+		
 		private void perfilBtnClicked(ActionEvent e) {
 			removeAll();
 			add(new PerfilDesktop());
 		}
+		
 		private void rankingBtnClicked(ActionEvent e) {
 			removeAll();
 			add(new Ranking());
 		}
+		
 		private void clanesBtnClicked(ActionEvent e) {
 			removeAll();
 			add(new Mision());
 		}
+		
 		private void tiendaBtnClicked(ActionEvent e) {
 			removeAll();
 			add(new TiendaDesktop());
