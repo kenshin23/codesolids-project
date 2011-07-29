@@ -27,10 +27,12 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
 
+import codesolids.bd.clases.Batalla;
 import codesolids.bd.clases.Invitation;
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.gui.batalla.Desktop;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
@@ -412,10 +414,48 @@ public class PreArena extends ContentPane{
 	        			  }	        		  
 	        			  private void BtnClicked(int row) {	        				
 	      	          		inviteServerPush.end();
+	      	          		
+	      	          		//Va a la Batalla!!
+	      	          		Session session = SessionHibernate.getInstance().getSession();
+	      	          		session.beginTransaction();
+	      	          	
+	      	          		Batalla battle = new Batalla();
+	      	          		       		
+	      	          		Personaje pJuagadorCreate = (Personaje) session.load(Personaje.class, inv.getPersonajeGeneratesRef().getId()); 
+	      	          		Personaje pJuagadorRetador = (Personaje) session.load(Personaje.class, inv.getPersonajeReceivesRef().getId());
+
+	      	          		battle.setJugadorCreadorRef(pJuagadorCreate);
+	      	          		pJuagadorCreate.getCreadores().add(battle);
+		
+	      	          		battle.setJugadorRetadorRef(pJuagadorRetador);
+	      	          		pJuagadorRetador.getRetadores().add(battle);
+	      	          		
+	      	          		if( pJuagadorCreate.getSpeed() > pJuagadorRetador.getSpeed() )
+	      	          			battle.setTurno("Creador");
+	      	          		else if( pJuagadorCreate.getSpeed() < pJuagadorRetador.getSpeed() )
+	      	          			battle.setTurno("Retador");
+	      	          		else
+	      	          			battle.setTurno("Creador");
+	      	          		
+	      	          		battle.setInBattle(true);
+	      	          		battle.setSecuenciaTurno(1);
+	      	          		
+	      	          		battle.setVidaCreador(pJuagadorCreate.getHp());
+	      	          		battle.setVidaRetador(pJuagadorRetador.getHp());
+	      	          		battle.setPsinergiaCreador(pJuagadorCreate.getMp());
+	      	          		battle.setPsinergiaRetador(pJuagadorRetador.getMp());
+	      	          		
+	      	          		inv.setEstado(true);
+	      	   
+	      	          		session.save(battle);
+	      	          		
+	      	          		session.getTransaction().commit();
+	      	          		session.close();
+	      	          		
 	      	          		UpdateInvitation(inv);
 	      	          		UpdateOutOfArena();
 	    	          		removeAll();
-	    	          		add(new ArenaDesktop());
+	    	          		add(new Desktop());
 	        			  }
 	        		  });	        	  
 	          }
