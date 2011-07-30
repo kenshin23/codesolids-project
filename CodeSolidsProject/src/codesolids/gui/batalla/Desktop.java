@@ -217,16 +217,12 @@ public class Desktop extends ContentPane{
 		if( battle.getTurno().equals("Creador") ) 
 		{
 			if( jugador.getId() == battle.getJugadorCreadorRef().getId() )
-			{
 				colTimeBotonera.setVisible(true);
-			}
 		}
 		else if( battle.getTurno().equals("Retador") )
 		{
 			if( jugador.getId() == battle.getJugadorRetadorRef().getId() )
-			{
 				colTimeBotonera.setVisible(true);
-			}
 		}
 		
 		ApplicationInstance app = ApplicationInstance.getActive();		
@@ -252,16 +248,22 @@ public class Desktop extends ContentPane{
 						
 						if( battle.getVidaCreador() == 0 )
 						{
-							finalBattle();
 
+							listNumber = new ArrayList<Number>();
+							listNumber.add(0); 
+							listNumber.add(150);
+
+							barraVida1.setValues(listNumber);
+							labelHp.setText(jugador.getHp() + "/" + battle.getVidaCreador());
+							
 							session = SessionHibernate.getInstance().getSession();
 							session.beginTransaction();
 							
-							Personaje pJugador = (Personaje) session.load(Personaje.class, jugador.getId());
+							jugador = (Personaje) session.load(Personaje.class, jugador.getId());
 							
-							pJugador.setXp(jugador.getXp());
-							pJugador.setGold(jugador.getGold());
-							pJugador.setLevel(jugador.getLevel());
+							jugador.setXp(jugador.getXp());
+							jugador.setGold(jugador.getGold());
+							jugador.setLevel(jugador.getLevel());
 
 							battle = (Batalla) session.load(Batalla.class, battle.getId());
 
@@ -269,7 +271,9 @@ public class Desktop extends ContentPane{
 
 							session.getTransaction().commit();
 							session.close();
+
 							checkServerPush.end();
+							finalBattle();
 						}
 						else
 						{
@@ -291,17 +295,23 @@ public class Desktop extends ContentPane{
 						colTimeBotonera.setVisible(true);
 						
 						if( battle.getVidaRetador() == 0 )
-						{
-							finalBattle();
+						{	
+							
+							listNumber = new ArrayList<Number>();
+							listNumber.add(0); 
+							listNumber.add(150);
+
+							barraVida1.setValues(listNumber);
+							labelHp.setText(jugador.getHp() + "/" + battle.getVidaRetador());
 							
 							session = SessionHibernate.getInstance().getSession();
 							session.beginTransaction();
 							
-							Personaje pJugador = (Personaje) session.load(Personaje.class, jugador.getId());
+							jugador = (Personaje) session.load(Personaje.class, jugador.getId());
 							
-							pJugador.setXp(jugador.getXp());
-							pJugador.setGold(jugador.getGold());
-							pJugador.setLevel(jugador.getLevel());
+							jugador.setXp(jugador.getXp());
+							jugador.setGold(jugador.getGold());
+							jugador.setLevel(jugador.getLevel());
 							
 							battle = (Batalla) session.load(Batalla.class, battle.getId());
 
@@ -309,7 +319,9 @@ public class Desktop extends ContentPane{
 							
 							session.getTransaction().commit();
 							session.close();
+							
 							checkServerPush.end();
+							finalBattle();
 						}
 						else
 						{
@@ -819,10 +831,10 @@ public class Desktop extends ContentPane{
 				barraVida2.setValues(listNumber);
 
 				battle.setVidaRetador(0);
-				finalBattle();
-
 				battle.setTurno("Retador");
 				lblSec.setText("21");
+				
+				finalBattle();
 			}
 			else
 			{	
@@ -858,10 +870,11 @@ public class Desktop extends ContentPane{
 				barraVida2.setValues(listNumber);
 
 				battle.setVidaCreador(0);
-				finalBattle();
 
 				battle.setTurno("Creador");
 				lblSec.setText("21");
+				
+				finalBattle();
 			}
 			else
 			{
@@ -1185,120 +1198,28 @@ public class Desktop extends ContentPane{
 		final WindowPane ventanaFinal = new WindowPane();
 		ventanaFinal.setStyle(StyleWindow.ACADEMY_STYLE);
 		ventanaFinal.setClosable(false);
-				
+		
 		if( jugador.getId() == battle.getJugadorCreadorRef().getId() )
 		{
 			if( battle.getVidaRetador() == 0 )
-			{
+			{		
 				ventanaFinal.setTitle("VICTORIA");
 
 				int xp = 50;
 				int gold = 500;
-
-				Column col = new Column();
-				col.setCellSpacing(new Extent(15));
 				
-				col.add(cartelRecompensa(xp, gold, "VICTORIA!"));
-								
-				Session session = SessionHibernate.getInstance().getSession();
-				session.beginTransaction();
-				
-				nivelExp = (Nivel) session.load(Nivel.class, (jugador.getLevel() + 1));
-								
-				if( jugador.getXp() + xp > nivelExp.getCantidadExp() )
-				{
-					jugador.setXp(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-					jugador.setLevel(jugador.getLevel() + 1);
-					jugador.setGold(jugador.getGold() + gold);
-				}
-				else
-				{
-					jugador.setXp(jugador.getXp() + xp);
-					jugador.setGold(jugador.getGold() + gold);
-				}
-				
-				session.getTransaction().commit();
-				session.close();
-				
-				listNumber = new ArrayList<Number>();
-				listNumber.add(jugador.getXp() + xp);
-				listNumber.add(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-				barraXp.setValues(listNumber);
-
-				labelXp.setText(nivelExp.getCantidadExp() + "/" + jugador.getXp());
-
-				jugador.setGold(jugador.getGold() + gold);
-				labelGold.setText(" " + jugador.getGold());
-	
-				Button btnAceptar = new Button("Aceptar");
-				btnAceptar.setWidth(new Extent(50));
-				btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
-				btnAceptar.addActionListener(new ActionListener() {
-					
-					public void actionPerformed(ActionEvent evt) {
-						ventanaFinal.userClose();
-						removeAll();
-						add(new PreArena());
-					}
-				});				
-				col.add(btnAceptar);
-				
-				ventanaFinal.add(col);
+				ventanaFinal.add(validateRecompensa(ventanaFinal, xp, gold, "VICTORIA!"));
 				ventanaFinal.setModal(true);			
 	
 				add(ventanaFinal);
 			}
 			if( battle.getVidaCreador() == 0 )
-			{
+			{	
 				ventanaFinal.setTitle("DERROTA");
 				
 				int xp = 3;
 				
-				Column col = new Column();
-				col.setCellSpacing(new Extent(15));
-				
-				col.add(cartelRecompensa(xp, 0, "PERDISTE!"));
-				
-				Session session = SessionHibernate.getInstance().getSession();
-				session.beginTransaction();
-				
-				nivelExp = (Nivel) session.load(Nivel.class, (jugador.getLevel() + 1));
-				
-				if( jugador.getXp() + xp > nivelExp.getCantidadExp() )
-				{
-					jugador.setXp(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-					jugador.setLevel(jugador.getLevel() + 1);
-				}
-				else
-				{
-					jugador.setXp(jugador.getXp() + xp);
-				}
-
-				session.getTransaction().commit();
-				session.close();
-				
-				listNumber = new ArrayList<Number>();
-				listNumber.add(jugador.getXp() + xp);
-				listNumber.add(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-				barraXp.setValues(listNumber);
-				
-				labelXp.setText(nivelExp.getCantidadExp() + "/" + jugador.getXp());
-				
-				Button btnAceptar = new Button("Aceptar");
-				btnAceptar.setWidth(new Extent(50));
-				btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
-				btnAceptar.addActionListener(new ActionListener() {
-					
-					public void actionPerformed(ActionEvent evt) {
-						ventanaFinal.userClose();
-						removeAll();
-						add(new PreArena());
-					}
-				});
-				col.add(btnAceptar);
-				
-				
-				ventanaFinal.add(col);
+				ventanaFinal.add(validateRecompensa(ventanaFinal, xp, 0, "PERDISTE!"));			
 				ventanaFinal.setModal(true);
 				add(ventanaFinal);
 			}
@@ -1312,108 +1233,17 @@ public class Desktop extends ContentPane{
 				int xp = 50;
 				int gold = 500;
 
-				Column col = new Column();
-				col.setCellSpacing(new Extent(15));
-				
-				col.add(cartelRecompensa(xp, gold, "VICTORIA!"));
-								
-				Session session = SessionHibernate.getInstance().getSession();
-				session.beginTransaction();
-				
-				nivelExp = (Nivel) session.load(Nivel.class, (jugador.getLevel() + 1));
-				
-				if( jugador.getXp() + xp > nivelExp.getCantidadExp() )
-				{
-					jugador.setXp(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-					jugador.setLevel(jugador.getLevel() + 1);
-					jugador.setGold(jugador.getGold() + gold);
-				}
-				else
-				{
-					jugador.setXp(jugador.getXp() + xp);
-					jugador.setGold(jugador.getGold() + gold);
-				}
-				
-				session.getTransaction().commit();
-				session.close();
-				
-				listNumber = new ArrayList<Number>();
-				listNumber.add(jugador.getXp() + xp);
-				listNumber.add(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-				barraXp.setValues(listNumber);
-				
-				labelXp.setText(nivelExp.getCantidadExp() + "/" + jugador.getXp());
-
-				jugador.setGold(jugador.getGold() + gold);
-				labelGold.setText(" " + jugador.getGold());
-				
-				Button btnAceptar = new Button("Aceptar");
-				btnAceptar.setWidth(new Extent(50));
-				btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
-				btnAceptar.addActionListener(new ActionListener() {
-
-					public void actionPerformed(ActionEvent evt) {
-						ventanaFinal.userClose();
-						removeAll();
-						add(new PreArena());
-					}
-				});
-				col.add(btnAceptar);
-
-				ventanaFinal.add(col);
+				ventanaFinal.add(validateRecompensa(ventanaFinal, xp, gold, "VICTORIA!"));
 				ventanaFinal.setModal(true);
 				add(ventanaFinal);
 			}
 			if( battle.getVidaRetador() == 0 )
 			{
 				ventanaFinal.setTitle("DERROTA");
-				
+
 				int xp = 3;
-				
-				Column col = new Column();
-				col.setCellSpacing(new Extent(15));
-				
-				col.add(cartelRecompensa(xp, 0, "PERDISTE!"));
-								
-				Session session = SessionHibernate.getInstance().getSession();
-				session.beginTransaction();
-				
-				nivelExp = (Nivel) session.load(Nivel.class, (jugador.getLevel() + 1));
-				
-				if( jugador.getXp() + xp > nivelExp.getCantidadExp() )
-				{
-					jugador.setXp(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-					jugador.setLevel(jugador.getLevel() + 1);
-				}
-				else
-				{
-					jugador.setXp(jugador.getXp() + xp);
-				}
-				
-				session.getTransaction().commit();
-				session.close();
-				
-				listNumber = new ArrayList<Number>();
-				listNumber.add(jugador.getXp() + xp);
-				listNumber.add(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-				barraXp.setValues(listNumber);
-				
-				labelXp.setText(nivelExp.getCantidadExp() + "/" + jugador.getXp());
-				
-				Button btnAceptar = new Button("Aceptar");
-				btnAceptar.setWidth(new Extent(50));
-				btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
-				btnAceptar.addActionListener(new ActionListener() {
-					
-					public void actionPerformed(ActionEvent evt) {
-						ventanaFinal.userClose();
-						removeAll();
-						add(new PreArena());
-					}
-				});
-				col.add(btnAceptar);
-				
-				ventanaFinal.add(col);
+
+				ventanaFinal.add(validateRecompensa(ventanaFinal, xp, 0, "PERDISTE!"));				
 				ventanaFinal.setModal(true);
 				add(ventanaFinal);
 			}			
@@ -1430,6 +1260,61 @@ public class Desktop extends ContentPane{
 		}
 		session.getTransaction().commit();
 		session.close();
+	}
+	
+	private Column validateRecompensa(final WindowPane ventanaFinal, int xp, int gold,String titulo)
+	{
+		Column col = new Column();
+		col.setCellSpacing(new Extent(15));
+		
+		col.add(cartelRecompensa(xp, gold, titulo));
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		jugador = (Personaje) session.load(Personaje.class, jugador.getId());
+		
+		nivelExp = (Nivel) session.load(Nivel.class, (jugador.getLevel() + 1));
+						
+		if( jugador.getXp() + xp > nivelExp.getCantidadExp() )
+		{
+			jugador.setXp(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
+			jugador.setLevel(jugador.getLevel() + 1);
+			jugador.setGold(jugador.getGold() + gold);
+		}
+		else
+		{
+			jugador.setXp(jugador.getXp() + xp);
+			jugador.setGold(jugador.getGold() + gold);
+		}
+		
+		session.getTransaction().commit();
+		session.close();
+		
+		listNumber = new ArrayList<Number>();
+		listNumber.add(jugador.getXp() + xp);
+		listNumber.add(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
+		barraXp.setValues(listNumber);
+
+		labelXp.setText(nivelExp.getCantidadExp() + "/" + jugador.getXp());
+
+		jugador.setGold(jugador.getGold() + gold);
+		labelGold.setText(" " + jugador.getGold());
+
+		Button btnAceptar = new Button("Aceptar");
+		btnAceptar.setWidth(new Extent(50));
+		btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
+		btnAceptar.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent evt) {
+				ventanaFinal.userClose();
+				removeAll();
+				add(new PreArena());
+			}
+		});				
+		col.add(btnAceptar);
+		
+		return col;
 	}
 	
 	private Column cartelRecompensa(int xp, int gold, String titulo)
@@ -1708,16 +1593,13 @@ public class Desktop extends ContentPane{
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 
-		Criteria criteria;
-
 		List<ChatBatalla> list =  session.createCriteria(ChatBatalla.class).add(Restrictions.eq("batallaChatRef", battle)).addOrder(Order.asc("id")).list();
 
 		session.getTransaction().commit();
 		session.close();
 
-		for (ChatBatalla obj : list) {			
-				txtCharla.setText( obj.getLogin() + ">>" + obj.getMensaje() + "\n" + txtCharla.getText());			
-		}
+		for (ChatBatalla obj : list)
+			txtCharla.setText( obj.getLogin() + ">>" + obj.getMensaje() + "\n" + txtCharla.getText());
 	}
 
 }

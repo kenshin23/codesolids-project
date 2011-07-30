@@ -39,7 +39,6 @@ public class Poderes {
 	protected int timeTraining;
 	protected int psinergia;
 	protected String tipo;
-	protected boolean uso;
 	protected String dirImage;
 	protected String descripcion;
 	protected byte[] image;
@@ -117,14 +116,6 @@ public class Poderes {
 	
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
-	}
-	
-	public boolean getUso() {
-		return uso;
-	}
-	
-	public void setUso(boolean uso) {
-		this.uso = uso;
 	}
 
 	public String getDirImage() {
