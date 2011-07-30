@@ -781,10 +781,18 @@ public class AcademiaDesktop extends ContentPane {
 	          
 	          final Poderes poder = (Poderes) tableDtaModel.getElementAt(row); 
 	          
-	          if ( (poder.getUso() == false) && (player.getLevel() >= poder.getLevel()) )
-	          {
-	        	  
-	        	  if( poder.getTipo().equals(player.getTipo()) )
+	          Session session = SessionHibernate.getInstance().getSession();
+	          session.beginTransaction();
+	          
+	          Criteria criteria = session.createCriteria(PersonajePoderes.class).add(Restrictions.and(Restrictions.eq("personajeRef", player), Restrictions.eq("poderesRef", poder)));
+	          List<PersonajePoderes> pPoderes = criteria.list();
+	          
+	          session.getTransaction().commit();
+	          session.close();
+
+	          if ( (pPoderes.isEmpty()) )
+	          {    	  
+	        	  if( (poder.getTipo().equals(player.getTipo())) && (player.getLevel() >= poder.getLevel()) )
 	        	  {	  
 	        		  ret.addActionListener(new ActionListener() {
 	        			  public void actionPerformed(ActionEvent e) {  
@@ -820,8 +828,6 @@ public class AcademiaDesktop extends ContentPane {
 		        					  criteria = session.createCriteria(Poderes.class).add(Restrictions.eq("id", poderBD.getId()));
 		        					  
 		        					  poderBD = (Poderes) criteria.uniqueResult();
-		        					  
-		        					  poderBD.setUso(true);
 
 		        					  player = (Personaje) session.load(Personaje.class, player.getId());
 		        					  
@@ -854,7 +860,6 @@ public class AcademiaDesktop extends ContentPane {
 		        					  session.close();	 
 		        	
 		        					  ret.setEnabled(false);
-		        					  poder.setUso(true);
 		        					  
 		        					  flag = false;
 		    	        			  
@@ -901,8 +906,6 @@ public class AcademiaDesktop extends ContentPane {
 		        					  
 		        					  poderBD = (Poderes) criteria.uniqueResult();
 		        					  
-		        					  poderBD.setUso(true);
-		        					  
 		        					  player = (Personaje) session.load(Personaje.class, player.getId());		        					
 		        					  
 		        					  player.setGold(player.getGold() - poder.getGold());
@@ -922,9 +925,8 @@ public class AcademiaDesktop extends ContentPane {
 		        					  poderBD.getPersonajePoderesList().add(personajePoderes);
 		        					  
 		        					  session.getTransaction().commit();
-		        					  session.close();	 
-		        				
-		        					  poder.setUso(true);
+		        					  session.close();
+		        					  
 		    	        			  ret.setEnabled(false);
 		    	        			  
 	    	        			  }
@@ -1122,7 +1124,6 @@ public class AcademiaDesktop extends ContentPane {
 			poder.setTimeTraining(obj.getTimeTraining());
 			poder.setPsinergia(obj.getPsinergia());
 			poder.setTipo(obj.getTipo());
-			poder.setUso(obj.getUso());
 			poder.setDirImage(obj.getDirImage());
 						
 			tableDtaModel.add(poder);
