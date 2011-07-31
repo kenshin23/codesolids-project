@@ -564,8 +564,9 @@ public class DesktopPoder extends ContentPane{
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		Criteria criteria = session.createCriteria(PersonajePoderes.class).add(Restrictions.eq("poderesRef", poder));
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 		
+		Criteria criteria = session.createCriteria(PersonajePoderes.class).add(Restrictions.and(Restrictions.eq("personajeRef", personaje), Restrictions.eq("poderesRef", poder)));
 		PersonajePoderes pPoderes = (PersonajePoderes) criteria.uniqueResult();
 		
 		session.getTransaction().commit();
@@ -600,11 +601,10 @@ public class DesktopPoder extends ContentPane{
 		
 		List list = query.list();
 		
-		Criteria criteria = session.createCriteria(PersonajePoderes.class).add(Restrictions.eq("poderesRef", poder));
-		
-		PersonajePoderes pPoderes = (PersonajePoderes) criteria.uniqueResult();
-
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		Criteria criteria = session.createCriteria(PersonajePoderes.class).add(Restrictions.and(Restrictions.eq("personajeRef", personaje), Restrictions.eq("poderesRef", poder)));
+		PersonajePoderes pPoderes = (PersonajePoderes) criteria.uniqueResult();
 		
 		int order = 0;
 		

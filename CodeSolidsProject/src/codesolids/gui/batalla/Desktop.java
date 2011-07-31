@@ -21,6 +21,7 @@ import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.arena.PreArena;
 import codesolids.gui.principal.PrincipalApp;
+import codesolids.gui.style.StyleButton;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
 import codesolids.util.TimedServerPush;
@@ -575,9 +576,7 @@ public class Desktop extends ContentPane{
 		rowBotonera.setCellSpacing(new Extent(2));
 	
 		btnHit = new Button();
-		btnHit.setStyle(Styles1.DEFAULT_STYLE);
-		btnHit.setHeight(new Extent(32));
-		btnHit.setWidth(new Extent(32));
+		btnHit.setStyle(StyleButton.BATALLA_STYLE);
 		btnHit.setIcon(new ResourceImageReference("Images/Poderes/Basico/ataque.png"));
 		
 		btnHit.addActionListener(new ActionListener(){
@@ -588,11 +587,8 @@ public class Desktop extends ContentPane{
 		rowBotonera.add(btnHit);
 		
 		btnLoadCp = new Button();
-		btnLoadCp.setStyle(Styles1.DEFAULT_STYLE);
-		btnLoadCp.setHeight(new Extent(32));
-		btnLoadCp.setWidth(new Extent(32));
+		btnLoadCp.setStyle(StyleButton.BATALLA_STYLE);
 		btnLoadCp.setIcon(new ResourceImageReference("Images/Poderes/Basico/manapoint.png"));
-		
 		btnLoadCp.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				btnLoadCpClicked();
@@ -601,11 +597,8 @@ public class Desktop extends ContentPane{
 		rowBotonera.add(btnLoadCp);		
 		
 		btnItem = new Button();
-		btnItem.setStyle(Styles1.DEFAULT_STYLE);
-		btnItem.setHeight(new Extent(32));
-		btnItem.setWidth(new Extent(32));
+		btnItem.setStyle(StyleButton.BATALLA_STYLE);
 		btnItem.setIcon(new ResourceImageReference("Images/Poderes/Basico/items.png"));
-		btnItem.setEnabled(true);
 		btnItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				btnItemClicked();
@@ -640,35 +633,40 @@ public class Desktop extends ContentPane{
 		if( posicion < list.size() )
 		{
 			btnAttack = new Button();
-			btnAttack.setStyle(Styles1.DEFAULT_STYLE);
-			btnAttack.setHeight(new Extent(32));
-			btnAttack.setWidth(new Extent(32));
-			
-			btnAttack.setAlignment(Alignment.ALIGN_CENTER);
-			btnAttack.setIcon(new ResourceImageReference(list.get(posicion).getDirImage()));
-			
+			btnAttack.setStyle(StyleButton.BATALLA_STYLE);
+
 			ToolTipContainer toolTip = new ToolTipContainer();
 			toolTip.add(btnAttack);			
 			toolTip.add(toolTipPower(list.get(posicion)));
-			
+
 			colBtn.add(toolTip);
-			
+
 			if( jugador.getId() == battle.getJugadorCreadorRef().getId() )
 			{
 				if( battle.getPsinergiaCreador() >= list.get(posicion).getPsinergia() )
 				{
 					if( listCooldown.get(posicion).intValue() == (battle.getSecuenciaTurno() + 1) )
 					{
+						btnAttack.setIcon(new ResourceImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
 						listCooldown.add(posicion, 0);
 					}
 					else if ( listCooldown.get(posicion).intValue() > battle.getSecuenciaTurno() )
+					{
+						String subStr = list.get(posicion).getDirImage().substring(0,(list.get(posicion).getDirImage().length() - 4));
+						btnAttack.setIcon(new ResourceImageReference(subStr + "Opaca.png"));
 						btnAttack.setEnabled(false);
+					}
 					else
+					{
+						btnAttack.setIcon(new ResourceImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
+					}
 				}
 				else
 				{
+					String subStr = list.get(posicion).getDirImage().substring(0,(list.get(posicion).getDirImage().length() - 4));
+					btnAttack.setIcon(new ResourceImageReference(subStr + "Opaca.png"));
 					btnAttack.setEnabled(false);
 				}
 			}
@@ -678,16 +676,26 @@ public class Desktop extends ContentPane{
 				{
 					if( listCooldown.get(posicion).intValue() == (battle.getSecuenciaTurno() + 1) )
 					{
+						btnAttack.setIcon(new ResourceImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
 						listCooldown.add(posicion, 0);
 					}
 					else if ( listCooldown.get(posicion).intValue() > battle.getSecuenciaTurno() )
+					{
+						String subStr = list.get(posicion).getDirImage().substring(0,(list.get(posicion).getDirImage().length() - 4));
+						btnAttack.setIcon(new ResourceImageReference(subStr + "Opaca.png"));
 						btnAttack.setEnabled(false);
+					}
 					else
+					{
+						btnAttack.setIcon(new ResourceImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
+					}
 				}
 				else
 				{
+					String subStr = list.get(posicion).getDirImage().substring(0,(list.get(posicion).getDirImage().length() - 4));
+					btnAttack.setIcon(new ResourceImageReference(subStr + "Opaca.png"));
 					btnAttack.setEnabled(false);
 				}
 			}
@@ -695,10 +703,7 @@ public class Desktop extends ContentPane{
 		else
 		{
 			btnAttack = new Button();
-			btnAttack.setStyle(Styles1.DEFAULT_STYLE);
-			btnAttack.setHeight(new Extent(32));
-			btnAttack.setWidth(new Extent(32));
-			
+			btnAttack.setStyle(StyleButton.BATALLA_STYLE);
 			btnAttack.setIcon(new ResourceImageReference("Images/Util/vacioAtaque.png"));
 			btnAttack.setEnabled(false);
 			colBtn.add(btnAttack);
@@ -1187,7 +1192,7 @@ public class Desktop extends ContentPane{
 		lbl = new Label();
 		lbl.setForeground(Color.ORANGE);
 		lbl.setText("Cooldown: " + poder.getCooldown());
-		col.add(col);
+		col.add(lbl);
 		
 		return col;
 	}
