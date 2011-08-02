@@ -16,6 +16,7 @@ import codesolids.gui.perfil.PerfilDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
+import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.CellRenderer;
@@ -112,7 +113,7 @@ public class DesktopPoder extends ContentPane{
 		
 		Panel panel = new Panel();
 
-		ImageReference imgR = new ResourceImageReference("Images/cartel3.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/cartel3.png");
 		FillImage imgF = new FillImage(imgR);
 		
 		panel.setWidth(new Extent(950));
@@ -310,7 +311,7 @@ public class DesktopPoder extends ContentPane{
 		Panel panel = new Panel();
 		panel.setAlignment(Alignment.ALIGN_CENTER);
 		
-		ImageReference imgR = new ResourceImageReference("Images/Util/panel.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/panel.png");
 		FillImage imgF = new FillImage(imgR);
 		
 		panel.setWidth(new Extent(300));
@@ -381,7 +382,7 @@ public class DesktopPoder extends ContentPane{
 		{
 			if( list.get(posicion).getTipo().equals(personaje.getTipo()))
 			{
-				ImageReference imgR = new ResourceImageReference(list.get(posicion).getDirImage());
+				ImageReference imgR = ImageReferenceCache.getInstance().getImageReference(list.get(posicion).getDirImage());
 				ImageIcon imgI = new ImageIcon(imgR);
 				imgI.setWidth(new Extent(42));
 				imgI.setHeight(new Extent(42));
@@ -389,7 +390,7 @@ public class DesktopPoder extends ContentPane{
 			}
 			else
 			{
-				ImageReference imgR = new ResourceImageReference("Images/Util/vacioInventario.png");
+				ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/vacioInventario.png");
 				ImageIcon imgI = new ImageIcon(imgR);
 				imgI.setWidth(new Extent(42));
 				imgI.setHeight(new Extent(42));
@@ -398,7 +399,7 @@ public class DesktopPoder extends ContentPane{
 		}	
 		else
 		{
-			ImageReference imgR = new ResourceImageReference("Images/Util/vacioInventario.png");
+			ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/vacioInventario.png");
 			ImageIcon imgI = new ImageIcon(imgR);
 			imgI.setWidth(new Extent(42));
 			imgI.setHeight(new Extent(42));
