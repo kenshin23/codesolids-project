@@ -30,6 +30,7 @@ import codesolids.gui.perfil.PerfilDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
+import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.util.TestTableModel;
 
 import echopoint.HtmlLayout;
@@ -116,7 +117,7 @@ public class DesktopItem extends ContentPane {
 		
 		Panel panel = new Panel();
 
-		ImageReference imgR = new ResourceImageReference("Images/cartel3.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/cartel3.png");
 		FillImage imgF = new FillImage(imgR);
 		
 		panel.setWidth(new Extent(950));
@@ -404,7 +405,7 @@ public class DesktopItem extends ContentPane {
 		Panel panel = new Panel();
 		panel.setAlignment(Alignment.ALIGN_CENTER);
 		
-		ImageReference imgR = new ResourceImageReference("Images/Util/panel.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/panel.png");
 		FillImage imgF = new FillImage(imgR);
 		
 		panel.setWidth(new Extent(300));
@@ -449,7 +450,7 @@ public class DesktopItem extends ContentPane {
 		Row row = new Row();
 		row.setCellSpacing(new Extent(5));
 		
-		ImageReference imgR = new ResourceImageReference(item.getDirImage().toString());
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference(item.getDirImage().toString());
 		ImageIcon imgI = new ImageIcon(imgR);
 		imgI.setWidth(new Extent(42));
 		imgI.setHeight(new Extent(42));		

@@ -24,6 +24,7 @@ import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.StyleButton;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
+import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.util.TimedServerPush;
 
 import echopoint.HtmlLayout;
@@ -349,7 +350,7 @@ public class Desktop extends ContentPane{
 		Panel panel = new Panel();
 		panel.setAlignment(Alignment.ALIGN_LEFT);
 		
-		ImageReference imgR = new ResourceImageReference("Images/Util/p_estadoBattle.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/p_estadoBattle.png");
 		FillImage imgF = new FillImage(imgR);
 		
 		panel.setWidth(new Extent(300));
@@ -379,7 +380,7 @@ public class Desktop extends ContentPane{
         Row rowPanel = new Row();
         rowPanel.setCellSpacing(new Extent(10));
 
-		imgR = new ResourceImageReference("Images/Util/sacomoneda.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/sacomoneda.png");
         ImageIcon imgI = new ImageIcon(imgR);
         imgI.setWidth(new Extent(25));
         imgI.setHeight(new Extent(25));
@@ -508,10 +509,10 @@ public class Desktop extends ContentPane{
 			jugadorOponente.setDirImage("Images/Personajes/GuerreroGG.png");
 		}
 			
-		ImageReference mA = new ResourceImageReference(jugador.getDirImage());
+		ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
 		Label magoA = new Label(mA);
 		
-		ImageReference mB = new ResourceImageReference(jugadorOponente.getDirImage());
+		ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
 		Label magoB = new Label(mB);
 		
 		Row rowM = new Row();
@@ -577,7 +578,7 @@ public class Desktop extends ContentPane{
 	
 		btnHit = new Button();
 		btnHit.setStyle(StyleButton.BATALLA_STYLE);
-		btnHit.setIcon(new ResourceImageReference("Images/Poderes/Basico/ataque.png"));
+		btnHit.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Poderes/Basico/ataque.png"));
 		
 		btnHit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -588,7 +589,7 @@ public class Desktop extends ContentPane{
 		
 		btnLoadCp = new Button();
 		btnLoadCp.setStyle(StyleButton.BATALLA_STYLE);
-		btnLoadCp.setIcon(new ResourceImageReference("Images/Poderes/Basico/manapoint.png"));
+		btnLoadCp.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Poderes/Basico/manapoint.png"));
 		btnLoadCp.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				btnLoadCpClicked();
@@ -598,7 +599,7 @@ public class Desktop extends ContentPane{
 		
 		btnItem = new Button();
 		btnItem.setStyle(StyleButton.BATALLA_STYLE);
-		btnItem.setIcon(new ResourceImageReference("Images/Poderes/Basico/items.png"));
+		btnItem.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Poderes/Basico/items.png"));
 		btnItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				btnItemClicked();
@@ -647,26 +648,26 @@ public class Desktop extends ContentPane{
 				{
 					if( listCooldown.get(posicion).intValue() == (battle.getSecuenciaTurno() + 1) )
 					{
-						btnAttack.setIcon(new ResourceImageReference(list.get(posicion).getDirImage()));
+						btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
 						listCooldown.add(posicion, 0);
 					}
 					else if ( listCooldown.get(posicion).intValue() > battle.getSecuenciaTurno() )
 					{
 						String subStr = list.get(posicion).getDirImage().substring(0,(list.get(posicion).getDirImage().length() - 4));
-						btnAttack.setIcon(new ResourceImageReference(subStr + "Opaca.png"));
+						btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(subStr + "Opaca.png"));
 						btnAttack.setEnabled(false);
 					}
 					else
 					{
-						btnAttack.setIcon(new ResourceImageReference(list.get(posicion).getDirImage()));
+						btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
 					}
 				}
 				else
 				{
 					String subStr = list.get(posicion).getDirImage().substring(0,(list.get(posicion).getDirImage().length() - 4));
-					btnAttack.setIcon(new ResourceImageReference(subStr + "Opaca.png"));
+					btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(subStr + "Opaca.png"));
 					btnAttack.setEnabled(false);
 				}
 			}
@@ -676,26 +677,26 @@ public class Desktop extends ContentPane{
 				{
 					if( listCooldown.get(posicion).intValue() == (battle.getSecuenciaTurno() + 1) )
 					{
-						btnAttack.setIcon(new ResourceImageReference(list.get(posicion).getDirImage()));
+						btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
 						listCooldown.add(posicion, 0);
 					}
 					else if ( listCooldown.get(posicion).intValue() > battle.getSecuenciaTurno() )
 					{
 						String subStr = list.get(posicion).getDirImage().substring(0,(list.get(posicion).getDirImage().length() - 4));
-						btnAttack.setIcon(new ResourceImageReference(subStr + "Opaca.png"));
+						btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(subStr + "Opaca.png"));
 						btnAttack.setEnabled(false);
 					}
 					else
 					{
-						btnAttack.setIcon(new ResourceImageReference(list.get(posicion).getDirImage()));
+						btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
 					}
 				}
 				else
 				{
 					String subStr = list.get(posicion).getDirImage().substring(0,(list.get(posicion).getDirImage().length() - 4));
-					btnAttack.setIcon(new ResourceImageReference(subStr + "Opaca.png"));
+					btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(subStr + "Opaca.png"));
 					btnAttack.setEnabled(false);
 				}
 			}
@@ -704,7 +705,7 @@ public class Desktop extends ContentPane{
 		{
 			btnAttack = new Button();
 			btnAttack.setStyle(StyleButton.BATALLA_STYLE);
-			btnAttack.setIcon(new ResourceImageReference("Images/Util/vacioAtaque.png"));
+			btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Util/vacioAtaque.png"));
 			btnAttack.setEnabled(false);
 			colBtn.add(btnAttack);
 		}
@@ -1377,7 +1378,7 @@ public class Desktop extends ContentPane{
 		Panel panel = new Panel();
 		panel.setAlignment(Alignment.ALIGN_CENTER);
 		
-		ImageReference imgR = new ResourceImageReference("Images/Util/panelaviso.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/panelaviso.png");
 		FillImage imgF = new FillImage(imgR);
 		
 		panel.setWidth(new Extent(300));
@@ -1461,7 +1462,7 @@ public class Desktop extends ContentPane{
 
 		Panel panel = new Panel();
 
-		ResourceImageReference w = new ResourceImageReference("Images/Fondos/marcochat2.png");	
+		ImageReference w = ImageReferenceCache.getInstance().getImageReference("Images/Fondos/marcochat2.png");	
 		ImageReference image = w;
 		FillImage imagef = new FillImage(image);
 

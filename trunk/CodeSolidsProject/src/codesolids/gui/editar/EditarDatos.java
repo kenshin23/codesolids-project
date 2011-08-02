@@ -17,6 +17,7 @@ import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Font;
+import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.PasswordField;
@@ -34,6 +35,7 @@ import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.mapa.Styles;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
+import codesolids.gui.tienda.ImageReferenceCache;
 
 /**
 * @author Hector Prada
@@ -76,13 +78,13 @@ public class EditarDatos extends WindowPane{
 		this.setMovable(false);
 		this.setModal(true);
 		
-		ResourceImageReference ir = new ResourceImageReference("/Images/fondoEditarDatos.jpg");
+		ImageReference ir = ImageReferenceCache.getInstance().getImageReference("/Images/fondoEditarDatos.jpg");
 		this.setBackgroundImage(new FillImage(ir));
 		this.add(initData());
 	}
 	
 	private Column initData()
-	{
+	{		
 		Column col = new Column();
 		col.setCellSpacing(new Extent(15));
 		col.setInsets(new Insets(10, 20, 10, 20));
@@ -120,6 +122,7 @@ public class EditarDatos extends WindowPane{
 		row.add(labelEmail);
 		
 		txtEmail = new TextField();
+		txtEmail.setText(usuario.getEmail());
 		row.add(txtEmail);
 		col.add(row);
 		
@@ -129,7 +132,7 @@ public class EditarDatos extends WindowPane{
 		
 		Button btnAceptar = new Button();
 		btnAceptar.setEnabled(true);
-		btnAceptar.setText("Acceder");
+		btnAceptar.setText("Aceptar");
 		btnAceptar.setVisible(true);
 		btnAceptar.setStyle(Styles.BOTONES_LOGIN_SCREEN);
 		RowLayoutData btnAceptarLayoutData = new RowLayoutData();
@@ -194,6 +197,9 @@ public class EditarDatos extends WindowPane{
 			
 			usuario.setEmail(txtEmail.getText());
 			usuario.setPassword(txtPassword1.getText());
+			
+			PrincipalApp pa = (PrincipalApp) ApplicationInstance.getActive();
+			pa.setUsuario(usuario);
 			
 			this.userClose();
 			removeAll();
