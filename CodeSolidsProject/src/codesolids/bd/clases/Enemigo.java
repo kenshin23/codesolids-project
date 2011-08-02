@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -33,7 +34,7 @@ public class Enemigo {
 	private int xp;
 	private int velocidad;
 	private int oro;
-	private String region;
+	private Region regionRef;
 	private String dirImage;
 	
 	private List<PoderEnemigo> poderEnemigoList = new ArrayList<PoderEnemigo>();
@@ -95,21 +96,22 @@ public class Enemigo {
 	public void setOro(int oro) {
 		this.oro = oro;
 	}
-	
-	public String getRegion() {
-		return region;
-	}
-	
-	public void setRegion(String region) {
-		this.region = region;
-	}
-	
+
 	public String getDirImage() {
 		return dirImage;
 	}
-	
+
 	public void setDirImage(String dirImage) {
 		this.dirImage = dirImage;
+	}	
+	
+	@ManyToOne
+	public Region getRegionRef() {
+		return regionRef;
+	}
+
+	public void setRegionRef(Region regionRef) {
+		this.regionRef = regionRef;
 	}
 
 	@OneToMany(mappedBy = "enemigoRef", orphanRemoval = true)

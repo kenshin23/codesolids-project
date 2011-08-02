@@ -524,7 +524,7 @@ public class DesktopPoder extends ContentPane{
 		Row row = new Row();
 		row.setCellSpacing(new Extent(5));
 		
-		ImageReference imgR = new ResourceImageReference(poder.getDirImage().toString());
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference(poder.getDirImage().toString());
 		ImageIcon imgI = new ImageIcon(imgR);
 		imgI.setWidth(new Extent(42));
 		imgI.setHeight(new Extent(42));		
