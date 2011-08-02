@@ -5,6 +5,7 @@ import java.util.List;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
@@ -30,19 +31,32 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.informagen.echo.app.CapacityBar;
 
+import com.minotauro.echo.table.base.CellRenderer;
+import com.minotauro.echo.table.base.ETable;
+import com.minotauro.echo.table.base.ETableNavigation;
+import com.minotauro.echo.table.base.TableColModel;
+import com.minotauro.echo.table.base.TableColumn;
+import com.minotauro.echo.table.base.TableSelModel;
+import com.minotauro.echo.table.renderer.BaseCellRenderer;
+import com.minotauro.echo.table.renderer.LabelCellRenderer;
+import com.minotauro.echo.table.renderer.NestedCellRenderer;
+
 import codesolids.bd.clases.Enemigo;
+import codesolids.bd.clases.Invitation;
 import codesolids.bd.clases.Item;
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.PersonajeItem;
 import codesolids.bd.clases.PersonajePoderes;
 import codesolids.bd.clases.PoderEnemigo;
 import codesolids.bd.clases.Poderes;
+import codesolids.bd.clases.Region;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
 import codesolids.gui.tienda.ImageReferenceCache;
+import codesolids.util.TestTableModel;
 import echopoint.HtmlLayout;
 import echopoint.ImageIcon;
 import echopoint.layout.HtmlLayoutData;
@@ -58,6 +72,8 @@ import echopoint.layout.HtmlLayoutData;
 public class Mision extends ContentPane{
 	private Usuario usuario;
 	private Personaje personaje;
+	
+	private TestTableModel tableDtaModel;
 
 	private Enemigo enemigo;
 	
@@ -98,7 +114,7 @@ public class Mision extends ContentPane{
 	
 	public Component initRegion(){
 		try {
-			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("mision.html"), "UTF-8");
+			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("region.html"), "UTF-8");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -106,61 +122,18 @@ public class Mision extends ContentPane{
 		HtmlLayoutData hld;
 		hld = new HtmlLayoutData("batalla");
 		
-		Grid grid = new Grid(1);
-		Button btnRegion1 = new Button("Monte Aleph");
-		btnRegion1.setStyle(Styles1.DEFAULT_STYLE);
-		btnRegion1.setToolTipText("Ir a esta region");
-		btnRegion1.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			removeAll();
-			add(initEnemigos("Monte Aleph"));
-			}
-		});
-		grid.add(btnRegion1);
+		region = new Panel();
 		
-		Button btnRegion2 = new Button("Norte Blanco");
-		btnRegion2.setStyle(Styles1.DEFAULT_STYLE);
-		btnRegion2.setToolTipText("Ir a esta region");
-		btnRegion2.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			removeAll();
-			add(initEnemigos("Norte Blanco"));
-			}
-		});
-		grid.add(btnRegion2);
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/cartel3.png");
+		FillImage imgF = new FillImage(imgR);
+		region.setWidth(new Extent(950));
+		region.setHeight(new Extent(400));
+		region.setBackgroundImage(imgF);
 		
-		Button btnRegion3 = new Button("Gloriosa");
-		btnRegion3.setStyle(Styles1.DEFAULT_STYLE);
-		btnRegion3.setToolTipText("Ir a esta region");
-		btnRegion3.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			removeAll();
-			add(initEnemigos("Gloriosa"));
-			}
-		});
-		grid.add(btnRegion3);
+		tableDtaModel = new TestTableModel();
 		
-		Button btnRegion4 = new Button("Pantano Cocona");
-		btnRegion4.setStyle(Styles1.DEFAULT_STYLE);
-		btnRegion4.setToolTipText("Ir a esta region");
-		btnRegion4.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			removeAll();
-			add(initEnemigos("Pantano Cocona"));
-			}
-		});
-		grid.add(btnRegion4);
-		
-		Button btnRegion5 = new Button("Ciudad Programacion");
-		btnRegion5.setStyle(Styles1.DEFAULT_STYLE);
-		btnRegion5.setToolTipText("Ir a esta region");
-		btnRegion5.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			removeAll();
-			add(initEnemigos("Ciudad Programacion"));
-			}
-		});
-		grid.add(btnRegion5);
+		Column col = new Column();
+		Row row = new Row();
 		
 		Button returnButton = new Button();		
 		returnButton = new Button();
@@ -175,13 +148,122 @@ public class Mision extends ContentPane{
 			}
 		});
 		
-		grid.add(returnButton);
+		col.add(returnButton);
 		
-		grid.setLayoutData(hld);
+		row.add(createTable(tableDtaModel, initTableColModel()));
+		col.add(row);
+		
+		loadBD();
+		
+		region.add(col);
+		region.setLayoutData(hld);
 		htmlLayout.setBackground(Color.BLACK);
-		htmlLayout.add(grid);		
+		htmlLayout.add(region);
 		
 		return htmlLayout;
+	}
+	
+	private TableColModel initTableColModel() {
+		
+		TableColModel tableColModel = new TableColModel();
+	    TableColumn tableColumn;
+	    LabelCellRenderer lcr;
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Object obj = new Object();
+		    	Region re = (Region) element;
+		    	obj = re.getNombre();
+	    		return obj;
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(150));
+	    tableColumn.setHeadValue("Region");
+	    
+	    tableColumn = new TableColumn();
+	    tableColumn.setWidth(new Extent(20));
+	    tableColumn.setHeadValue("");
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    tableColumn.setHeadCellRenderer(lcr);
+		
+	    tableColumn.setDataCellRenderer(initNestedCellRenderer());
+
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+		return tableColModel;
+	}
+	
+	private CellRenderer initNestedCellRenderer() {
+		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
+		nestedCellRenderer.setBackground(Color.WHITE);
+	    
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override    
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+	          
+	          final Region reg = (Region) tableDtaModel.getElementAt(row);
+	          
+	          Button ret = new Button("Ver");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+	          ret.setToolTipText("Ver");
+
+	          ret.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	removeAll();
+	            	add(initEnemigos(reg.getNombre()));
+	            }
+	          });
+	          return ret;
+	        }
+	    });
+		
+		return nestedCellRenderer;
+	}
+	
+	private Panel createTable(TestTableModel tableDtaModel, TableColModel initTableColModel){
+		Panel panel = new Panel();
+		panel.setInsets(new Insets(20, 10, 20, 10));
+		panel.setAlignment(Alignment.ALIGN_CENTER);
+
+		Column col = new Column();
+		col.setInsets(new Insets(0, 0, 0, 0));
+		col.setCellSpacing(new Extent(10));
+
+		TableColModel tableColModel = initTableColModel;
+		TableSelModel tableSelModel = new TableSelModel();
+		tableDtaModel.setEditable(true);
+		tableDtaModel.setPageSize(5);
+
+		ETable table = new ETable();
+		table.setTableDtaModel(tableDtaModel);
+		table.setTableColModel(tableColModel);
+		table.setTableSelModel(tableSelModel);
+		table.setEasyview(false);
+		table.setBorder(new Border(1, Color.BLACK, Border.STYLE_NONE));
+		col.add(table);
+		
+		panel.add(col);
+		return panel;
 	}
 	
 	private Component initEnemigos(String nombreR){
@@ -254,7 +336,21 @@ public class Mision extends ContentPane{
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		List<Enemigo> list = session.createCriteria(Enemigo.class).add(Restrictions.eq("region", nombreR)).addOrder(Order.asc("nivel")).list();
+		Region re = new Region();
+		
+		String queryStr = "FROM Region WHERE nombre = :nombreR";
+		Query query = session.createQuery(queryStr);
+		query.setString("nombreR", nombreR);
+		
+		re = (Region) query.uniqueResult();
+		
+	    session.getTransaction().commit();
+	    session.close();
+		
+		session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		List<Enemigo> list = session.createCriteria(Enemigo.class).add(Restrictions.eq("regionRef", re)).addOrder(Order.asc("nivel")).list();
 	    session.getTransaction().commit();
 	    session.close();
 		for (final Enemigo obj : list) {
@@ -273,7 +369,7 @@ public class Mision extends ContentPane{
 			
 			lbl = new Label("Mision "+list.indexOf(obj));
 			colTab.add(lbl);
-			lbl = new Label("Region : "+obj.getRegion());
+			lbl = new Label("Region : "+obj.getRegionRef().getNombre());
 			colTab.add(lbl);
 			lbl = new Label("Enemigo : "+obj.getNombre());
 			colTab.add(lbl);
@@ -1260,6 +1356,27 @@ public class Mision extends ContentPane{
 	private void buttonExitClicked(ActionEvent e) {
 		removeAll();
 		add(new MapaDesktop());
+	}
+	
+	private void loadBD()
+	{
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		List<Region> list = session.createCriteria(Region.class).addOrder(Order.asc("id")).list();
+		for(Region obj : list)
+		{
+			Region re = new Region();
+			
+			re.setId(obj.getId());
+			re.setNombre(obj.getNombre());
+			re.setDescripcion(obj.getDescripcion());
+			re.setDirImage(obj.getDirImage());
+						
+			tableDtaModel.add(re);
+		}			
+		session.getTransaction().commit();
+		session.close();		
 	}
 
 }

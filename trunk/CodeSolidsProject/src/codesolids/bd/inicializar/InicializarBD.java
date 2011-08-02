@@ -35,6 +35,7 @@ public class InicializarBD {
 		initI.createListRecetas();
 		
 		EnemigosBD initE = new EnemigosBD();
+		initE.createRegion();
 		initE.createList();
 		initE.createPoderes();
 
@@ -258,7 +259,39 @@ class ItemsBD{
 	
 }
 
-class EnemigosBD{
+class EnemigosBD{	
+	
+	private void AsignarRegion(String nombre, String descripcion, String dirImage){
+		Region region = new Region();
+		
+		region.setNombre(nombre);
+		region.setDescripcion(descripcion);
+		region.setDirImage(dirImage);
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		Region rBean = new Region();
+		
+		rBean.setNombre(region.getNombre());
+		rBean.setDescripcion(region.getDescripcion());
+		rBean.setDirImage(region.getDirImage());
+		
+		session.save(rBean);
+		
+		session.getTransaction().commit();
+		session.close();
+		
+	}
+	
+	public void createRegion(){
+		AsignarRegion("Monte Aleph", "Aqui se encuentran enemigos como elfos y criaturas salvajes: minotauro, ogros, dragones, etc.", "Images/Enemigos/montealeph.png");
+		AsignarRegion("Norte Blanco", "Aqui se encuentran enemigos como Osos, Lobos, dragones de hielo", "Images/Enemigos/norteblanco.png");
+		AsignarRegion("Gloriosa", "Aqui se encuentran enemigos como enanos guerreros, orcos y personajes de este tipo.", "Images/Enemigos/gloriosa.png");
+		AsignarRegion("Pantano Cocona", "Aqui se encuentran demonios y criaturas extrañas", "Images/Enemigos/pantano.png");
+		AsignarRegion("Ciudad Programacion", "Esta es la region más poderos de todas, aqui los enemigos son guerreros y hechiceros muy fuertes", "Images/Enemigos/programacion.png");
+		
+	}
 	
 	private void AsignarDatos(int id, int level, String nombre, int vida, int xp, int oro, int velocidad, String region, String dirImage){
 		Enemigo enemigo = new Enemigo();
@@ -270,7 +303,6 @@ class EnemigosBD{
 		enemigo.setOro(oro);
 		enemigo.setXp(xp);
 		enemigo.setVelocidad(velocidad);
-		enemigo.setRegion(region);
 		enemigo.setDirImage(dirImage);
 		
 		
@@ -278,18 +310,26 @@ class EnemigosBD{
 		session.beginTransaction();
 		
 		Enemigo iBean = new Enemigo();
+		Region rBean = new Region();
+		
+		rBean.setNombre(region);
+		Criteria criteria = session.createCriteria(Region.class).add(Restrictions.eq("nombre", rBean.getNombre()));
+		rBean = (Region) criteria.uniqueResult();
+		
 		iBean.setNivel(enemigo.getNivel());
 		iBean.setNombre(enemigo.getNombre());
 		iBean.setOro(enemigo.getOro());
 		iBean.setVida(enemigo.getVida());
-		iBean.setRegion(enemigo.getRegion());
 		iBean.setDirImage(enemigo.getDirImage());
 		iBean.setXp(enemigo.getXp());
 		iBean.setVelocidad(enemigo.getVelocidad());
+		iBean.setRegionRef(rBean);
+		
 		session.save(iBean);
         
 		session.getTransaction().commit();
-		session.close();		
+		session.close();
+
 	}
 	
 	public void createList(){
@@ -320,7 +360,35 @@ class EnemigosBD{
 		AsignarDatos(20, 5, "Program4", 2000, 440, 1500, 350, "Ciudad Programacion", "Images/Enemigos/program4.png");
 		AsignarDatos(21, 5, "Program5", 3000, 900, 10000, 350, "Ciudad Programacion", "Images/Enemigos/program5.png");
 	
+	}	
+	
+	private void AsignarPoder(String id, String nombre, int indice){
+		PoderEnemigo pe = new PoderEnemigo();
+		
+		pe.setNombre(nombre);
+		pe.setIndice(indice);
+		
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		PoderEnemigo peBean = new PoderEnemigo();
+		Enemigo eBean = new Enemigo();
+		eBean.setNombre(id);
+		
+		Criteria criteria = session.createCriteria(Enemigo.class).add(Restrictions.eq("nombre", eBean.getNombre()));
+		eBean = (Enemigo) criteria.uniqueResult();
+		
+		peBean.setNombre(pe.getNombre());
+		peBean.setIndice(pe.getIndice());
+		
+		peBean.setEnemigoRef(eBean);
+        
+        session.save(peBean);
+		session.getTransaction().commit();
+		session.close();		
 	}
+	
 	public void createPoderes(){
 		AsignarPoder("Minotauro", "Directo", 10);
 		AsignarPoder("Minotauro", "Rapido", 20);
@@ -410,33 +478,6 @@ class EnemigosBD{
 		AsignarPoder("Program5", "1", 800);
 		AsignarPoder("Program5", "2", 2500);
 		AsignarPoder("Program5", "3", 3000);	
-	}
-	
-	private void AsignarPoder(String id, String nombre, int indice){
-		PoderEnemigo pe = new PoderEnemigo();
-		
-		pe.setNombre(nombre);
-		pe.setIndice(indice);
-		
-		
-		Session session = SessionHibernate.getInstance().getSession();
-		session.beginTransaction();
-		
-		PoderEnemigo peBean = new PoderEnemigo();
-		Enemigo eBean = new Enemigo();
-		eBean.setNombre(id);
-		
-		Criteria criteria = session.createCriteria(Enemigo.class).add(Restrictions.eq("nombre", eBean.getNombre()));
-		eBean = (Enemigo) criteria.uniqueResult();
-		
-		peBean.setNombre(pe.getNombre());
-		peBean.setIndice(pe.getIndice());
-		
-		peBean.setEnemigoRef(eBean);
-        
-        session.save(peBean);
-		session.getTransaction().commit();
-		session.close();		
 	}
 }
 	

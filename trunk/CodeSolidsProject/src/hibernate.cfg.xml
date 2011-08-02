@@ -108,6 +108,7 @@
 		<mapping class="codesolids.bd.clases.PersonajeItem" />
 		<mapping class="codesolids.bd.clases.Enemigo" />
 		<mapping class="codesolids.bd.clases.PoderEnemigo" />
+		<mapping class="codesolids.bd.clases.Region" />
 		<mapping class="codesolids.bd.clases.Receta" />
 		<mapping class="codesolids.bd.clases.Nivel"/>
 		<mapping class="codesolids.bd.clases.Batalla"/>
