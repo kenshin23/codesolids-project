@@ -288,7 +288,7 @@ class EnemigosBD{
 		AsignarRegion("Monte Aleph", "Aqui se encuentran enemigos como elfos y criaturas salvajes: minotauro, ogros, dragones, etc.", "Images/Enemigos/montealeph.png");
 		AsignarRegion("Norte Blanco", "Aqui se encuentran enemigos como Osos, Lobos, dragones de hielo", "Images/Enemigos/norteblanco.png");
 		AsignarRegion("Gloriosa", "Aqui se encuentran enemigos como enanos guerreros, orcos y personajes de este tipo.", "Images/Enemigos/gloriosa.png");
-		AsignarRegion("Pantano Cocona", "Aqui se encuentran demonios y criaturas extrañas", "Images/Enemigos/pantano.png");
+		AsignarRegion("Pantano Cocona", "Aqui se encuentran enemigos poderosos, demonios y criaturas extrañas", "Images/Enemigos/pantano.png");
 		AsignarRegion("Ciudad Programacion", "Esta es la region más poderos de todas, aqui los enemigos son guerreros y hechiceros muy fuertes", "Images/Enemigos/programacion.png");
 		
 	}
