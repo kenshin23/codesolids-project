@@ -29,17 +29,15 @@ import org.hibernate.criterion.Restrictions;
 
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
-import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
 
 /**
 * @author Karla Moreno
 * 
+* 
 */
 
-public class Registro extends WindowPane {
-	
-	private Column col;
+public class Registro extends WindowPane{
 	
 	private TextField fieldLogin;
 	private TextField fieldEmail;
@@ -47,18 +45,6 @@ public class Registro extends WindowPane {
 	private PasswordField fieldPass2;
 	
 	public Registro(){
-
-		initGUI();
-	}
-
-	public void initGUI() {
-
-		add(initRegistro());
-
-	}
-	
-	public Component initRegistro(){
-		
 		
 		this.setTitle("Registro de Usuario");	
 		this.setMinimumHeight(new Extent(400));
@@ -71,13 +57,24 @@ public class Registro extends WindowPane {
 		
 		this.setBackgroundImage(imagep);
 		
+		this.setModal(true);
 		
-		col = new Column();
+		initGUI();
+	}
+
+	public void initGUI() {
+
+		add(initRegistro());
+	}
+	
+	public Component initRegistro(){
+			
+		Column col = new Column();
 		col.setCellSpacing(new Extent(50));
 		col.setInsets(new Insets(new Extent(1), new Extent(20), new Extent(1), new Extent(1)));
 		
 		Row row = new Row();
-		Label label = new Label("Nombre de Usuario");
+		Label label = new Label("Nombre de Usuario:");
 		label.setForeground(Color.WHITE);
 		row.setAlignment(Alignment.ALIGN_CENTER);
 		row.setCellSpacing(new Extent(20));
@@ -90,7 +87,7 @@ public class Registro extends WindowPane {
 	    row = new Row();
 	    row.setAlignment(Alignment.ALIGN_CENTER);
 	    row.setCellSpacing(new Extent(67));
-	    label = new Label("Contraseña");
+	    label = new Label("Contraseña:");
 	    label.setForeground(Color.WHITE);
 	    row.add(label);
 		fieldPass = new PasswordField(); 
@@ -102,7 +99,7 @@ public class Registro extends WindowPane {
 	    row = new Row();
 	    row.setAlignment(Alignment.ALIGN_CENTER);
 		row.setCellSpacing(new Extent(10));
-		label = new Label("Confirme Contraseña");
+		label = new Label("Confirme Contraseña:");
 		label.setForeground(Color.WHITE);
 		row.add(label);
 		fieldPass2 = new PasswordField(); 
@@ -129,24 +126,18 @@ public class Registro extends WindowPane {
 		btnOk.setHeight(new Extent(20));
 		btnOk.setWidth(new Extent(50));
 		
-		btnOk.addActionListener(new ActionListener() {
-			
+		btnOk.addActionListener(new ActionListener() {			
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent evt) {
 				btnRegistrarClicked();
 			}
-
-		
 		});
 			
 		row.add(btnOk);
 		
 		col.add(row);
-		
-		this.setModal(true);
-		
+
 		return col;
-		
 	}
 	
 //************************ METODO PARA VALIDAR CORREO ****************************************************
@@ -174,12 +165,10 @@ public class Registro extends WindowPane {
 	}
 	
 	private void btnRegistrarClicked() {
-
 		
 		if (!validateCampo())
 		{
-			//Aqui debe ir Mensaje de Advertencia
-//			CrearVentana2();
+					
 			return;
 		}
 		else if( !isPassEquals() )
@@ -200,7 +189,7 @@ public class Registro extends WindowPane {
 			session = SessionHibernate.getInstance().getSession();
 			session.beginTransaction();
 			
-			if(!checkUserEmail(session))
+			if(!checkUser(session))
 			{				
 				//Aqui debe ir Mensaje de Advertencia
 				return;
@@ -228,101 +217,14 @@ public class Registro extends WindowPane {
 				{
 					session.getTransaction().commit();
 				}
-				
 				session.close();
 			}
 		}
 	}
-//************************ METODO PARA CREAR VENTANA (DATOS CORRECTOS) ****************************************************
-
-	public void CrearVentana()
-	{
-		final WindowPane ventana = new WindowPane();
-		ventana.setTitle("Cuenta Creada");
-		ventana.setWidth(new Extent(80));
-		ventana.setMaximumWidth(new Extent(100));
-		ventana.setMaximumHeight(new Extent(100));
-		ventana.setMovable(false);
-		ventana.setResizable(false);
-		ventana.setStyle(StyleWindow.ACADEMY_STYLE);
-
-		Button btnListo = new Button("Listo");
-		btnListo.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-		btnListo.setToolTipText("Listo");
-		btnListo.setStyle(Styles1.DEFAULT_STYLE);
-
-		btnListo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				ventana.userClose();
-			}
-		});
-
-		Row rowBtn = new Row();
-		rowBtn.setInsets(new Insets(20, 20, 20, 20));
-		rowBtn.add(btnListo);
-
-		Column colPane = new Column();
-		colPane.setInsets(new Insets(5, 5, 5, 0));
-		colPane.setCellSpacing(new Extent(10));
-		Label lblText = new Label();
-		lblText.setText("La cuenta ha sido creada");
-		colPane.add(lblText);
-
-		colPane.add(rowBtn);
-
-		ventana.add(colPane);
-
-		add(ventana);
-	}
-
-
-//************************ METODO PARA CREAR VENTANA (DATOS INCORRECTOS) ****************************************************
-
-	public void CrearVentana2()
-	{
-		final WindowPane ventana = new WindowPane();
-		ventana.setTitle("Cuenta NO Creada");
-		ventana.setWidth(new Extent(80));
-		ventana.setMaximumWidth(new Extent(100));
-		ventana.setMaximumHeight(new Extent(100));
-		ventana.setMovable(false);
-		ventana.setResizable(false);
-		ventana.setStyle(StyleWindow.ACADEMY_STYLE);
-
-		Button btnListo = new Button("Listo");
-		btnListo.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-		btnListo.setToolTipText("Listo");
-		btnListo.setStyle(Styles1.DEFAULT_STYLE);
-
-		btnListo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				ventana.userClose();
-			}
-		});
-
-		Row rowBtn = new Row();
-		rowBtn.setInsets(new Insets(20, 20, 20, 20));
-		rowBtn.add(btnListo);
-
-		Column colPane = new Column();
-		colPane.setInsets(new Insets(5, 5, 5, 0));
-		colPane.setCellSpacing(new Extent(10));
-		Label lblText = new Label();
-		lblText.setText("La cuenta No ha sido creada");
-		colPane.add(lblText);
-
-		colPane.add(rowBtn);
-
-		ventana.add(colPane);
-		this.add(ventana);
-
-	}
 	
-	private boolean checkUserEmail(Session session)
+	private boolean checkUser(Session session)
 	{
-		Criteria criteria = session.createCriteria(Usuario.class).add(Restrictions.and(//
-																Restrictions.eq("login", fieldLogin.getText()),
-																Restrictions.eq("email", fieldEmail.getText())));
+		Criteria criteria = session.createCriteria(Usuario.class).add(Restrictions.eq("login", fieldLogin.getText()));
 
 		if (criteria.list().size() != 0) {
 			return false;

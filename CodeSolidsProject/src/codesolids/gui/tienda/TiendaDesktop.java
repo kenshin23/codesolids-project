@@ -22,7 +22,6 @@ import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
-import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
@@ -43,6 +42,7 @@ import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
+import codesolids.util.ImageReferenceCache;
 import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.CellRenderer;
@@ -80,9 +80,9 @@ public class TiendaDesktop extends ContentPane {
 	private TestTableModel tableDtaModelPlayer;
 	private TestTableModel tableDtaModelBuild;
 	
-	private int cantR=0;		//cantidad Rojas del pj
-	private int cantB=0;		//cantidad Blancas del pj
-	private int cantN=0;		//cantidad Negras del pj
+	private int cantR = 0;		//cantidad Rojas del pj
+	private int cantB = 0;		//cantidad Blancas del pj
+	private int cantN = 0;		//cantidad Negras del pj
 	
 	private ETable table;
 	private ETable tablePlayer;
