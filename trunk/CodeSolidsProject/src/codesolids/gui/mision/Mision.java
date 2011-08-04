@@ -1,4 +1,5 @@
 package codesolids.gui.mision;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,6 @@ import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Font;
-import nextapp.echo.app.Grid;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
@@ -31,18 +31,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.informagen.echo.app.CapacityBar;
 
-import com.minotauro.echo.table.base.CellRenderer;
-import com.minotauro.echo.table.base.ETable;
-import com.minotauro.echo.table.base.ETableNavigation;
-import com.minotauro.echo.table.base.TableColModel;
-import com.minotauro.echo.table.base.TableColumn;
-import com.minotauro.echo.table.base.TableSelModel;
-import com.minotauro.echo.table.renderer.BaseCellRenderer;
-import com.minotauro.echo.table.renderer.LabelCellRenderer;
-import com.minotauro.echo.table.renderer.NestedCellRenderer;
-
 import codesolids.bd.clases.Enemigo;
-import codesolids.bd.clases.Invitation;
 import codesolids.bd.clases.Item;
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.PersonajeItem;
@@ -57,10 +46,20 @@ import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
 import codesolids.gui.tienda.ImageReferenceCache;
 import codesolids.util.TestTableModel;
+
+import com.minotauro.echo.table.base.CellRenderer;
+import com.minotauro.echo.table.base.ETable;
+import com.minotauro.echo.table.base.ETableNavigation;
+import com.minotauro.echo.table.base.TableColModel;
+import com.minotauro.echo.table.base.TableColumn;
+import com.minotauro.echo.table.base.TableSelModel;
+import com.minotauro.echo.table.renderer.BaseCellRenderer;
+import com.minotauro.echo.table.renderer.LabelCellRenderer;
+import com.minotauro.echo.table.renderer.NestedCellRenderer;
+
 import echopoint.HtmlLayout;
 import echopoint.ImageIcon;
 import echopoint.layout.HtmlLayoutData;
-
 
 /**
  * @author Fernando Osuna
@@ -68,12 +67,13 @@ import echopoint.layout.HtmlLayoutData;
  * @author Antonio Lopez 
  * 
  */
+
 @SuppressWarnings("serial")
 public class Mision extends ContentPane{
-	private Usuario usuario;
 	private Personaje personaje;
 	
 	private TestTableModel tableDtaModel;
+	private TestTableModel tableDtaModelEnemigo;
 
 	private Enemigo enemigo;
 	
@@ -81,6 +81,7 @@ public class Mision extends ContentPane{
 	
 	private Column col;
 	private Column colA;
+	private Row row;
 	private Label labelCp;
 	private Label lblAttack1;
 	private Label lblAttack2;
@@ -102,8 +103,7 @@ public class Mision extends ContentPane{
 	private boolean flag=false;
 	
 	public Mision(){
-		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();	
-		usuario = app.getUsuario();	
+		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
 		personaje = app.getPersonaje();
 	    initGUI();
 	}
@@ -131,31 +131,31 @@ public class Mision extends ContentPane{
 		region.setBackgroundImage(imgF);
 		
 		tableDtaModel = new TestTableModel();
+		tableDtaModelEnemigo = new TestTableModel();
+
+		row = new Row();
 		
-		Column col = new Column();
-		Row row = new Row();
+		row.add(createTable(tableDtaModel, initTableColModel(), 1));
 		
-		Button returnButton = new Button();		
-		returnButton = new Button();
-		returnButton.setText("Salir");
-		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		returnButton.setHeight(new Extent(15));
-		returnButton.setToolTipText("Regresar al mapa");
-		returnButton.setStyle(Styles1.DEFAULT_STYLE);
-		returnButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			buttonExitClicked(e);				
-			}
-		});
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
 		
-		col.add(returnButton);
+		Region re = new Region();
 		
-		row.add(createTable(tableDtaModel, initTableColModel()));
-		col.add(row);
+		String queryStr = "FROM Region WHERE nombre = :nombreR";
+		Query query = session.createQuery(queryStr);
+		query.setString("nombreR", "Monte Aleph");
+		
+		re = (Region) query.uniqueResult();
+		
+	    session.getTransaction().commit();
+	    session.close();
+		
+		row.add(createInfoRegion(re));
 		
 		loadBD();
 		
-		region.add(col);
+		region.add(row);
 		region.setLayoutData(hld);
 		htmlLayout.setBackground(Color.BLACK);
 		htmlLayout.add(region);
@@ -209,6 +209,52 @@ public class Mision extends ContentPane{
 		return tableColModel;
 	}
 	
+	private TableColModel initTableColModelE() {
+		
+		TableColModel tableColModel = new TableColModel();
+	    TableColumn tableColumn;
+	    LabelCellRenderer lcr;
+	    
+	    tableColumn = new TableColumn(){      
+	    	@Override
+	    	public Object getValue(ETable table, Object element) {
+	    		Object obj = new Object();
+		    	Enemigo e = (Enemigo) element;
+		    	obj = e.getNombre();
+	    		return obj;
+	    	}
+	    };
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    tableColumn.setHeadCellRenderer(lcr);
+
+	    lcr = new LabelCellRenderer();
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
+	    tableColumn.setDataCellRenderer(lcr);
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+	    tableColumn.setWidth(new Extent(150));
+	    tableColumn.setHeadValue("Enemigo");
+	    
+	    tableColumn = new TableColumn();
+	    tableColumn.setWidth(new Extent(20));
+	    tableColumn.setHeadValue("");
+	    
+	    lcr = new LabelCellRenderer();
+	    lcr.setBackground(new Color(87, 205, 211));
+	    tableColumn.setHeadCellRenderer(lcr);
+		
+	    tableColumn.setDataCellRenderer(initNestedCellRenderer2());
+
+	    tableColModel.getTableColumnList().add(tableColumn);
+	    
+		return tableColModel;
+	}
+	
 	private CellRenderer initNestedCellRenderer() {
 		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
 		nestedCellRenderer.setBackground(Color.WHITE);
@@ -229,8 +275,7 @@ public class Mision extends ContentPane{
 
 	          ret.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	            	removeAll();
-	            	add(initEnemigos(reg.getNombre()));
+	            	actualizar(reg);
 	            }
 	          });
 	          return ret;
@@ -240,14 +285,53 @@ public class Mision extends ContentPane{
 		return nestedCellRenderer;
 	}
 	
-	private Panel createTable(TestTableModel tableDtaModel, TableColModel initTableColModel){
+	private CellRenderer initNestedCellRenderer2() {
+		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
+		nestedCellRenderer.setBackground(Color.WHITE);
+	    
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override    
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+	          
+	          final Enemigo en = (Enemigo) tableDtaModelEnemigo.getElementAt(row);
+	          
+	          Button ret = new Button("Ver");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+
+	          ret.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	actualizar(en);
+	            }
+	          });
+	          return ret;
+	        }
+	    });
+		
+		return nestedCellRenderer;
+	}
+	
+	private void actualizar(Region reg){
+		row.remove(1);
+		row.add(createInfoRegion(reg));
+	}
+	
+	private void actualizar(Enemigo en){
+		row.remove(1);
+		row.add(createInfoEnemigo(en));
+	}
+	
+	private Panel createTable(TestTableModel tableDtaModel, TableColModel initTableColModel, int tipo){
 		Panel panel = new Panel();
-		panel.setInsets(new Insets(20, 10, 20, 10));
+		panel.setInsets(new Insets(20, 40, 20, 10));
 		panel.setAlignment(Alignment.ALIGN_CENTER);
 
-		Column col = new Column();
-		col.setInsets(new Insets(0, 0, 0, 0));
-		col.setCellSpacing(new Extent(10));
+		Column colp = new Column();
+		colp.setInsets(new Insets(0, 0, 0, 0));
+		colp.setCellSpacing(new Extent(10));
 
 		TableColModel tableColModel = initTableColModel;
 		TableSelModel tableSelModel = new TableSelModel();
@@ -260,23 +344,61 @@ public class Mision extends ContentPane{
 		table.setTableSelModel(tableSelModel);
 		table.setEasyview(false);
 		table.setBorder(new Border(1, Color.BLACK, Border.STYLE_NONE));
-		col.add(table);
+		colp.add(table);
 		
-		panel.add(col);
+		if(tipo == 2){
+			ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
+			tableNavigation.setForeground(Color.WHITE);
+			colp.add(tableNavigation);
+		}
+		
+		panel.add(colp);
 		return panel;
 	}
 	
-	private Component initEnemigos(String nombreR){
-		try {
-			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("region.html"), "UTF-8");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	private Panel createInfoRegion(Region region){
+		Panel panel = new Panel();
+		panel.setWidth(new Extent(300));
+		panel.setHeight(new Extent(250));
+		panel.setInsets(new Insets(20, 60, 20, 10));
+		panel.setAlignment(Alignment.ALIGN_CENTER);
+
+		Column colp = new Column();
+		colp.setInsets(new Insets(0, 0, 0, 0));
+		colp.setCellSpacing(new Extent(10));
 		
-		HtmlLayoutData hld;
-		hld = new HtmlLayoutData("head");		
-		Row menu = new Row();
+		Row row = new Row();
+        Label lblInfo = new Label();
+        lblInfo.setText(region.getNombre());
+        colp.add(lblInfo);
 		
+	    ImageReference ir = ImageReferenceCache.getInstance().getImageReference(region.getDirImage());
+        ImageIcon imgI = new ImageIcon(ir);
+        imgI.setWidth(new Extent(300));
+        imgI.setHeight(new Extent(160));		
+		colp.add(imgI);
+        
+        lblInfo = new Label();
+        lblInfo.setText(region.getDescripcion());
+        colp.add(lblInfo);
+        
+        final String nameR = region.getNombre();
+        
+        Button btnRegion = new Button();		
+        btnRegion = new Button();
+        btnRegion.setText("Aceptar");
+        btnRegion.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+        btnRegion.setHeight(new Extent(15));
+        btnRegion.setToolTipText("Ir a esta region");
+        btnRegion.setStyle(Styles1.DEFAULT_STYLE);
+        btnRegion.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+        	initEnemigos(nameR);				
+			}
+		});
+        row.add(btnRegion);
+        row.setCellSpacing(new Extent(20));
+        
 		Button returnButton = new Button();		
 		returnButton = new Button();
 		returnButton.setText("Salir");
@@ -289,13 +411,84 @@ public class Mision extends ContentPane{
 			buttonExitClicked(e);				
 			}
 		});
-		menu.add(returnButton);
-		returnButton = new Button();		
+		row.add(returnButton);
+        
+		colp.add(row);
+		
+		panel.add(colp);
+		return panel;
+	}
+	
+	private Panel createInfoEnemigo(Enemigo obj){
+		Panel panel = new Panel();
+		panel.setWidth(new Extent(400));
+		panel.setHeight(new Extent(250));
+		panel.setInsets(new Insets(20, 60, 20, 10));
+		panel.setAlignment(Alignment.ALIGN_CENTER);
+		
+		Label lbl;
+		Column colp = new Column();
+
+		Row rowTab = new Row();
+		Row rowTab2 = new Row();
+		rowTab.setInsets(new Insets(20, 35, 20, 20));
+		Column colTab = new Column();
+		colTab.setCellSpacing(new Extent(4));
+	    ImageReference ir = ImageReferenceCache.getInstance().getImageReference(obj.getDirImage());
+        ImageIcon imgI = new ImageIcon(ir);
+        imgI.setWidth(new Extent(150));
+        imgI.setHeight(new Extent(150));
+		
+		lbl = new Label("Region : "+obj.getRegionRef().getNombre());
+		colTab.add(lbl);
+		lbl = new Label("Enemigo : "+obj.getNombre());
+		colTab.add(lbl);
+		lbl = new Label("Nivel : "+obj.getNivel());
+		colTab.add(lbl);
+		lbl = new Label("Recompensa : "+obj.getOro());
+		colTab.add(lbl);
+		rowTab.add(imgI);
+		rowTab.setCellSpacing(new Extent(15));
+		rowTab.add(colTab);
+		panel.add(rowTab);
+
+        Button btnRegion = new Button();		
+        btnRegion = new Button();
+        btnRegion.setText("Aceptar");
+        btnRegion.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+        btnRegion.setHeight(new Extent(15));
+        btnRegion.setToolTipText("Hacer esta Misión");
+        btnRegion.setStyle(Styles1.DEFAULT_STYLE);
+
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		String queryStr = "FROM Enemigo WHERE nombre = :nombreE";
+		Query query = session.createQuery(queryStr);
+		query.setString("nombreE", obj.getNombre());
+		
+		enemigo = (Enemigo) query.uniqueResult();
+	    
+		session.getTransaction().commit();
+	    session.close();
+		
+        btnRegion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				removeAll();
+				add(initBatalla());
+				
+				}
+			});
+        rowTab2.add(btnRegion);
+        rowTab2.setCellSpacing(new Extent(20));
+        
+		Button returnButton = new Button();		
 		returnButton = new Button();
 		returnButton.setText("Regiones");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		returnButton.setHeight(new Extent(15));
-		returnButton.setToolTipText("Regresar a las regiones");
+		returnButton.setToolTipText("Regresar a Regiones");
 		returnButton.setStyle(Styles1.DEFAULT_STYLE);
 		returnButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -303,36 +496,29 @@ public class Mision extends ContentPane{
 			add(initRegion());
 			}
 		});
-		menu.add(returnButton);
-		menu.setLayoutData(hld);
-		htmlLayout.add(menu);
+		rowTab2.add(returnButton);
+        
+		returnButton = new Button();		
+		returnButton = new Button();
+		returnButton.setText("Salir");
+		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+		returnButton.setHeight(new Extent(15));
+		returnButton.setToolTipText("Regresar al mapa");
+		returnButton.setStyle(Styles1.DEFAULT_STYLE);
+		returnButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			buttonExitClicked(e);				
+			}
+		});
+		rowTab2.add(returnButton);
+		colp.add(rowTab);
+		colp.add(rowTab2);
 		
-		hld = new HtmlLayoutData("batalla");
-		
-		Row rowCentral = new Row();
-		region = new Panel();
-		
-		region.add(btnEnemigos(nombreR));
-		
-		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Enemigos/cartel4.png");
-		FillImage imgF = new FillImage(imgR);
-		region.setWidth(new Extent(1180));
-		region.setHeight(new Extent(480));
-		region.setBackgroundImage(imgF);
-		region.setInsets(new Insets(20, 20, 0, 0));
-		rowCentral.add(region);
-		rowCentral.setLayoutData(hld);
-		htmlLayout.setBackground(Color.BLACK);
-		htmlLayout.add(rowCentral);		
-		
-		return htmlLayout;
+		panel.add(colp);
+		return panel;
 	}
 	
-	public Grid btnEnemigos( String nombreR){
-
-		Label lbl = new Label();
-
-		Grid grid = new Grid(3);
+	private void initEnemigos(String nombreR){
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
@@ -346,67 +532,34 @@ public class Mision extends ContentPane{
 		
 	    session.getTransaction().commit();
 	    session.close();
-		
+	    
 		session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
 		List<Enemigo> list = session.createCriteria(Enemigo.class).add(Restrictions.eq("regionRef", re)).addOrder(Order.asc("nivel")).list();
+		for(Enemigo obj : list)
+		{
+			Enemigo e = new Enemigo();
+			
+			e.setNombre(obj.getNombre());
+			e.setNivel(obj.getNivel());
+			e.setOro(obj.getOro());
+			e.setVelocidad(obj.getVelocidad());
+			e.setVida(obj.getVida());
+			e.setXp(obj.getXp());
+			e.setRegionRef(obj.getRegionRef());
+			e.setDirImage(obj.getDirImage());
+			e.setPoderEnemigoList(obj.getPoderEnemigoList());
+						
+			tableDtaModelEnemigo.add(e);
+		}
 	    session.getTransaction().commit();
 	    session.close();
-		for (final Enemigo obj : list) {
-			Panel panel = new Panel();
-			Row rowTab = new Row();
-			rowTab.setInsets(new Insets(20, 35, 20, 20));
-			Column colTab = new Column();
-			colTab.setCellSpacing(new Extent(4));
-			Column col = new Column();
-			col.setCellSpacing(new Extent(9));
-			
-		    ImageReference ir = ImageReferenceCache.getInstance().getImageReference(obj.getDirImage());
-	        ImageIcon imgI = new ImageIcon(ir);
-	        imgI.setWidth(new Extent(150));
-	        imgI.setHeight(new Extent(150));
-			
-			lbl = new Label("Mision "+list.indexOf(obj));
-			colTab.add(lbl);
-			lbl = new Label("Region : "+obj.getRegionRef().getNombre());
-			colTab.add(lbl);
-			lbl = new Label("Enemigo : "+obj.getNombre());
-			colTab.add(lbl);
-			lbl = new Label("Nivel : "+obj.getNivel());
-			colTab.add(lbl);
-			lbl = new Label("Recompensa : "+obj.getOro());
-			colTab.add(lbl);
-			Button btnItem = new Button();
-			btnItem.setText("Aceptar");
-			btnItem.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-			btnItem.setHeight(new Extent(15));
-			btnItem.setWidth( new Extent(60));
-			btnItem.setToolTipText("Hacer esta mision");
-			btnItem.setStyle(Styles1.DEFAULT_STYLE);
-			btnItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Session session = SessionHibernate.getInstance().getSession();
-				session.beginTransaction();
-						
-				enemigo = (Enemigo) session.load(Enemigo.class, obj.getId());
-			    
-				session.getTransaction().commit();
-			    session.close();
-				removeAll();
-				add(initBatalla());
-				
-				}
-			});
-			colTab.add(btnItem);
-			
-			rowTab.add(imgI);
-			rowTab.setCellSpacing(new Extent(15));
-			rowTab.add(colTab);
-			panel.add(rowTab);
-			grid.add(panel);
-		}
-		return grid;
+	    
+	    row.remove(1);
+	    row.remove(0);
+	    row.add(createTable(tableDtaModelEnemigo, initTableColModelE(), 2));	    
+	    row.add(createInfoEnemigo(list.get(0)));
 	}
 	
 	public Component initBatalla(){
@@ -485,9 +638,9 @@ public class Mision extends ContentPane{
 		row.add(labelCp);
 		colEstado.add(row);
 
-		ImageReference mA = new ResourceImageReference(personaje.getDirImage());
+		ImageReference mA = ImageReferenceCache.getInstance().getImageReference(personaje.getDirImage());
 
-		ImageReference mB = new ResourceImageReference(enemigo.getDirImage());
+		ImageReference mB = ImageReferenceCache.getInstance().getImageReference(enemigo.getDirImage());
 
 		Label magoa = new Label(mA);
 		Label magob = new Label(mB);
