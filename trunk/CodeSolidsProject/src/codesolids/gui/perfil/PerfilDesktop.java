@@ -6,10 +6,6 @@ package codesolids.gui.perfil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
@@ -24,15 +20,14 @@ import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
-import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
-import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+
+import org.hibernate.Session;
+
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.PersonajeItem;
-import codesolids.bd.clases.PersonajePoderes;
-import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.inventario.DesktopItem;
@@ -40,7 +35,7 @@ import codesolids.gui.inventario.DesktopPoder;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
-import codesolids.gui.tienda.ImageReferenceCache;
+import codesolids.util.ImageReferenceCache;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 
