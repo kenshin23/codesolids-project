@@ -435,8 +435,14 @@ public class PreArena extends ContentPane{
 	      	          		else if( pJuagadorCreate.getSpeed() < pJuagadorRetador.getSpeed() )
 	      	          			battle.setTurno("Retador");
 	      	          		else
-	      	          			battle.setTurno("Creador");
-	      	          		
+	      	          		{
+	      	          			int numeroAleatorio = (int) (Math.random()*2 + 0);
+	      	          			if( numeroAleatorio == 0 )
+	      	          				battle.setTurno("Creador");
+	      	          			else
+	      	          				battle.setTurno("Retador");
+	      	          		}
+	      	          			
 	      	          		battle.setInBattle(true);
 	      	          		battle.setSecuenciaTurno(1);
 	      	          		

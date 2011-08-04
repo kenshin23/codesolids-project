@@ -1,17 +1,8 @@
 package codesolids.gui.academia;
 
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.informagen.echo.app.CapacityBar;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
@@ -27,24 +18,28 @@ import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
-import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.TaskQueueHandle;
-import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.informagen.echo.app.CapacityBar;
+
 import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.PersonajePoderes;
-import codesolids.util.TestTableModel;
-import codesolids.util.TimedServerPush;
-import codesolids.gui.tienda.ImageReferenceCache;
+import codesolids.bd.clases.Poderes;
+import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
-import codesolids.bd.clases.Usuario;
-import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
-import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.util.ImageReferenceCache;
+import codesolids.util.MessageBox;
+import codesolids.util.TestTableModel;
+import codesolids.util.TimedServerPush;
 
 import com.minotauro.echo.table.base.CellRenderer;
 import com.minotauro.echo.table.base.ETable;
@@ -68,8 +63,6 @@ import echopoint.layout.HtmlLayoutData;
 
 public class AcademiaDesktop extends ContentPane {
 	
-	private Usuario usuario;
-
 	private TestTableModel tableDtaModel;
 	
 	private ETable table;
@@ -122,9 +115,7 @@ public class AcademiaDesktop extends ContentPane {
 	}
 
 	private void initGUI() {	
-		
 		add(initAcademia());
-	
 	}
 	
 	private Component initAcademia()
@@ -208,7 +199,8 @@ public class AcademiaDesktop extends ContentPane {
 			
 			if( validateDate(calIni, calFin) == true )
 			{
-				CreateWindow();
+				String cad = "Termino su entrenamieto, has aprendido una nueva habilidad.";
+				createWindow(cad);
 				
 				session = SessionHibernate.getInstance().getSession();
 				session.beginTransaction();
@@ -746,39 +738,6 @@ public class AcademiaDesktop extends ContentPane {
 	          ret.setEnabled(editable);
 	          ret.setToolTipText("Entrenar");
 
-	          final WindowPane ventanaCompra = new WindowPane();
-	          ventanaCompra.setTitle("Academia - Compra");
-	          ventanaCompra.setWidth(new Extent(300));
-	          ventanaCompra.setMaximumWidth(new Extent(300));
-	          ventanaCompra.setMaximumHeight(new Extent(150));
-	          ventanaCompra.setMovable(false);
-	          ventanaCompra.setResizable(false);
-	          ventanaCompra.setModal(true);
-	          ventanaCompra.setStyle(StyleWindow.ACADEMY_STYLE);
-
-	          Button btnAceptar = new Button("Aceptar");
-	          btnAceptar.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-	          btnAceptar.setToolTipText("Aceptar");
-	          btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
-	          btnAceptar.addActionListener(new ActionListener() {
-	        	  public void actionPerformed(ActionEvent evt) {
-	        		  ventanaCompra.userClose();
-	        	  }
-	          });
-
-	          Row rowBtn = new Row();
-	          rowBtn.setInsets(new Insets(125, 10, 0, 20));
-	          rowBtn.add(btnAceptar);
-
-	          Column colPane = new Column();
-	          colPane.setInsets(new Insets(5, 5, 5, 0));
-	          colPane.setCellSpacing(new Extent(10));
-	          final Label lblText = new Label();
-	          colPane.add(lblText);
-
-	          colPane.add(rowBtn);
-	          ventanaCompra.add(colPane);
-	          
 	          final Poderes poder = (Poderes) tableDtaModel.getElementAt(row); 
 	          
 	          Session session = SessionHibernate.getInstance().getSession();
@@ -876,19 +835,18 @@ public class AcademiaDesktop extends ContentPane {
 	    	        				 
 	    	        				  session.getTransaction().commit();
 	    	        				  session.close();
-	    	        				  
-	    	        				  lblText.setText("Usted esta entrenando " + poderBD.getName());
-	    	        				  
-	    	        				  add(ventanaCompra);  
+
+	    	        				  String cad = "Usted esta entrenando " + poderBD.getName() + ".";
+	    	        				  createWindow(cad);
+  
 	    	        			  }
 	    	        			  else if ( player.getGold() < poderBD.getGold() )
 	    	        			  {
 	    	        				  btnVerClicked(row);
-	    	        				  
-	    	        				  lblText.setText("Usted no tiene oro suficiente para entrenar el poder " + poderBD.getName());
-		        					  add(ventanaCompra);
-	    	        			  }
-	    	        			  
+
+	    	        				  String cad = "Usted no tiene oro suficiente para entrenar el poder " + poderBD.getName() + ".";
+	    	        				  createWindow(cad);
+	    	        			  }	    	        			  
 	    	        		  }
 	    	        		  else
 	    	        		  {
@@ -896,8 +854,8 @@ public class AcademiaDesktop extends ContentPane {
 	    	        			  {
 	    	        				  btnVerClicked(row);
 	    	        				  
-	    	        				  lblText.setText("Usted compro " + poderBD.getName());
-	    	        				  add(ventanaCompra);
+	    	        				  String cad = "Usted compro " + poderBD.getName() + ".";
+	    	        				  createWindow(cad);
 	    	        			
 		        					  session = SessionHibernate.getInstance().getSession();
 		        					  session.beginTransaction();
@@ -943,23 +901,19 @@ public class AcademiaDesktop extends ContentPane {
 	    	        				  session.getTransaction().commit();
 	    	        				  session.close();
 	    	        				  
-	    	        				  lblText.setText("Usted esta entrenando " + poderBD.getName());
-	    	        				  
-	    	        				  add(ventanaCompra);  
+	    	        				  String cad = "Usted esta entrenando " + poderBD.getName() + ".";
+	    	        				  createWindow(cad);
 	    	        			  }
 	    	        			  else if(player.getGold() < poderBD.getGold())
 	    	        			  {
 	    	        				  btnVerClicked(row);
 	    	        				  
-	    	        				  lblText.setText("Usted no tiene oro suficiente para entrenar el poder " + poderBD.getName());
-	    	        				  add(ventanaCompra);
-	    	        				  
+	    	        				  String cad = "Usted no tiene oro suficiente para entrenar el poder " + poderBD.getName() + ".";
+	    	        				  createWindow(cad);
 	    	        			  }
 	    	        		  }
-	        				  
 	        			  }
 	        		  });
-	        		  
 	        			  btnTrainingClicked();       			  
 	        	  }
 	        	  else{
@@ -995,8 +949,9 @@ public class AcademiaDesktop extends ContentPane {
 
 						  lblTimeHora.setText(lblHour.getText() + " : " + lblMin.getText() + " : " + lblSec.getText());
 
-						  CreateWindow();
-
+						  String cad = "Termino su entrenamieto, has aprendido una nueva habilidad.";
+						  createWindow(cad);
+						  
 						  flag = true;
 						  count = 0;
 						  fraccionBar = 0;
@@ -1022,7 +977,6 @@ public class AcademiaDesktop extends ContentPane {
 					  }
 					  else
 					  {
-
 						  if( (Integer.parseInt(lblSec.getText())) > 0 )
 						  {
 							  lblSec.setText("" + (Integer.parseInt(lblSec.getText()) - 1));
@@ -1061,46 +1015,18 @@ public class AcademiaDesktop extends ContentPane {
 
 	}
 	
-	private void CreateWindow()
+	private void createWindow(String texto)
 	{
-		final WindowPane ventanaCompra = new WindowPane();
-		ventanaCompra.setTitle("Academia - Compra");
-		ventanaCompra.setWidth(new Extent(300));
-		ventanaCompra.setMaximumWidth(new Extent(300));
-		ventanaCompra.setMaximumHeight(new Extent(150));
-		ventanaCompra.setMovable(false);
-		ventanaCompra.setResizable(false);
-		ventanaCompra.setModal(true);
-		ventanaCompra.setStyle(StyleWindow.ACADEMY_STYLE);
 
-		Button btnAceptar = new Button("Aceptar");
-		btnAceptar.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-		btnAceptar.setToolTipText("Aceptar");
-		btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
+		Column col = new Column();
+		col.add(new Label(texto));
+
+		MessageBox messageBox  = new MessageBox("Academia - Compra",// 
+				col,// 
+				400, 130,//
+				MessageBox.ACCEPT_WINDOW);
+		add(messageBox);	  
 		
-		btnAceptar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				ventanaCompra.userClose();
-			}
-		});
-
-		Row rowBtn = new Row();
-		rowBtn.setInsets(new Insets(125, 10, 0, 20));
-		rowBtn.add(btnAceptar);
-
-		Column colPane = new Column();
-		colPane.setInsets(new Insets(5, 5, 5, 0));
-		colPane.setCellSpacing(new Extent(10));
-		Label lblText = new Label();
-		lblText.setText("Termino su entrenamieto, has aprendido una nueva habilidad");
-		colPane.add(lblText);
-
-		colPane.add(rowBtn);
-		
-		ventanaCompra.add(colPane);
-
-		add(ventanaCompra);
-		  
 	}
 	
 	private void loadBD()
