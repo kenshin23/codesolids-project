@@ -3,11 +3,40 @@ package codesolids.gui.inventario;
 import java.util.Iterator;
 import java.util.List;
 
+import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.app.Button;
+import nextapp.echo.app.Color;
+import nextapp.echo.app.Column;
+import nextapp.echo.app.Component;
+import nextapp.echo.app.ContentPane;
+import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImage;
+import nextapp.echo.app.ImageReference;
+import nextapp.echo.app.Insets;
+import nextapp.echo.app.Label;
+import nextapp.echo.app.Panel;
+import nextapp.echo.app.Row;
+import nextapp.echo.app.WindowPane;
+import nextapp.echo.app.event.ActionEvent;
+import nextapp.echo.app.event.ActionListener;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+
+import codesolids.bd.clases.Item;
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.PersonajeItem;
+import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.gui.perfil.PerfilDesktop;
+import codesolids.gui.principal.PrincipalApp;
+import codesolids.gui.style.StyleWindow;
+import codesolids.gui.style.Styles1;
+import codesolids.util.ImageReferenceCache;
+import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.CellRenderer;
 import com.minotauro.echo.table.base.ETable;
@@ -20,41 +49,9 @@ import com.minotauro.echo.table.renderer.ImageCellRenderer;
 import com.minotauro.echo.table.renderer.LabelCellRenderer;
 import com.minotauro.echo.table.renderer.NestedCellRenderer;
 
-import codesolids.bd.clases.Item;
-import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.PersonajeItem;
-import codesolids.bd.clases.PersonajePoderes;
-import codesolids.bd.clases.Poderes;
-import codesolids.bd.hibernate.SessionHibernate;
-import codesolids.gui.perfil.PerfilDesktop;
-import codesolids.gui.principal.PrincipalApp;
-import codesolids.gui.style.StyleWindow;
-import codesolids.gui.style.Styles1;
-import codesolids.gui.tienda.ImageReferenceCache;
-import codesolids.util.TestTableModel;
-
 import echopoint.HtmlLayout;
 import echopoint.ImageIcon;
 import echopoint.layout.HtmlLayoutData;
-import nextapp.echo.app.Alignment;
-import nextapp.echo.app.ApplicationInstance;
-import nextapp.echo.app.Border;
-import nextapp.echo.app.Button;
-import nextapp.echo.app.Color;
-import nextapp.echo.app.Column;
-import nextapp.echo.app.Component;
-import nextapp.echo.app.ContentPane;
-import nextapp.echo.app.Extent;
-import nextapp.echo.app.FillImage;
-import nextapp.echo.app.ImageReference;
-import nextapp.echo.app.Insets;
-import nextapp.echo.app.Label;
-import nextapp.echo.app.Panel;
-import nextapp.echo.app.ResourceImageReference;
-import nextapp.echo.app.Row;
-import nextapp.echo.app.WindowPane;
-import nextapp.echo.app.event.ActionEvent;
-import nextapp.echo.app.event.ActionListener;
 
 /**
  * 
@@ -712,19 +709,25 @@ public class DesktopItem extends ContentPane {
 		session.getTransaction().commit();
 		session.close();
 		
+		Label lblArma = new Label();
+		lblArma.setText("Arma <-> No Equipada");
+		col.add(lblArma);
+		
+		Label lblArmor = new Label();
+		lblArmor.setText("Armadura <-> No Equipada");
+		col.add(lblArmor);
+		
 		for(int i = 0; i < list.size(); i++)
 		{
 			if( list.get(i).getTipo().equals("Espada") )
 			{
-				Label lblArma = new Label();
+				lblArma = new Label();
 				lblArma.setText(list.get(i).getName() + " <-> Equipada");
-				col.add(lblArma);
 			}
 			else if ( list.get(i).getTipo().equals("Armadura") )
 			{
-				Label lblArmor = new Label();
+				lblArmor = new Label();
 				lblArmor.setText(list.get(i).getName() + " <-> Equipada");
-				col.add(lblArmor);
 			}
 		}
 		

@@ -3,33 +3,6 @@ package codesolids.gui.batalla;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.Query;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.informagen.echo.app.CapacityBar;
-
-import codesolids.bd.clases.Ataque;
-import codesolids.bd.clases.Batalla;
-import codesolids.bd.clases.ChatBatalla;
-import codesolids.bd.clases.Nivel;
-import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.PersonajeItem;
-import codesolids.bd.clases.Poderes;
-import codesolids.bd.clases.Usuario;
-import codesolids.bd.hibernate.SessionHibernate;
-import codesolids.gui.arena.PreArena;
-import codesolids.gui.principal.PrincipalApp;
-import codesolids.gui.style.StyleButton;
-import codesolids.gui.style.StyleWindow;
-import codesolids.gui.style.Styles1;
-import codesolids.gui.tienda.ImageReferenceCache;
-import codesolids.util.TimedServerPush;
-
-import echopoint.HtmlLayout;
-import echopoint.ImageIcon;
-import echopoint.layout.HtmlLayoutData;
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Border;
@@ -45,14 +18,40 @@ import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
-import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.TaskQueueHandle;
 import nextapp.echo.app.TextArea;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+import nextapp.echo.app.layout.ColumnLayoutData;
 import nextapp.echo.extras.app.ToolTipContainer;
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.informagen.echo.app.CapacityBar;
+
+import codesolids.bd.clases.Batalla;
+import codesolids.bd.clases.ChatBatalla;
+import codesolids.bd.clases.Nivel;
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.PersonajeItem;
+import codesolids.bd.clases.Poderes;
+import codesolids.bd.clases.Usuario;
+import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.gui.arena.PreArena;
+import codesolids.gui.principal.PrincipalApp;
+import codesolids.gui.style.StyleButton;
+import codesolids.gui.style.StyleWindow;
+import codesolids.gui.style.Styles1;
+import codesolids.util.ImageReferenceCache;
+import codesolids.util.TimedServerPush;
+import echopoint.HtmlLayout;
+import echopoint.ImageIcon;
+import echopoint.layout.HtmlLayoutData;
 
 /**
  * 
@@ -646,7 +645,7 @@ public class Desktop extends ContentPane{
 			{
 				if( battle.getPsinergiaCreador() >= list.get(posicion).getPsinergia() )
 				{
-					if( listCooldown.get(posicion).intValue() == (battle.getSecuenciaTurno() + 1) )
+					if( (listCooldown.get(posicion).intValue() - 1) == battle.getSecuenciaTurno() )
 					{
 						btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
@@ -675,7 +674,7 @@ public class Desktop extends ContentPane{
 			{
 				if( battle.getPsinergiaRetador() >= list.get(posicion).getPsinergia() )
 				{
-					if( listCooldown.get(posicion).intValue() == (battle.getSecuenciaTurno() + 1) )
+					if( listCooldown.get(posicion).intValue() == battle.getSecuenciaTurno() )
 					{
 						btnAttack.setIcon(ImageReferenceCache.getInstance().getImageReference(list.get(posicion).getDirImage()));
 						btnAttack.setEnabled(true);
@@ -772,7 +771,6 @@ public class Desktop extends ContentPane{
 	
 	private Column createCount()
 	{
-
 		Column col = new Column();
 
 		lblSec = new Label();
@@ -1273,6 +1271,11 @@ public class Desktop extends ContentPane{
 		Column col = new Column();
 		col.setCellSpacing(new Extent(15));
 		
+	    ColumnLayoutData cld;
+	    cld = new ColumnLayoutData();
+	    cld.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+		col.setLayoutData(cld);
+		
 		col.add(cartelRecompensa(xp, gold, titulo));
 		
 		Session session = SessionHibernate.getInstance().getSession();
@@ -1307,9 +1310,10 @@ public class Desktop extends ContentPane{
 		jugador.setGold(jugador.getGold() + gold);
 		labelGold.setText(" " + jugador.getGold());
 
-		Button btnAceptar = new Button("Aceptar");
-		btnAceptar.setWidth(new Extent(50));
-		btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
+		Button btnAceptar = new Button();
+		btnAceptar.setLayoutData(cld);
+		btnAceptar.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Util/ok.gif"));
+
 		btnAceptar.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent evt) {
@@ -1319,6 +1323,7 @@ public class Desktop extends ContentPane{
 			}
 		});				
 		col.add(btnAceptar);
+
 		
 		return col;
 	}
@@ -1335,18 +1340,18 @@ public class Desktop extends ContentPane{
 		{
 			Label lbl = new Label();
 			lbl.setText(titulo);
-			lbl.setFont(new Font(null, 1, new Extent(12)));
+			lbl.setFont(new Font(null, 1, new Extent(18)));
 			col.add(lbl);
 			
 			lbl = new Label();
 			lbl.setForeground(Color.GREEN);
-			lbl.setFont(new Font(null, 1, new Extent(12)));
+			lbl.setFont(new Font(null, 1, new Extent(16)));
 			lbl.setText("Obtienes de XP: " + xp);
 			col.add(lbl);
 
 			lbl = new Label();
 			lbl.setForeground(Color.YELLOW);
-			lbl.setFont(new Font(null, 1, new Extent(12)));
+			lbl.setFont(new Font(null, 1, new Extent(16)));
 			lbl.setText("Obtienes Oro: " + gold);
 			col.add(lbl);
 
@@ -1355,16 +1360,16 @@ public class Desktop extends ContentPane{
 		{
 			Label lbl = new Label();
 			lbl.setText("PERDISTE!");
-			lbl.setFont(new Font(null, 1, new Extent(12)));
+			lbl.setFont(new Font(null, 1, new Extent(18)));
 			col.add(lbl);
 			
 			lbl = new Label();
 			lbl.setForeground(Color.GREEN);
-			lbl.setFont(new Font(null, 1, new Extent(12)));
+			lbl.setFont(new Font(null, 1, new Extent(16)));
 			lbl.setText("Obtienes de XP: " + xp);
 			col.add(lbl);	
 		}
-		
+	    
 		panel.add(col);
 		
 		col = new Column();
