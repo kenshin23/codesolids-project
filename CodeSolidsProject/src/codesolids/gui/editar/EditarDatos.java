@@ -1,41 +1,34 @@
 package codesolids.gui.editar;
 
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.hibernate.Session;
-
-import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
-import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
-import nextapp.echo.app.Font;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.PasswordField;
-import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.TextField;
-import nextapp.echo.app.Window;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.RowLayoutData;
+
+import org.hibernate.Session;
+
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.mapa.Styles;
 import codesolids.gui.principal.PrincipalApp;
-import codesolids.gui.style.Styles1;
-import codesolids.gui.tienda.ImageReferenceCache;
+import codesolids.util.ImageReferenceCache;
 
 /**
 * @author Hector Prada

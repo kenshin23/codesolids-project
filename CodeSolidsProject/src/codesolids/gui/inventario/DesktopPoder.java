@@ -2,6 +2,23 @@ package codesolids.gui.inventario;
 
 import java.util.List;
 
+import nextapp.echo.app.Alignment;
+import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.app.Button;
+import nextapp.echo.app.Color;
+import nextapp.echo.app.Column;
+import nextapp.echo.app.Component;
+import nextapp.echo.app.ContentPane;
+import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImage;
+import nextapp.echo.app.ImageReference;
+import nextapp.echo.app.Insets;
+import nextapp.echo.app.Label;
+import nextapp.echo.app.Panel;
+import nextapp.echo.app.Row;
+import nextapp.echo.app.event.ActionEvent;
+import nextapp.echo.app.event.ActionListener;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -14,9 +31,9 @@ import codesolids.bd.clases.Poderes;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.perfil.PerfilDesktop;
 import codesolids.gui.principal.PrincipalApp;
-import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
-import codesolids.gui.tienda.ImageReferenceCache;
+import codesolids.util.ImageReferenceCache;
+import codesolids.util.MessageBox;
 import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.CellRenderer;
@@ -33,24 +50,6 @@ import com.minotauro.echo.table.renderer.NestedCellRenderer;
 import echopoint.HtmlLayout;
 import echopoint.ImageIcon;
 import echopoint.layout.HtmlLayoutData;
-import nextapp.echo.app.Alignment;
-import nextapp.echo.app.ApplicationInstance;
-import nextapp.echo.app.Button;
-import nextapp.echo.app.Color;
-import nextapp.echo.app.Column;
-import nextapp.echo.app.Component;
-import nextapp.echo.app.ContentPane;
-import nextapp.echo.app.Extent;
-import nextapp.echo.app.FillImage;
-import nextapp.echo.app.ImageReference;
-import nextapp.echo.app.Insets;
-import nextapp.echo.app.Label;
-import nextapp.echo.app.Panel;
-import nextapp.echo.app.ResourceImageReference;
-import nextapp.echo.app.Row;
-import nextapp.echo.app.WindowPane;
-import nextapp.echo.app.event.ActionEvent;
-import nextapp.echo.app.event.ActionListener;
 
 /**
  * 
@@ -131,7 +130,6 @@ public class DesktopPoder extends ContentPane{
 		colCartel = new Column();
 		colCartel.add(panel);
 		
-
 		return colCartel;
 	}
 
@@ -299,7 +297,6 @@ public class DesktopPoder extends ContentPane{
 				
 				return btnVer;
 			}
-
 		});
 
 		return nestedCellRenderer;
@@ -618,7 +615,7 @@ public class DesktopPoder extends ContentPane{
 		{
 			Label lblText = new Label();
 			lblText.setText("Usted no puede equipar mas de 6 habilidades.");
-			CreateWindow(lblText);
+			createWindow(lblText);
 		}
 		else
 		{
@@ -631,7 +628,7 @@ public class DesktopPoder extends ContentPane{
 			{
 				Label lblText = new Label();
 				lblText.setText("Usted tiene equipado esta habilidad todavia.");
-				CreateWindow(lblText);
+				createWindow(lblText);
 			}
 		}
 		
@@ -643,44 +640,16 @@ public class DesktopPoder extends ContentPane{
 		
 	}
 	
-	private void CreateWindow(Label lblText)
+	private void createWindow(Label lblText)
 	{
-		final WindowPane ventanaCompra = new WindowPane();
-		ventanaCompra.setTitle("Inventario");
-		ventanaCompra.setWidth(new Extent(300));
-		ventanaCompra.setMaximumWidth(new Extent(300));
-		ventanaCompra.setMaximumHeight(new Extent(150));
-		ventanaCompra.setMovable(false);
-		ventanaCompra.setResizable(false);
-		ventanaCompra.setModal(true);
-		ventanaCompra.setStyle(StyleWindow.ACADEMY_STYLE);
+		Column col = new Column();
+		col.add(lblText);
 
-		Button btnAceptar = new Button("Aceptar");
-		btnAceptar.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-		btnAceptar.setToolTipText("Aceptar");
-		btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
-		
-		btnAceptar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				ventanaCompra.userClose();
-			}
-		});
-
-		Row rowBtn = new Row();
-		rowBtn.setInsets(new Insets(125, 10, 0, 20));
-		rowBtn.add(btnAceptar);
-
-		Column colPane = new Column();
-		colPane.setInsets(new Insets(5, 5, 5, 0));
-		colPane.setCellSpacing(new Extent(10));
-		colPane.add(lblText);
-
-		colPane.add(rowBtn);
-		
-		ventanaCompra.add(colPane);
-
-		add(ventanaCompra);
-		  
+		MessageBox messageBox  = new MessageBox("Inventario",// 
+				col,// 
+				400, 130,//
+				MessageBox.ACCEPT_WINDOW);
+		add(messageBox);
 	}
 	
 	private void btnQuitarClicked(Poderes poder) {
