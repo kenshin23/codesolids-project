@@ -41,16 +41,11 @@ public class ImageCellRenderer implements CellRenderer {
 		ImageIcon retImg = new ImageIcon();
 		retImg.setIcon(ImageReferenceCache.getInstance().getImageReference(value.toString()));
 		
+		retImg.setWidth(width);
+		retImg.setHeight(height);
+		
 		if (foreground != null) {
 			retImg.setForeground(foreground);
-		}
-		
-		if (width != null){
-			retImg.setWidth(width);
-		}
-
-		if (height != null){
-			retImg.setWidth(height);
 		}
 		
 		return retImg;
