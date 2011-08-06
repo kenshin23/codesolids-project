@@ -36,6 +36,7 @@ import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
 import codesolids.util.ImageReferenceCache;
+import codesolids.util.MessageBox;
 import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.CellRenderer;
@@ -57,12 +58,12 @@ import echopoint.layout.HtmlLayoutData;
  * 
  * @author Antonio López
  *
+ * @Colaborador Fernando Osuna
  */
 
 public class DesktopItem extends ContentPane {
 
 	TestTableModel tableDtaModel;
-	TestTableModel tableDtaModelItems;
 	
 	private Column colPanel;
 	private Column colEquip;
@@ -335,12 +336,14 @@ public class DesktopItem extends ContentPane {
 	    lcr = new LabelCellRenderer();
 	    lcr.setBackground(new Color(87, 205, 211));
 	    lcr.setForeground(Color.WHITE);
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
 	    tableColumn.setHeadCellRenderer(lcr);
 
 	    lcr = new LabelCellRenderer();
 	    lcr.setBackground(new Color(226,211,161));
 	    lcr.setForeground(Color.BLACK);
-
+	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    
 	    tableColumn.setDataCellRenderer(lcr);
 	    tableColModel.getTableColumnList().add(tableColumn);
 
@@ -386,11 +389,9 @@ public class DesktopItem extends ContentPane {
 					public void actionPerformed(ActionEvent e) {
 						btnVerClicked(row);
 					}
-				});
-				
+				});		
 				return btnVer;
 			}
-
 		});
 
 		return nestedCellRenderer;
@@ -435,7 +436,6 @@ public class DesktopItem extends ContentPane {
 		colPanel.removeAll();
 		
 		verInfo(item,row);
-		
 	}
 
 	private void verInfo(final Item item,final int fila)
@@ -499,9 +499,17 @@ public class DesktopItem extends ContentPane {
 		btnEquipar.setToolTipText("Equipar Items");
 		btnEquipar.setStyle(Styles1.DEFAULT_STYLE);
 		btnEquipar.setWidth(new Extent(50));
+		btnEquipar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				btnEquiparClicked(item,fila);
+			}
+		});
+		col.add(btnEquipar);
 		
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 		
 		Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("itemRef", item),Restrictions.eq("personajeRef", personaje)));
 		
@@ -510,18 +518,29 @@ public class DesktopItem extends ContentPane {
 		session.getTransaction().commit();
 		session.close();
 		
-		if( (pItem.get(0).isEquipado() == false) )
-		{	
-			btnEquipar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					btnEquiparClicked(item,fila);
-				}
-			});
-			col.add(btnEquipar);
-		}
-		else if((pItem.get(0).isEquipado() == false) || (pItem.get(0).getItemRef().getTipo().equals("Espada")) || (pItem.get(0).getItemRef().getTipo().equals("Armadura")) )
+		if( (item.getTipo().equals("Espada")) || (item.getTipo().equals("Armadura")) )
 		{
-			btnEquipar.setVisible(false);
+			for( int i = 0; i < pItem.size(); i++ )
+			{
+				if( pItem.get(i).isEquipado() == false )
+					btnEquipar.setVisible(true);
+				else
+					btnEquipar.setVisible(false);
+			}	
+		}
+		else if( item.getTipo().equals("Pocion") || item.getTipo().equals("Bomba") )
+		{
+			int countEquip = 0;
+			for( int i = 0; i < pItem.size(); i++ )
+			{
+				if( pItem.get(i).isEquipado() == true )
+					countEquip++;
+			}
+
+			if( pItem.size() == countEquip )
+				btnEquipar.setVisible(false);
+			else
+				btnEquipar.setVisible(true);
 		}
 		
 		colPanel.setInsets(new Insets(10, 20, 10, 20));
@@ -535,98 +554,121 @@ public class DesktopItem extends ContentPane {
 		session.beginTransaction();
 
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
-		
-		Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("itemRef", item),Restrictions.eq("personajeRef", personaje)));
-		
-		List<PersonajeItem> pItem = criteria.list();
-		
-		criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.eq("equipado", true));
-		
-		List<PersonajeItem> listI = criteria.list();
-		
-		if( (pItem.get(0).isEquipado() == false) && (pItem.get(0).getPersonajeRef().getId() == personaje.getId()) && (pItem.get(0).getItemRef().getTipo().equals("Espada")) )
-		{
-			pItem.get(0).setEquipado(true);
-			
-			for( int i = 0; i < listI.size(); i++ )
-			{
-				if( (listI.get(i).getItemRef().getTipo().equals("Espada")) && (listI.get(i).getPersonajeRef().getId() == personaje.getId()) )
-				{
-					listI.get(i).setEquipado(false);
-				}
-			}
-		}
-		else if( (pItem.get(0).isEquipado() == true) && (pItem.get(0).getItemRef().getTipo().equals("Espada")) )
-		{
-			Label lblText = new Label();
-			lblText.setText("Usted ya tiene equipado esta Arma.");
-			CreateWindow(lblText);
-		}
 
-		if( (pItem.get(0).isEquipado() == false) && (pItem.get(0).getPersonajeRef().getId() == personaje.getId()) && (pItem.get(0).getItemRef().getTipo().equals("Armadura")) )
+		String queryStr = "FROM PersonajeItem WHERE personajeref_id = :idPlayer";
+		Query query = session.createQuery(queryStr);
+		query.setInteger("idPlayer", personaje.getId());
+		List<PersonajeItem> listPLoad = query.list();
+		
+		queryStr = "FROM PersonajeItem WHERE itemref_id = :idIt AND personajeref_id = :idPlayer";
+		query = session.createQuery(queryStr);
+		query.setInteger("idIt", item.getId());
+		query.setInteger("idPlayer", personaje.getId());
+		List<PersonajeItem> listEquip = query.list();
+		
+		queryStr = "SELECT pi FROM PersonajeItem AS pi, Item AS it WHERE pi.itemRef = it.id AND personajeref_id = :idPlayer AND pi.equipado = true AND (it.tipo= :tipoIt1 OR it.tipo= :tipoIt2)";
+		query  = session.createQuery(queryStr);
+		query.setInteger("idPlayer", personaje.getId());
+		query.setString("tipoIt1", "Pocion");
+		query.setString("tipoIt2", "Bomba");
+		List<PersonajeItem> listCount= query.list();
+		
+		if( item.getTipo().equals("Espada") )
 		{
-			pItem.get(0).setEquipado(true);
-			for( int i = 0; i < listI.size(); i++ )
+			if( (listEquip.get(0).isEquipado() == false) )
 			{
-				if ((listI.get(i).getItemRef().getTipo().equals("Armadura")) && (listI.get(i).getPersonajeRef().getId() == personaje.getId()) )
+				for( int i = 0; i < listPLoad.size(); i++ )
 				{
-					listI.get(i).setEquipado(false);
+					if( listPLoad.get(i).getItemRef().getId() == item.getId() )
+						listPLoad.get(i).setEquipado(true);
+				}
+
+				for( int j = 0; j < listPLoad.size(); j++ )
+				{
+					if( (listPLoad.get(j).getItemRef().getTipo().equals(item.getTipo())) && (listPLoad.get(j).getItemRef().getId() != item.getId()) ) 
+						listPLoad.get(j).setEquipado(false);
 				}
 			}
+			else
+			{
+				Label lblText = new Label();
+				lblText.setText("Usted ya tiene equipado esta Arma.");
+				createWindow(lblText);
+			}
 		}
-		else if( (pItem.get(0).isEquipado() == true) && (pItem.get(0).getItemRef().getTipo().equals("Armadura")) )
+		else if( item.getTipo().equals("Armadura") )
 		{
-			Label lblText = new Label();
-			lblText.setText("Usted ya tiene equipado esta Armadura.");
-			CreateWindow(lblText);
+			if( (listEquip.get(0).isEquipado() == false) )
+			{
+				for( int i = 0; i < listPLoad.size(); i++ )
+				{
+					if( listPLoad.get(i).getItemRef().getId() == item.getId() )
+						listPLoad.get(i).setEquipado(true);
+				}
+
+				for( int j = 0; j < listPLoad.size(); j++ )
+				{
+					if( (listPLoad.get(j).getItemRef().getTipo().equals(item.getTipo())) && (listPLoad.get(j).getItemRef().getId() != item.getId()) ) 
+						listPLoad.get(j).setEquipado(false);
+				}
+			}
+			else
+			{
+				Label lblText = new Label();
+				lblText.setText("Usted ya tiene equipado esta Armadura.");
+				createWindow(lblText);
+			}
+		}
+		else if( item.getTipo().equals("Pocion") || item.getTipo().equals("Bomba") )
+		{	
+			int countE = 0;
+			if( listCount.size() < 10 )				
+			{
+				for( int i = 0; i < listPLoad.size(); i++ )
+				{
+					if( (listPLoad.get(i).getItemRef().getId() == item.getId()) && (listPLoad.get(i).isEquipado() == false) )
+					{	
+						listPLoad.get(i).setEquipado(true);
+						break;
+					}
+					else if( (listPLoad.get(i).getItemRef().getId() == item.getId()) && (listPLoad.get(i).isEquipado() == true) )
+						countE++;
+				}
+				
+				if( countE == listEquip.size() )
+				{
+					Label lblText = new Label();
+					lblText.setText("Usted ya tiene equipado lo disponible de este tipo de " + item.getTipo() + ".");
+					createWindow(lblText);
+				}
+			}
+			else
+			{
+				Label lblText = new Label();
+				lblText.setText("Usted no puede equipar mas de 10 items.");
+				createWindow(lblText);
+			}	
 		}
 		
 		session.getTransaction().commit();
 		session.close();
-		
+
 		colEquip.removeAll();
 		colEquip.add(rowItemEquip());
-		
+
 	}
 	
-	private void CreateWindow(Label lblText)
+	private void createWindow(Label lblText)
 	{
-		final WindowPane ventanaCompra = new WindowPane();
-		ventanaCompra.setTitle("Inventario");
-		ventanaCompra.setWidth(new Extent(300));
-		ventanaCompra.setMaximumWidth(new Extent(300));
-		ventanaCompra.setMaximumHeight(new Extent(150));
-		ventanaCompra.setMovable(false);
-		ventanaCompra.setResizable(false);
-		ventanaCompra.setModal(true);
-		ventanaCompra.setStyle(StyleWindow.ACADEMY_STYLE);
-
-		Button btnAceptar = new Button("Aceptar");
-		btnAceptar.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
-		btnAceptar.setToolTipText("Aceptar");
-		btnAceptar.setStyle(Styles1.DEFAULT_STYLE);
 		
-		btnAceptar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				ventanaCompra.userClose();
-			}
-		});
+		Column col = new Column();
+		col.add(lblText);
 
-		Row rowBtn = new Row();
-		rowBtn.setInsets(new Insets(125, 10, 0, 20));
-		rowBtn.add(btnAceptar);
-
-		Column colPane = new Column();
-		colPane.setInsets(new Insets(5, 5, 5, 0));
-		colPane.setCellSpacing(new Extent(10));
-		colPane.add(lblText);
-
-		colPane.add(rowBtn);
-		
-		ventanaCompra.add(colPane);
-
-		add(ventanaCompra);
-		  
+		MessageBox messageBox  = new MessageBox("Inventario",// 
+				col,// 
+				400, 130,//
+				MessageBox.ACCEPT_WINDOW);
+		add(messageBox);
 	}
 	
 	private Column loadEquip()
@@ -672,19 +714,33 @@ public class DesktopItem extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.eq("equipado", true));
-		
-		List<PersonajeItem> list = criteria.list();
+		String queryStr = "SELECT pi FROM PersonajeItem AS pi, Item AS it WHERE pi.itemRef = it.id AND personajeref_id = :idPlayer AND pi.equipado = true AND (it.tipo= :tipoIt1 OR it.tipo= :tipoIt2)";				
+		Query query  = session.createQuery(queryStr);
+		query.setInteger("idPlayer", personaje.getId());
+		query.setString("tipoIt1", "Pocion");
+		query.setString("tipoIt2", "Bomba");
+		List<PersonajeItem> listCount= query.list();
 		
 		session.getTransaction().commit();
 		session.close();
 		
+		int countP = 0;
+		int countB = 0;
+		
+		for( int i = 0; i < listCount.size(); i++ )
+		{
+			if( listCount.get(i).getItemRef().getTipo().equals("Pocion") )
+				countP++;
+			else if( listCount.get(i).getItemRef().getTipo().equals("Bomba") )
+				countB++;
+		}
+		
 		Label lblPocion = new Label();
-		lblPocion.setText("Pociones: " + 0);
+		lblPocion.setText("Pociones: " + countP);
 		
 		Label lblBomba = new Label();
-		lblBomba.setText("Bombas: " + 0);
-		
+		lblBomba.setText("Bombas: " + countB);
+
 		col.add(lblPocion);
 		col.add(lblBomba);
 		
@@ -720,15 +776,9 @@ public class DesktopItem extends ContentPane {
 		for(int i = 0; i < list.size(); i++)
 		{
 			if( list.get(i).getTipo().equals("Espada") )
-			{
-				lblArma = new Label();
 				lblArma.setText(list.get(i).getName() + " <-> Equipada");
-			}
 			else if ( list.get(i).getTipo().equals("Armadura") )
-			{
-				lblArmor = new Label();
 				lblArmor.setText(list.get(i).getName() + " <-> Equipada");
-			}
 		}
 		
 		return col;
@@ -741,6 +791,7 @@ public class DesktopItem extends ContentPane {
 		session.beginTransaction();
 		
 		List<Item> listBD = session.createCriteria(Item.class).addOrder(Order.asc("id")).list();
+		
 		session.getTransaction().commit();
 		session.close();
 		
@@ -753,14 +804,14 @@ public class DesktopItem extends ContentPane {
 			
 			if( tipo.equals("Items") )
 			{
-				String queryStr = "SELECT personajeItemList FROM Item WHERE personajeref_id = :idPlayer AND name= :nameIt AND tipo= :tipoIt1 OR tipo= :tipoIt2";				
+				String queryStr = "SELECT personajeItemList FROM Item WHERE personajeref_id = :idPlayer AND name= :nameIt AND (tipo= :tipoIt1 OR tipo= :tipoIt2)";				
 				Query query  = session.createQuery(queryStr);
 				query.setInteger("idPlayer", personaje.getId());
 				query.setString("nameIt", item.getName());
 				query.setString("tipoIt1", "Pocion");
 				query.setString("tipoIt2", "Bomba");
 				List<Object> list = query.list();
-				
+					
 				addItemTableType(list,tipo);
 			}
 			else
@@ -781,6 +832,7 @@ public class DesktopItem extends ContentPane {
 	}
 	
 	public void addItemTableType(List<Object> resultQuery,String tipo) {
+
 		Iterator<Object> iter = resultQuery.iterator();
   	    if (!iter.hasNext()) {
   	    	return;
@@ -805,9 +857,14 @@ public class DesktopItem extends ContentPane {
 		item.setUso(obj.getItemRef().isUso());
 		item.setDirImage(obj.getItemRef().getDirImage());
 		item.setInshop(obj.getItemRef().isInshop());
-
-		if( item.getTipo().equals("Pocion") || item.getTipo().equals("Bomba") )
-			tableDtaModel.add(item);
+		
+		if( tipo.equals("Items") )
+		{
+			if( item.getTipo().equals("Pocion") )
+				tableDtaModel.add(item);
+			if(  item.getTipo().equals("Bomba") )
+				tableDtaModel.add(item);
+		}
 		else if( item.getTipo().equals(tipo) )
 			tableDtaModel.add(item);
 	}
