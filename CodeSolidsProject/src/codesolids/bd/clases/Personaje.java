@@ -53,8 +53,8 @@ public class Personaje {
 	private List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();
 	private List<PersonajeItem> personajeItemList = new ArrayList<PersonajeItem>();
 	
-	private List<Invitation> invGeneratesList = new ArrayList<Invitation>();
-	private List<Invitation> invReceivesList = new ArrayList<Invitation>();
+	private List<Invitacion> invGeneratesList = new ArrayList<Invitacion>();
+	private List<Invitacion> invReceivesList = new ArrayList<Invitacion>();
 	
 	protected List<Batalla> creadores = new ArrayList<Batalla>();
 	protected List<Batalla> retadores = new ArrayList<Batalla>();
@@ -226,22 +226,22 @@ public class Personaje {
 	@OneToMany(mappedBy = "personajeGeneratesRef", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.TRUE)
 	@Cascade({CascadeType.ALL})
-	public List<Invitation> getInvGeneratesList() {
+	public List<Invitacion> getInvGeneratesList() {
 		return invGeneratesList;
 	}
 
-	public void setInvGeneratesList(List<Invitation> invGeneratesList) {
+	public void setInvGeneratesList(List<Invitacion> invGeneratesList) {
 		this.invGeneratesList = invGeneratesList;
 	}
 
 	@OneToMany(mappedBy = "personajeReceivesRef", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.TRUE)
 	@Cascade({CascadeType.ALL})
-	public List<Invitation> getInvReceivesList() {
+	public List<Invitacion> getInvReceivesList() {
 		return invReceivesList;
 	}
 
-	public void setInvReceivesList(List<Invitation> invReceivesList) {
+	public void setInvReceivesList(List<Invitacion> invReceivesList) {
 		this.invReceivesList = invReceivesList;
 	}
 

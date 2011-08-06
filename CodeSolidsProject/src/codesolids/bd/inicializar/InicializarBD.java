@@ -337,12 +337,14 @@ class EnemigosBD{
 		AsignarDatos(2, 1, "Ogro", 100, 11, 170, 30, "Monte Aleph", "Images/Enemigos/ogro.png");
 		AsignarDatos(3, 2, "Dragon Negro", 120, 15, 190, 80, "Monte Aleph", "Images/Enemigos/dragon_negro.png");
 		AsignarDatos(4, 3, "Dragon OjoNegro", 190, 20, 190, 50, "Monte Aleph", "Images/Enemigos/dragon_ojosnegros.png");
+		AsignarDatos(8, 4, "Elfo", 350, 40, 410, 120, "Monte Aleph", "Images/Enemigos/elfo.png");
 		AsignarDatos(5, 5, "Dragon Gris", 350, 30, 250, 50, "Monte Aleph", "Images/Enemigos/dragon_gris.png");
 		AsignarDatos(6, 6, "3 Cabezas", 500, 30, 450, 60, "Monte Aleph", "Images/Enemigos/dragon3cabezas.png");
 		
 		AsignarDatos(7, 4, "Dragon Blanco", 400, 19, 150, 50, "Norte Blanco", "Images/Enemigos/dragon_hielo.png");
-		AsignarDatos(8, 4, "Elfo", 350, 40, 410, 120, "Norte Blanco", "Images/Enemigos/elfo.png");
 		AsignarDatos(22, 3, "Guerrero", 300, 40, 410, 120, "Norte Blanco", "Images/Enemigos/metal.png");
+		AsignarDatos(23, 3, "Lobo Gris", 300, 50, 410, 120, "Norte Blanco", "Images/Enemigos/lobo1.png");
+		AsignarDatos(24, 7, "Lobo Negro", 850, 100, 500, 220, "Norte Blanco", "Images/Enemigos/lobo2.png");
 		
 		AsignarDatos(9, 2, "Enano Arquero", 180, 30, 160, 20, "Gloriosa", "Images/Enemigos/enano1.png");
 		AsignarDatos(10, 5, "Enano Dorado", 390, 20, 220, 25, "Gloriosa", "Images/Enemigos/enano2.png");
@@ -351,7 +353,8 @@ class EnemigosBD{
 		AsignarDatos(13, 6, "Orco", 400, 80, 220, 50, "Gloriosa", "Images/Enemigos/orco2.png");
 		AsignarDatos(14, 5, "Orco Verde", 100, 60, 200, 10, "Gloriosa", "Images/Enemigos/orco3d.png");
 		
-		AsignarDatos(15, 4, "Chogall", 100, 10, 150, 10, "Pantano Cocona", "Images/Enemigos/chogall.png");
+		AsignarDatos(16, 5, "Golem", 450, 60, 400, 200, "Pantano Cocona", "Images/Enemigos/golem.png");
+		AsignarDatos(15, 4, "Chogall", 390, 10, 150, 100, "Pantano Cocona", "Images/Enemigos/chogall.png");
 		AsignarDatos(16, 9, "Demonio", 2000, 60, 400, 200, "Pantano Cocona", "Images/Enemigos/demon.png");
 		
 		AsignarDatos(17, 1, "Program1", 400, 190, 1000, 200, "Ciudad Programacion", "Images/Enemigos/program1.png");
@@ -418,6 +421,13 @@ class EnemigosBD{
 		AsignarPoder("Dragon Blanco", "Mordida", 70);
 		AsignarPoder("Dragon Blanco", "Directo", 80);
 		
+		AsignarPoder("Lobo Gris", "Rapido", 60);
+		AsignarPoder("Lobo Gris", "Furia", 80);
+		AsignarPoder("Lobo Gris", "Mordida", 120);
+		
+		AsignarPoder("Lobo Negro", "Furia", 100);
+		AsignarPoder("Lobo Negro", "Oscuro", 250);
+		AsignarPoder("Lobo Negro", "Maligno", 500);
 		
 		AsignarPoder("Elfo", "Golpe Invisible", 60);
 		AsignarPoder("Elfo", "Puñal", 80);
@@ -454,6 +464,10 @@ class EnemigosBD{
 		AsignarPoder("Chogall", "Fisura", 200);
 		AsignarPoder("Chogall", "Espinas", 190);
 		AsignarPoder("Chogall", "Del Conio", 300);
+		
+		AsignarPoder("Golem", "Fisura", 200);
+		AsignarPoder("Golem", "Lava Ardiente", 190);
+		AsignarPoder("Golem", "Terremoto", 300);
 		
 		AsignarPoder("Demonio", "Maligno", 1000);
 		AsignarPoder("Demonio", "Invisible", 800);

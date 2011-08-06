@@ -28,7 +28,7 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
 
 import codesolids.bd.clases.Batalla;
-import codesolids.bd.clases.Invitation;
+import codesolids.bd.clases.Invitacion;
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
@@ -66,7 +66,7 @@ public class PreArena extends ContentPane{
 	private TestTableModel tableDtaModelPersonaje;
 	private TestTableModel tableDtaModelInvitacion;
 	List<Personaje> results = new ArrayList<Personaje>();
-	List<Invitation> resultsI = new ArrayList<Invitation>();
+	List<Invitacion> resultsI = new ArrayList<Invitacion>();
 	
 	private HtmlLayout htmlLayout;
 	
@@ -250,7 +250,7 @@ public class PreArena extends ContentPane{
 		    		obj = per.getUsuarioRef().getLogin();
 	    		}
 	    		else if(tipo == 2){
-	    			Invitation iv = (Invitation) element;
+	    			Invitacion iv = (Invitacion) element;
 	    			obj = iv.getPersonajeGeneratesRef().getUsuarioRef().getLogin();
 	    		}
 	    		return obj;
@@ -281,7 +281,7 @@ public class PreArena extends ContentPane{
 		    		obj = per.getTipo();
 	    		}
 	    		else if(tipo == 2){
-	    			Invitation iv = (Invitation) element;
+	    			Invitacion iv = (Invitacion) element;
 	    			obj = iv.getPersonajeGeneratesRef().getTipo();
 	    		}
 	    		return obj;
@@ -312,7 +312,7 @@ public class PreArena extends ContentPane{
 		    		obj = per.getLevel();
 	    		}
 	    		else if(tipo == 2){
-	    			Invitation iv = (Invitation) element;
+	    			Invitacion iv = (Invitacion) element;
 	    			obj = iv.getPersonajeGeneratesRef().getLevel();
 	    		}
 	    		return obj;
@@ -367,7 +367,7 @@ public class PreArena extends ContentPane{
 	          ret.setStyle(Styles1.DEFAULT_STYLE);
 	          ret.setEnabled(editable);
 	          ret.setToolTipText("Invitar");
-			  final Invitation invitation = new Invitation();
+			  final Invitacion invitation = new Invitacion();
 			  invitation.setPersonajeGeneratesRef(personaje);
 			  invitation.setPersonajeReceivesRef(per);
 	          if (personaje.getUsuarioRef().getId() != per.getUsuarioRef().getId() )
@@ -400,7 +400,7 @@ public class PreArena extends ContentPane{
 
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          final Invitation inv = (Invitation) tableDtaModelInvitacion.getElementAt(row);
+	          final Invitacion inv = (Invitacion) tableDtaModelInvitacion.getElementAt(row);
 	          Button ret = new Button("Acpt");
 	          ret.setStyle(Styles1.DEFAULT_STYLE);
 	          ret.setEnabled(editable);
@@ -479,7 +479,7 @@ public class PreArena extends ContentPane{
 
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          final Invitation inv = (Invitation) tableDtaModelInvitacion.getElementAt(row);
+	          final Invitacion inv = (Invitacion) tableDtaModelInvitacion.getElementAt(row);
 	          Button ret = new Button("Rech");
 	          ret.setStyle(Styles1.DEFAULT_STYLE);
 	          ret.setEnabled(editable);
@@ -500,7 +500,7 @@ public class PreArena extends ContentPane{
 		
 	}
 	
-	private void UpdateInvitation(Invitation inv){
+	private void UpdateInvitation(Invitacion inv){
 		Session session = SessionHibernate.getInstance().getSession();
 	    session.beginTransaction();
 	    
@@ -516,7 +516,7 @@ public class PreArena extends ContentPane{
 	    Session session = SessionHibernate.getInstance().getSession();
 	    session.beginTransaction();
 
-		List<Invitation> listA = session.createCriteria(Invitation.class).list();
+		List<Invitacion> listA = session.createCriteria(Invitacion.class).list();
 	    
 	    for( int i = 0; i < listA.size(); i++){
 	    	if(listA.get(i).getPersonajeGeneratesRef().getId() == personaje.getId()){
@@ -534,11 +534,11 @@ public class PreArena extends ContentPane{
 	    session.close();
 	}
 	
-	private void consultBtn(Button btn, Invitation invitation){
+	private void consultBtn(Button btn, Invitacion invitation){
 	    Session session = SessionHibernate.getInstance().getSession();
 	    session.beginTransaction();
 
-		List<Invitation> listA = session.createCriteria(Invitation.class).list();
+		List<Invitacion> listA = session.createCriteria(Invitacion.class).list();
 	    
 	    for( int i = 0; i < listA.size(); i++){
 	    	if(listA.get(i).getPersonajeGeneratesRef().getId() == invitation.getPersonajeGeneratesRef().getId() && //
@@ -562,9 +562,9 @@ public class PreArena extends ContentPane{
 	      
 	    personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 
-	    Invitation obj = new Invitation();
+	    Invitacion obj = new Invitacion();
 		obj.setPersonajeReceivesRef(personaje);
-		List<Invitation> list = session.createCriteria(Invitation.class).add(Example.create(obj)).list();
+		List<Invitacion> list = session.createCriteria(Invitacion.class).add(Example.create(obj)).list();
   
 	    session.getTransaction().commit();
 	    session.close();
@@ -573,7 +573,7 @@ public class PreArena extends ContentPane{
 	    tableDtaModelInvitacion.clear();
    	  	for( int i = 0; i < list.size(); i++){
    	  		if(personaje.getId() == list.get(i).getPersonajeReceivesRef().getId()){
-	   			Invitation iv = new Invitation();
+	   			Invitacion iv = new Invitacion();
 	   			iv.setId(list.get(i).getId());
 	   			iv.setPersonajeGeneratesRef(list.get(i).getPersonajeGeneratesRef());
 	   			iv.setPersonajeReceivesRef(list.get(i).getPersonajeReceivesRef());
@@ -585,13 +585,13 @@ public class PreArena extends ContentPane{
    	  	}
 	}
 	
-	private void btnInviteClicked(Invitation invitation) {  		
+	private void btnInviteClicked(Invitacion invitation) {  		
 	    Session session = null;
 	    try {
 	      session = SessionHibernate.getInstance().getSession();
 	      session.beginTransaction();
 	      
-		  Invitation bean = new Invitation();
+		  Invitacion bean = new Invitacion();
 		  bean.setPersonajeGeneratesRef(invitation.getPersonajeGeneratesRef());
 		  bean.setPersonajeReceivesRef(invitation.getPersonajeReceivesRef());
 
@@ -607,7 +607,7 @@ public class PreArena extends ContentPane{
 	    }
     }
 	
-	private void btnDeleteClicked(Invitation invitation) {  		
+	private void btnDeleteClicked(Invitacion invitation) {  		
 	    Session session = null;
 	    try {
 	      session = SessionHibernate.getInstance().getSession();
@@ -644,10 +644,10 @@ public class PreArena extends ContentPane{
 	    
 	    personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 	    
-	    Invitation obj = new Invitation();
+	    Invitacion obj = new Invitacion();
 		obj.setPersonajeReceivesRef(personaje);
 
-		List<Invitation> list = session.createCriteria(Invitation.class).list();
+		List<Invitacion> list = session.createCriteria(Invitacion.class).list();
 		for(int i = 0; i < list.size(); i++){
 			if(list.get(i).getPersonajeGeneratesRef() == personaje && list.get(i).isEstado() == false){
 				session.delete(list.get(i));
