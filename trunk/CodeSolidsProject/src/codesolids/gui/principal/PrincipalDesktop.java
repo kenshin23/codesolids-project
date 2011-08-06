@@ -448,7 +448,7 @@ public class PrincipalDesktop extends ContentPane {
 			Column col = new Column();
 			col.add(new Label("Su cuenta ha sido registrada."));
 
-			MessageBox messageBox  = new MessageBox("Error",// 
+			MessageBox messageBox  = new MessageBox("Felicitaciones",// 
 					col,// 
 					400, 130,//
 					MessageBox.ACCEPT_WINDOW);
