@@ -15,9 +15,9 @@ import org.hibernate.annotations.Proxy;
  */
 //DONE
 @Entity
-@Table(name = "t_invitation")
+@Table(name = "t_invitacion")
 @Proxy(lazy = false)
-public class Invitation{
+public class Invitacion{
 
 	private int id;
 	
@@ -26,7 +26,7 @@ public class Invitation{
 	private Personaje personajeGeneratesRef;
 	private Personaje personajeReceivesRef;
 	
-	public Invitation() {
+	public Invitacion() {
 		// Empty
 	}
 	
@@ -63,8 +63,5 @@ public class Invitation{
 	public void setPersonajeReceivesRef(Personaje personajeReceivesRef) {
 		this.personajeReceivesRef = personajeReceivesRef;
 	}
-
-	
-
 	
 }
