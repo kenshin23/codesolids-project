@@ -365,7 +365,7 @@ public class Mision extends ContentPane{
 		colp.setInsets(new Insets(0, 0, 0, 0));
 		colp.setCellSpacing(new Extent(10));
 		
-		Row row = new Row();
+		Row rowp = new Row();
         Label lblInfo = new Label();
         lblInfo.setText(region.getNombre());
         colp.add(lblInfo);
@@ -394,8 +394,8 @@ public class Mision extends ContentPane{
         	initEnemigos(nameR);				
 			}
 		});
-        row.add(btnRegion);
-        row.setCellSpacing(new Extent(20));
+        rowp.add(btnRegion);
+        rowp.setCellSpacing(new Extent(20));
         
 		Button returnButton = new Button();		
 		returnButton = new Button();
@@ -409,9 +409,9 @@ public class Mision extends ContentPane{
 			buttonExitClicked(e);				
 			}
 		});
-		row.add(returnButton);
+		rowp.add(returnButton);
         
-		colp.add(row);
+		colp.add(rowp);
 		
 		panel.add(colp);
 		return panel;
@@ -687,6 +687,15 @@ public class Mision extends ContentPane{
 			PoderEnemigo pe = new PoderEnemigo();
 			pe = consultAtaque(dano);
 			simular(pe);
+			if ( (barraVida1.getValues().get(0).intValue() <=0) && flag==false) {
+
+				listNumber = new ArrayList<Number>();
+				listNumber.add(0);
+				listNumber.add(personaje.getHp());
+				barraVida1.setValues(listNumber);
+
+				flag=true;
+			}
 			FinalBattle();
 			col.add(CreateButtonSpecial());
 			col.add(CreateButtonBasic());
@@ -805,6 +814,9 @@ public class Mision extends ContentPane{
 				colwin.add(msg);
 				msg = new Label("+3 Ptos.!  + 70 Vida.! + 90 Psinergia.!");
 				colwin.add(msg);
+			}
+			else{
+				personaje.setXp(aux);
 			}
 			session.update(personaje);
 		    
