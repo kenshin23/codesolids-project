@@ -195,8 +195,6 @@ public class EditarDatos extends WindowPane{
 			pa.setUsuario(usuario);
 			
 			this.userClose();
-			removeAll();
-			add(new MapaDesktop());
 			
 		}
 		finally
@@ -216,9 +214,6 @@ public class EditarDatos extends WindowPane{
 	
 	private void btnCancelarClicked() {
 		this.userClose();
-		removeAll();
-		add(new MapaDesktop());
-		
 	}
 	
 	private boolean validateCampo()
@@ -239,16 +234,14 @@ public class EditarDatos extends WindowPane{
 	}
 	
 	public boolean isEmail(String input) {
+    
+		Pattern pat = Pattern.compile("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*.)*([a-zA-Z].)+([a-zA-Z]{2,3}))$");
+		Matcher mat = pat.matcher(input);
 		
-		Pattern pat = null;
-		Matcher mat = null;        
-		pat = Pattern.compile("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$");
-		mat = pat.matcher(input);
-		if (mat.find()) {
+		if (mat.find())
 			return true;
-		}else{
-			return false;
-		}        
+		else
+			return false;    
 	}
 	
 	private boolean isPassEquals()
