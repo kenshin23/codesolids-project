@@ -46,7 +46,7 @@ import echopoint.layout.HtmlLayoutData;
  */
 
 @SuppressWarnings("serial")
-public class PerfilDesktop extends ContentPane{
+public class Perfil extends ContentPane{
 	private Usuario usuario;
 	private Personaje personaje;
 	private Label lblData;
@@ -55,7 +55,7 @@ public class PerfilDesktop extends ContentPane{
 	
 	private HtmlLayout htmlLayout;
 	
-	public PerfilDesktop() {
+	public Perfil() {
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
 		usuario = app.getUsuario();
 		personaje = app.getPersonaje();
@@ -269,20 +269,6 @@ public class PerfilDesktop extends ContentPane{
 		panel.add(rowTab);
 		
 		return panel;
-	}
-	
-	private void createListItems( List<Object> listQuery, Column col){
-		Iterator<Object> iter = listQuery.iterator();
-  	    if (!iter.hasNext()) {
-  	    	lblData = new Label("Aun no tiene items");
-			col.add(lblData); 
-  	    	return;
-  	    }
-  	    while (iter.hasNext()) {  
-  	    	PersonajeItem p = (PersonajeItem) iter.next();
-  	    	lblData = new Label(p.getItemRef().getName());
-			col.add(lblData);  	            
-  	    }  	    
 	}
 	
 	private void buttonExitClicked(ActionEvent e) {

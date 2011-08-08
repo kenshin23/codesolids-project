@@ -37,6 +37,7 @@ import codesolids.gui.style.Styles1;
 * 
 */
 
+@SuppressWarnings("serial")
 public class Registro extends WindowPane{
 	
 	private TextField fieldLogin;

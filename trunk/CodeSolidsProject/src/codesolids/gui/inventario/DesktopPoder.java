@@ -29,7 +29,7 @@ import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.PersonajePoderes;
 import codesolids.bd.clases.Poderes;
 import codesolids.bd.hibernate.SessionHibernate;
-import codesolids.gui.perfil.PerfilDesktop;
+import codesolids.gui.perfil.Perfil;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
 import codesolids.util.ImageReferenceCache;
@@ -716,7 +716,7 @@ public class DesktopPoder extends ContentPane{
 	
 	private void btnExitClicked() {
 		removeAll();
-		add(new PerfilDesktop());
+		add(new Perfil());
 	}
 	
 }
