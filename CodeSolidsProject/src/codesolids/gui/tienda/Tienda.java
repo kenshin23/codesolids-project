@@ -96,20 +96,12 @@ public class Tienda extends ContentPane {
 	WindowPane window;
 
 	private List<Item> listItem;
-	private int indexTab = 0;
 	
 	Button btnBuild5 = new Button();
 	Button btnBuild1 = new Button();
     Button btnBuild2 = new Button();
     Button btnBuild3 = new Button();
     Button btnBuild4 = new Button();
-
-	
-	private String[] imagePath = new String[]{
-			"Images/Fondos/cartel.png","Images/Items/armor.png","Images/Items/sword.png","Images/Items/stone1.png",
-			"Images/Items/potion1.png","Images/Items/stone2.png","Images/Items/armor2.png","Images/Items/potion2.png",
-			"Images/Items/potion1.png","Images/Items/stone3.png","Images/Items/sword2.png","Images/Items/bomb.png",
-			"Images/Items/bomb2.png","Images/Items/bomb3.png","Images/Items/potion2.png","Images/Items/potion1.png"};
 	
 	public Tienda() {
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
@@ -129,8 +121,7 @@ public class Tienda extends ContentPane {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}		
-//		ResourceImageReference ir = new ResourceImageReference("Images/Items/tienda.jpg");
-//		htmlLayout.setBackgroundImage(ir);
+
 		ImageReference w = ImageReferenceCache.getInstance().getImageReference("Images/Items/pergamino.png");
 		
 		ImageReference image = w;
@@ -958,9 +949,7 @@ public class Tienda extends ContentPane {
 	        				  Receta rec = (Receta) tableDtaModelBuild.getElementAt(row);
 	        				  Item itemCrear=rec.getItemCrear();
 	        				  
-	        				  personaje = (Personaje) session.load(Personaje.class, personaje.getId());
-	    
-	      				  
+	        				  personaje = (Personaje) session.load(Personaje.class, personaje.getId());	      				  
 	        				  
 	        				  personajeItem = new PersonajeItem();
 	        				  personajeItem.setPersonajeRef(personaje);
@@ -972,9 +961,7 @@ public class Tienda extends ContentPane {
 	        				  personaje.getPersonajeItemList().add(personajeItem);
 	        				  itemBD.getPersonajeItemList().add(personajeItem);	        				  
 	        				  
-        					  
-	        				  
-	        				  
+        				
 	        				  Item itemElim = rec.getReagent();
 	        				  
 	        				  List<PersonajeItem> list = session.createCriteria(PersonajeItem.class).addOrder(Order.asc("id")).list();
@@ -1154,11 +1141,8 @@ public class Tienda extends ContentPane {
 	private Column initFoot() {		
 		
 		Panel panel = new Panel();
-		ImageReferenceCache irc = ImageReferenceCache.getInstance();
-	    ImageReference ir = irc.getImageReference(imagePath[0]);
 
-//		ImageReference imgR = new ResourceImageReference("Images/Fondos/cartel.png");
-		FillImage imgF = new FillImage(ir);
+		FillImage imgF = new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Fondos/cartel.png"));
 		
 		panel.setWidth(new Extent(505));
 		panel.setHeight(new Extent(152));
@@ -1413,7 +1397,7 @@ public class Tienda extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Pocion")).addOrder(Order.asc("id"));
+		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Pocion")).add(Restrictions.eq("tipo", "Medicina")).addOrder(Order.asc("id"));
 		
 		for (Object obj : criteria.list()) {
 			tableDtaModel.add(obj);
