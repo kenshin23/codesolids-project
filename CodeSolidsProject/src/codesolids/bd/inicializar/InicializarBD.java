@@ -186,7 +186,7 @@ class ItemsBD{
 	public void createList(){
 		
 		AsignarDatos(1, 1, "Armadura", 1500, 20, "Armadura", "Armadura Básica",false,"Images/Items/armor.png", true);
-		AsignarDatos(2, 1, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png", true);
+		AsignarDatos(2, 1, "Daga", 300, 10, "Espada", "Puñal pequeño",false,"Images/Items/daga.png", true);
 		
 		AsignarDatos(3, 2, "Piedra Blanca", 1000, 10, "Piedra", "Piedra mágica de color Blanco",false,"Images/Items/stone1.png", true);
 		AsignarDatos(4, 2, "Medicina Basica", 800, 20, "Medicina", "Medicina  básica para aumentar la vida",false,"Images/Items/potion1.png", true);
@@ -194,6 +194,7 @@ class ItemsBD{
 		AsignarDatos(5, 3, "Piedra Negra", 2500, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png", true);
 		AsignarDatos(6, 3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png", true);
 		AsignarDatos(7, 3, "Bomba", 500, 20, "Bomba", "Bomba común",false,"Images/Items/bomb3.png", true);
+		AsignarDatos(17, 3, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png", true);
 		
 		AsignarDatos(8, 4, "Energia Media", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png", true);
 		AsignarDatos(9, 4, "Medicina Media", 1800, 40, "Medicina", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png", true);
