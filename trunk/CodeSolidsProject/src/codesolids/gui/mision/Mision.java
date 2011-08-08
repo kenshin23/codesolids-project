@@ -134,7 +134,7 @@ public class Mision extends ContentPane{
 		list = query.list();
 		itA = 0;
 		if(list.size()>0)
-			itA = (float) list.get(0).getItemRef().getIndex()/100;
+			itA = (float) (list.get(0).getItemRef().getIndex()/100) + personaje.getDefensa();
 		session.getTransaction().commit();			  	        
 		session.close();
 		
@@ -693,7 +693,7 @@ public class Mision extends ContentPane{
 		Label magob = new Label(mB);
 
 		Row rowM = new Row();
-		rowM.setInsets(new Insets(0,35,0,0));
+		rowM.setInsets(new Insets(0,40,0,0));
 		rowM.setCellSpacing(new Extent(200, Extent.PX));
 		rowM.add(magoa);
 		rowM.add(magob);
