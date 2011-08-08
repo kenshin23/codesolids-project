@@ -902,16 +902,10 @@ public class TiendaDesktop extends ContentPane {
 	
 	    return nestedCellRenderer;
 	}
-	
-	
-	
+
 	
 	//**********************************************************************************************************************************
-	
-	
-	
-	
-	
+
 	private CellRenderer initNestedCellRendererBuild() {
 		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
 		nestedCellRenderer.setBackground(new Color(226,211,161));
@@ -936,9 +930,6 @@ public class TiendaDesktop extends ContentPane {
 	          return ret;
 	        }
 	    });
-		
-		
-		
 		
 		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
 			@Override
@@ -1019,12 +1010,8 @@ public class TiendaDesktop extends ContentPane {
 	        }
 	    });
 	
-		
-		
-		
 	    return nestedCellRenderer;
 	}
-	
 	
 	private void eliminarPiedra(int cantidad, String nombre){
 		
@@ -1053,8 +1040,6 @@ public class TiendaDesktop extends ContentPane {
 	
 	private boolean consultBDBuild(Item item,int r,int b, int n){
 		
-		
-		
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
@@ -1079,10 +1064,7 @@ public class TiendaDesktop extends ContentPane {
 		session.close();
 		 return false;
 	}
-	
-	
-	
-	
+
 	private void cantPiedras(){
 		
 		cantR=0;
@@ -1116,13 +1098,9 @@ public class TiendaDesktop extends ContentPane {
 		session.close();
 	}
 	
-	
-	
 	//**********************************************************************************************************************************
 	
-	
-	
-	
+
 	private void btnVerClicked(int row, int t) 
 	{
 		Session session = SessionHibernate.getInstance().getSession();
@@ -1544,10 +1522,7 @@ public class TiendaDesktop extends ContentPane {
 		
 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
-		
-		
-		
-		
+
 		Button returnButton = new Button();
 		returnButton.setText("Salir");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
@@ -1661,9 +1636,6 @@ public class TiendaDesktop extends ContentPane {
 		tableDtaModelPlayer.add(item);
 	}
 	
-	
-	
-	
 	private void loadRecipes()
 	{
 		
@@ -1681,15 +1653,5 @@ public class TiendaDesktop extends ContentPane {
 		session.getTransaction().commit();
 		session.close();		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }
