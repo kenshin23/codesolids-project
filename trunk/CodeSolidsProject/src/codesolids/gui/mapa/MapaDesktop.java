@@ -46,7 +46,7 @@ import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.principal.PrincipalDesktop;
 import codesolids.gui.ranking.Ranking;
 import codesolids.gui.style.Styles1;
-import codesolids.gui.tienda.TiendaDesktop;
+import codesolids.gui.tienda.Tienda;
 import codesolids.util.ImageReferenceCache;
 import codesolids.util.MessageBox;
 import echopoint.HtmlLayout;
@@ -318,7 +318,7 @@ public class MapaDesktop extends ContentPane {
 
 	 private void tiendaBtnClicked(ActionEvent e) {
 		 removeAll();
-		 add(new TiendaDesktop());
+		 add(new Tienda());
 	 }
 
 	 private void academiaBtnClicked() {
