@@ -66,7 +66,7 @@ import echopoint.layout.HtmlLayoutData;
  */
 
 @SuppressWarnings("serial")
-public class TiendaDesktop extends ContentPane {
+public class Tienda extends ContentPane {
 	
 	private Usuario usuario;
 	private Personaje personaje;
@@ -111,7 +111,7 @@ public class TiendaDesktop extends ContentPane {
 			"Images/Items/potion1.png","Images/Items/stone3.png","Images/Items/sword2.png","Images/Items/bomb.png",
 			"Images/Items/bomb2.png","Images/Items/bomb3.png","Images/Items/potion2.png","Images/Items/potion1.png"};
 	
-	public TiendaDesktop() {
+	public Tienda() {
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
 		usuario = app.getUsuario();
 		personaje = app.getPersonaje();
