@@ -31,7 +31,7 @@ import codesolids.bd.clases.Item;
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.PersonajeItem;
 import codesolids.bd.hibernate.SessionHibernate;
-import codesolids.gui.perfil.PerfilDesktop;
+import codesolids.gui.perfil.Perfil;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
@@ -898,6 +898,6 @@ public class DesktopItem extends ContentPane {
 	
 	private void btnExitClicked() {
 		removeAll();
-		add(new PerfilDesktop());
+		add(new Perfil());
 	}
 }

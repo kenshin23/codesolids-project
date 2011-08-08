@@ -41,7 +41,7 @@ import codesolids.gui.arena.PreArena;
 import codesolids.gui.chat.ChatGui;
 import codesolids.gui.editar.EditarDatos;
 import codesolids.gui.mision.Mision;
-import codesolids.gui.perfil.PerfilDesktop;
+import codesolids.gui.perfil.Perfil;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.principal.PrincipalDesktop;
 import codesolids.gui.ranking.Ranking;
@@ -303,7 +303,7 @@ public class MapaDesktop extends ContentPane {
 
 	 private void perfilBtnClicked(ActionEvent e) {
 		 removeAll();
-		 add(new PerfilDesktop());
+		 add(new Perfil());
 	 }
 
 	 private void rankingBtnClicked(ActionEvent e) {
