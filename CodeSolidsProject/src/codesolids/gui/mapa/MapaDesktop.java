@@ -430,6 +430,14 @@ public class MapaDesktop extends ContentPane {
 		lbl.setText(usuario.getLogin());
 		col.add(lbl);
 		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		session.getTransaction().commit();
+		session.close();
+		
 		Row row = new Row();
 		row.setCellSpacing(new Extent(50));
 		
@@ -467,7 +475,7 @@ public class MapaDesktop extends ContentPane {
 		lbl.setText("XP");		
 		row.add(lbl);
 		
-		Session session = SessionHibernate.getInstance().getSession();
+		session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
 		Nivel nivelExp = (Nivel) session.load(Nivel.class, (personaje.getLevel() +1));
