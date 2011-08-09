@@ -24,6 +24,7 @@ import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -205,8 +206,10 @@ public class AcademiaDesktop extends ContentPane {
 				session = SessionHibernate.getInstance().getSession();
 				session.beginTransaction();
 
-				String queryStr = "SELECT pp FROM Personaje AS pe, PersonajePoderes AS pp WHERE pe.id = pp.personajeRef AND pe.learning = pp.learnProgreso";
-				personajePoderes = (PersonajePoderes) session.createQuery(queryStr).uniqueResult();
+				String queryStr = "FROM PersonajePoderes WHERE personajeref_id = :idPlayer AND learnprogreso = true";
+				Query query  = session.createQuery(queryStr);
+				query.setInteger("idPlayer", player.getId());personajePoderes = (PersonajePoderes) session.createQuery(queryStr).uniqueResult();
+				personajePoderes = (PersonajePoderes) query.uniqueResult();
 				
 				personajePoderes.setLearnProgreso(false);
 
@@ -240,12 +243,14 @@ public class AcademiaDesktop extends ContentPane {
 				session = SessionHibernate.getInstance().getSession();
 				session.beginTransaction();
 
-				String queryStr = "SELECT po FROM Personaje AS pe, PersonajePoderes AS pp, Poderes AS po WHERE pe.id = pp.personajeRef AND pp.poderesRef = po.id AND pe.learning = pp.learnProgreso";
-				poderBD = (Poderes) session.createQuery(queryStr).uniqueResult();
+				String queryStr = "SELECT po FROM PersonajePoderes AS pp, Poderes AS po WHERE personajeref_id = :idPlayer AND pp.poderesRef = po.id AND learnprogreso = true";
+				Query query  = session.createQuery(queryStr);
+				query.setInteger("idPlayer", player.getId());
+				poderBD = (Poderes) query.uniqueResult();
 
 				session.getTransaction().commit();
 				session.close();
-
+				
 				fraccionBar = (1000.0/(poderBD.getTimeTraining()*3600.0));
 				
 				long timeEntrenado = ((poderBD.getTimeTraining()*3600) - ((horas*3600) + (minutos*60) + (segundos))); 
@@ -830,8 +835,10 @@ public class AcademiaDesktop extends ContentPane {
 	    	        				  session = SessionHibernate.getInstance().getSession();
 	    	        				  session.beginTransaction();
 
-	    	        				  String queryStr = "SELECT po FROM Personaje AS pe, PersonajePoderes AS pp, Poderes AS po WHERE pe.id = pp.personajeRef AND pp.poderesRef = po.id AND pe.learning = pp.learnProgreso";
-	    	        				  poderBD = (Poderes) session.createQuery(queryStr).uniqueResult();
+	    	        				  String queryStr = "SELECT po FROM PersonajePoderes AS pp, Poderes AS po WHERE personajeref_id = :idPlayer AND pp.poderesRef = po.id AND learnprogreso = true";
+	    	        				  Query query  = session.createQuery(queryStr);
+	    	        				  query.setInteger("idPlayer", player.getId());
+	    	        				  poderBD = (Poderes) query.uniqueResult();
 	    	        				 
 	    	        				  session.getTransaction().commit();
 	    	        				  session.close();
@@ -895,9 +902,11 @@ public class AcademiaDesktop extends ContentPane {
 	    	        				  session = SessionHibernate.getInstance().getSession();
 	    	        				  session.beginTransaction();
 
-	    	        				  String queryStr = "SELECT po FROM Personaje AS pe, PersonajePoderes AS pp, Poderes AS po WHERE pe.id = pp.personajeRef AND pp.poderesRef = po.id AND pe.learning = pp.learnProgreso";
-	    	        				  poderBD = (Poderes) session.createQuery(queryStr).uniqueResult();
-	    	        				 
+	    	        				  String queryStr = "SELECT po FROM PersonajePoderes AS pp, Poderes AS po WHERE personajeref_id = :idPlayer AND pp.poderesRef = po.id AND learnprogreso = true";
+	    	        				  Query query  = session.createQuery(queryStr);
+	    	        				  query.setInteger("idPlayer", player.getId());
+	    	        				  poderBD = (Poderes) query.uniqueResult();	    	        				 
+	    	        				  
 	    	        				  session.getTransaction().commit();
 	    	        				  session.close();
 	    	        				  
@@ -962,8 +971,10 @@ public class AcademiaDesktop extends ContentPane {
 						  Session session = SessionHibernate.getInstance().getSession();
 						  session.beginTransaction();
 
-						  String queryStr = "SELECT pp FROM Personaje AS pe, PersonajePoderes AS pp WHERE pe.id = pp.personajeRef AND pe.learning = pp.learnProgreso";
-						  personajePoderes = (PersonajePoderes) session.createQuery(queryStr).uniqueResult();
+							String queryStr = "FROM PersonajePoderes WHERE personajeref_id = :idPlayer AND learnprogreso = true";
+							Query query  = session.createQuery(queryStr);
+							query.setInteger("idPlayer", player.getId());personajePoderes = (PersonajePoderes) session.createQuery(queryStr).uniqueResult();
+							personajePoderes = (PersonajePoderes) query.uniqueResult();
 
 						  personajePoderes.setLearnProgreso(false);
 

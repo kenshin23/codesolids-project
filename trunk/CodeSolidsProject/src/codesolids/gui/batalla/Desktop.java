@@ -2,6 +2,7 @@ package codesolids.gui.batalla;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
@@ -14,6 +15,7 @@ import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Font;
+import nextapp.echo.app.Grid;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
@@ -25,6 +27,7 @@ import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.ColumnLayoutData;
+import nextapp.echo.app.layout.GridLayoutData;
 import nextapp.echo.extras.app.ToolTipContainer;
 
 import org.hibernate.Criteria;
@@ -36,6 +39,7 @@ import org.informagen.echo.app.CapacityBar;
 
 import codesolids.bd.clases.Batalla;
 import codesolids.bd.clases.ChatBatalla;
+import codesolids.bd.clases.Item;
 import codesolids.bd.clases.Nivel;
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.clases.PersonajeItem;
@@ -104,6 +108,8 @@ public class Desktop extends ContentPane{
 	
 	private Batalla battle;
 	private Nivel nivelExp;
+	
+	private WindowPane ventanaItem;
 	
 	private List<Number> listCooldown;
 	
@@ -718,6 +724,42 @@ public class Desktop extends ContentPane{
 		return colBtn;
 	}
 
+	private Column toolTipPower(Poderes poder)
+	{
+		
+		Column col = new Column();
+		col.setBorder(new Border(3, Color.BLACK, Border.STYLE_RIDGE));
+		col.setCellSpacing(new Extent(10));
+		col.setInsets(new Insets(5, 5, 5, 5));
+		col.setBackground(new Color(226,211,161));
+		
+		Label lbl = new Label();
+
+	    ColumnLayoutData cld;
+	    cld = new ColumnLayoutData();
+	    cld.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    lbl.setLayoutData(cld);
+		lbl.setText(poder.getName());
+		col.add(lbl);
+		
+		lbl = new Label();
+		lbl.setForeground(Color.RED);
+		lbl.setText("Daño: " + poder.getDamage());
+		col.add(lbl);
+		
+		lbl = new Label();
+		lbl.setForeground(Color.BLUE);
+		lbl.setText("Psinergia: " + poder.getPsinergia());
+		col.add(lbl);
+		
+		lbl = new Label();
+		lbl.setForeground(Color.ORANGE);
+		lbl.setText("Cooldown: " + poder.getCooldown());
+		col.add(lbl);
+		
+		return col;
+	}
+	
 	private void timeTurno()
 	{
 		if( ( Integer.parseInt(lblSec.getText()) - 1 ) == 0 )
@@ -745,7 +787,8 @@ public class Desktop extends ContentPane{
 
 			lblSec.setText("21");
 			lblSec.setForeground(Color.GREEN);
-
+			
+			ventanaItem.userClose();
 		}
 		else if( Integer.parseInt(lblSec.getText()) < 7 )
 		{
@@ -801,8 +844,7 @@ public class Desktop extends ContentPane{
 	}
 	
 	private void btnAttackClicked(Poderes poder, int posicion) 
-	{
-		
+	{	
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 	
@@ -811,19 +853,21 @@ public class Desktop extends ContentPane{
 		Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.eq("equipado", true));
 		List<PersonajeItem> listItem = criteria.list();		
 		
-		//Defensa Oponente
-		int defensa = 0;
+		//Defensa Armadura
+		int defensaArmadura = 0;
 		
 		for( int i = 0; i < listItem.size(); i++ )
 		{
 			if( listItem.get(i).getItemRef().getTipo().equals("Armadura") && (listItem.get(i).getPersonajeRef().getId() == jugadorOponente.getId()) )
 			{
-				defensa = listItem.get(i).getItemRef().getIndex();
+				defensaArmadura = listItem.get(i).getItemRef().getIndex();
 			}
 		}
 
 		//Ataque Especial
-		int damage = (int) (poder.getDamage() + poder.getDamage()*jugador.getAtaqueEspecial() - (jugadorOponente.getDefensa() + defensa));
+		int damagePoder = (int) ( poder.getDamage() + poder.getDamage()*jugador.getAtaqueEspecial() );
+		int defensaOponente = ( jugadorOponente.getDefensa() + defensaArmadura );
+		int damage = (int) ( damagePoder - ((damagePoder*defensaOponente)/100) );
 
 		if( jugador.getId() == battle.getJugadorCreadorRef().getId() )
 		{
@@ -929,8 +973,8 @@ public class Desktop extends ContentPane{
 		
 		//Daño del Arma si tiene equipado
 		int danoArma = 0;
-		//Defensa Oponente
-		int defensa = 0;
+		//Defensa Armadura
+		int defensaArmadura = 0;
 		//Ataque Basico
 		int damage = 0;
 		
@@ -944,19 +988,21 @@ public class Desktop extends ContentPane{
 				flagArma = true;
 			}
 			if( listItem.get(i).getItemRef().getTipo().equals("Armadura") && (listItem.get(i).getPersonajeRef().getId() == jugadorOponente.getId()) )
-			{
-				defensa = listItem.get(i).getItemRef().getIndex();
-			}
+				defensaArmadura = listItem.get(i).getItemRef().getIndex();
 		}
 		
 		if( flagArma )
 		{
-			damage = (int) (danoArma + danoArma*jugador.getAtaqueBasico() - (jugadorOponente.getDefensa() + defensa));
+			danoArma = (int) ( danoArma + danoArma*jugador.getAtaqueBasico() );
+			int defensaOponente = ( jugadorOponente.getDefensa() + defensaArmadura );
+			damage = (int) ( danoArma - ((danoArma*defensaOponente)/100) );
 		}
 		else
 		{
 			//Yo le doy 20 por defecto, discutir esto!
-			damage = (int) (20 + 20*jugador.getAtaqueBasico() - (jugadorOponente.getDefensa() + defensa));
+			danoArma = (int) ( 20 + 20*jugador.getAtaqueBasico() );
+			int defensaOponente = ( jugadorOponente.getDefensa() + defensaArmadura );
+			damage = (int) ( danoArma - ((danoArma*defensaOponente)/100) );
 		}
 		
 		if( jugador.getId() == battle.getJugadorCreadorRef().getId() )
@@ -1159,12 +1205,376 @@ public class Desktop extends ContentPane{
 	
 	private void btnItemClicked() 
 	{
-		WindowPane ventanaItem = new WindowPane();
+		ventanaItem = new WindowPane();
+		ventanaItem.setTitle("Items");
+		ventanaItem.setStyle(StyleWindow.DEFAULT_STYLE);
+		ventanaItem.setWidth(new Extent(380));
+		ventanaItem.setHeight(new Extent(170));
+		ventanaItem.setMovable(false);
+		ventanaItem.setModal(true);
+		ventanaItem.setMaximumWidth(new Extent(380));
+		ventanaItem.setMinimumHeight(new Extent(170));
+		ventanaItem.setResizable(false);
+		
+		ventanaItem.add(rowItems());
 		
 		add(ventanaItem);
 	}
 	
-	private Column toolTipPower(Poderes poder)
+	private Column rowItems()
+	{		
+		Grid grid = new Grid(5);
+		
+		GridLayoutData gld;
+		gld = new GridLayoutData();
+		gld.setAlignment(Alignment.ALIGN_LEFT);
+		grid.setLayoutData(gld);
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		jugador = (Personaje) session.load(Personaje.class, jugador.getId());
+		
+		String queryStr = "SELECT new Map(count(*) AS cantidad, it AS item) FROM PersonajeItem AS pi, Item AS it WHERE pi.itemRef = it.id AND personajeref_id = :idPlayer AND pi.equipado = true AND (it.tipo = :tipoIt1 OR it.tipo = :tipoIt2 OR it.tipo = :tipoIt3) GROUP BY it.id ORDER BY it.id";
+		Query query = session.createQuery(queryStr);
+		query.setInteger("idPlayer", jugador.getId());
+		query.setString("tipoIt1", "Pocion");
+		query.setString("tipoIt2", "Medicina");
+		query.setString("tipoIt3", "Bomba");
+		List<Map> listItems = query.list();
+		
+		for( int i = 0; i < listItems.size(); i++ )
+		{
+			Map mapa = listItems.get(i);
+			
+			Item item = new Item();
+			item = (Item) mapa.get("item");
+			
+			Row row = new Row();
+			row.setCellSpacing(new Extent(2));
+			row.setInsets(new Insets(10, 10, 10, 10));
+			
+			row.add(createBoton(item));
+			row.add(new Label("x" + Integer.parseInt(mapa.get("cantidad").toString()) ));
+			grid.add(row);
+		}
+		
+		session.getTransaction().commit();
+		session.close();
+		
+		Column col = new Column();
+		col.setInsets(new Insets(5, 5, 5, 5));
+		col.add(grid);
+		
+		return col;
+	}
+	
+	private Column createBoton(final Item item)
+	{
+		
+		Button btnItem = new Button();
+		btnItem.setIcon(ImageReferenceCache.getInstance().getImageReference(item.getDirImage()));
+		
+		btnItem.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent evt) {
+				btnItemClicked(item);
+			}
+		});
+		
+		ToolTipContainer toolTip = new ToolTipContainer();
+		toolTip.add(btnItem);			
+		toolTip.add(toolTipItem(item));
+		
+		Column col = new Column();
+		col.add(toolTip);
+		
+		return col;	
+	}
+	
+	private void btnItemClicked(Item item) {
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		jugador = (Personaje) session.load(Personaje.class, jugador.getId());
+		
+		battle = (Batalla) session.load(Batalla.class, battle.getId());
+		
+		if( jugador.getId() == battle.getJugadorCreadorRef().getId() )
+		{
+			if( item.getTipo().equals("Medicina") )
+			{
+				int porcentaje = ( (jugador.getHp()*item.getIndex())/100 );
+
+				if( battle.getVidaCreador() + porcentaje >= jugador.getHp() )
+				{
+					labelHp.setText(jugador.getHp() + "/" + jugador.getHp());	
+					
+					listNumber = new ArrayList<Number>();
+					listNumber.add(150);
+					listNumber.add(0);
+					
+					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+					
+					barraVida1.setValues(listNumber);
+					battle.setVidaCreador(jugador.getHp());
+				}
+				else
+				{
+					listNumber = new ArrayList<Number>();
+					listNumber.add( battle.getVidaCreador() + porcentaje );
+					listNumber.add( jugador.getHp() - (battle.getVidaCreador() + porcentaje) );
+					barraVida1.setValues(listNumber);
+					
+					labelHp.setText(jugador.getMp() + "/" + barraVida1.getValues().get(0).intValue());
+
+					battle.setVidaCreador(battle.getVidaCreador() + porcentaje);
+					battle.setTurno("Retador");
+
+					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));					
+				}				
+			}
+			else if( item.getTipo().equals("Pocion") )
+			{
+				int porcentaje = ( (jugador.getMp()*item.getIndex())/100 );
+				
+				if( battle.getPsinergiaCreador() + porcentaje >= jugador.getMp() )
+				{
+					labelCp.setText(jugador.getMp() + "/" + jugador.getMp());	
+					
+					listNumber = new ArrayList<Number>();
+					listNumber.add(150);
+					listNumber.add(0);
+					
+					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+					
+					barraPsinergia.setValues(listNumber);
+					battle.setPsinergiaCreador(jugador.getMp());					
+				}
+				else
+				{
+					listNumber = new ArrayList<Number>();
+					listNumber.add( battle.getPsinergiaCreador() + porcentaje );
+					listNumber.add( jugador.getMp() - (battle.getPsinergiaCreador() + porcentaje) );
+					barraPsinergia.setValues(listNumber);
+					
+					labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+					battle.setPsinergiaCreador(battle.getPsinergiaCreador() + porcentaje);	
+					
+					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+				}
+			}
+			else if( item.getTipo().equals("Bomba") )
+			{
+				Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.eq("equipado", true));
+				List<PersonajeItem> listItem = criteria.list();		
+				
+				//Defensa Oponente
+				int defensa = 0;		
+				for( int i = 0; i < listItem.size(); i++ )
+				{
+					if( listItem.get(i).getItemRef().getTipo().equals("Armadura") && (listItem.get(i).getPersonajeRef().getId() == jugadorOponente.getId()) )
+						defensa = listItem.get(i).getItemRef().getIndex();
+				}
+				
+				int damage =  item.getIndex() - ( (item.getIndex()*defensa)/100 );
+				
+				if( battle.getVidaRetador() - damage <= 0 )
+				{
+					listNumber = new ArrayList<Number>();
+					listNumber.add(0);
+					listNumber.add(150);
+					barraVida2.setValues(listNumber);
+
+					criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+					
+					battle.setVidaRetador(0);
+					battle.setTurno("Retador");
+					lblSec.setText("21");
+					
+					finalBattle();
+				}
+				else
+				{	
+					listNumber = new ArrayList<Number>();
+					listNumber.add(battle.getVidaRetador() - damage); 
+					listNumber.add(jugadorOponente.getHp() - (battle.getVidaRetador() - damage) );
+
+					barraVida2.setValues(listNumber);
+					battle.setVidaRetador(battle.getVidaRetador() - damage);
+					
+					criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+				}
+			}
+			
+			battle.setTurno("Retador");
+			lblSec.setText("21");
+			
+		}
+		else if( jugador.getId() == battle.getJugadorRetadorRef().getId() )
+		{
+			if( item.getTipo().equals("Medicina") )
+			{
+				int porcentaje = ( (jugador.getHp()*item.getIndex())/100 );
+
+				if( battle.getVidaRetador() + porcentaje >= jugador.getHp() )
+				{
+					labelHp.setText(jugador.getHp() + "/" + jugador.getHp());	
+					
+					listNumber = new ArrayList<Number>();
+					listNumber.add(150);
+					listNumber.add(0);
+					
+					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+					
+					barraVida1.setValues(listNumber);
+					battle.setVidaRetador(jugador.getHp());
+				}
+				else
+				{
+					listNumber = new ArrayList<Number>();
+					listNumber.add( battle.getVidaRetador() + porcentaje );
+					listNumber.add( jugador.getHp() - (battle.getVidaRetador() + porcentaje) );
+					barraVida1.setValues(listNumber);
+					
+					labelHp.setText(jugador.getMp() + "/" + barraVida1.getValues().get(0).intValue());
+
+					battle.setVidaRetador(battle.getVidaRetador() + porcentaje);
+					battle.setTurno("Creador");
+
+					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));					
+				}				
+			}
+			else if( item.getTipo().equals("Pocion") )
+			{
+				int porcentaje = ( (jugador.getMp()*item.getIndex())/100 );
+				
+				if( battle.getPsinergiaRetador() + porcentaje >= jugador.getMp() )
+				{
+					labelCp.setText(jugador.getMp() + "/" + jugador.getMp());	
+					
+					listNumber = new ArrayList<Number>();
+					listNumber.add(150);
+					listNumber.add(0);
+					
+					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+					
+					barraPsinergia.setValues(listNumber);
+					battle.setPsinergiaRetador(jugador.getMp());					
+				}
+				else
+				{
+					listNumber = new ArrayList<Number>();
+					listNumber.add( battle.getPsinergiaRetador() + porcentaje );
+					listNumber.add( jugador.getMp() - (battle.getPsinergiaRetador() + porcentaje) );
+					barraPsinergia.setValues(listNumber);
+					
+					labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+					battle.setPsinergiaRetador(battle.getPsinergiaRetador() + porcentaje);	
+					
+					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+				}
+			}
+			else if( item.getTipo().equals("Bomba") )
+			{
+				Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.eq("equipado", true));
+				List<PersonajeItem> listItem = criteria.list();		
+				
+				//Defensa Oponente
+				int defensa = 0;		
+				for( int i = 0; i < listItem.size(); i++ )
+				{
+					if( listItem.get(i).getItemRef().getTipo().equals("Armadura") && (listItem.get(i).getPersonajeRef().getId() == jugadorOponente.getId()) )
+						defensa = listItem.get(i).getItemRef().getIndex();
+				}
+				
+				int damage =  item.getIndex() - ( (item.getIndex()*defensa)/100 );
+				
+				if( battle.getVidaCreador() - damage <= 0 )
+				{
+					listNumber = new ArrayList<Number>();
+					listNumber.add(0);
+					listNumber.add(150);
+					barraVida2.setValues(listNumber);
+
+					criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+					
+					battle.setVidaCreador(0);
+					battle.setTurno("Creador");
+					lblSec.setText("21");
+					
+					finalBattle();
+				}
+				else
+				{	
+					listNumber = new ArrayList<Number>();
+					listNumber.add(battle.getVidaCreador() - damage); 
+					listNumber.add(jugadorOponente.getHp() - (battle.getVidaCreador() - damage) );
+
+					barraVida2.setValues(listNumber);
+					battle.setVidaCreador(battle.getVidaCreador() - damage);
+					
+					criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
+					List<PersonajeItem> pItem = criteria.list();
+					
+					session.delete(pItem.get(0));
+				}
+			}
+			
+			battle.setTurno("Creador");
+			lblSec.setText("21");
+			
+		}
+		
+		if( battle.getTurno().equals(turno) )
+			battle.setSecuenciaTurno(battle.getSecuenciaTurno() + 1);
+		
+		session.getTransaction().commit();
+		session.close();
+		
+		ventanaItem.userClose();
+		
+		colTimeBotonera.removeAll();
+		colTimeBotonera.add(panelTimeBotonera());
+		colTimeBotonera.setVisible(false);
+		
+	}
+	
+	private Column toolTipItem(Item items)
 	{
 		
 		Column col = new Column();
@@ -1173,25 +1583,36 @@ public class Desktop extends ContentPane{
 		col.setInsets(new Insets(5, 5, 5, 5));
 		col.setBackground(new Color(226,211,161));
 		
+	    ColumnLayoutData cld;
+		
 		Label lbl = new Label();
-		lbl.setTextPosition(Alignment.ALIGN_CENTER);
-		lbl.setText(poder.getName());
+	    cld = new ColumnLayoutData();
+	    cld.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    lbl.setLayoutData(cld);
+		lbl.setText(items.getName());
 		col.add(lbl);
 		
-		lbl = new Label();
-		lbl.setForeground(Color.RED);
-		lbl.setText("Daño: " + poder.getDamage());
-		col.add(lbl);
-		
-		lbl = new Label();
-		lbl.setForeground(Color.BLUE);
-		lbl.setText("Psinergia: " + poder.getPsinergia());
-		col.add(lbl);
-		
-		lbl = new Label();
-		lbl.setForeground(Color.ORANGE);
-		lbl.setText("Cooldown: " + poder.getCooldown());
-		col.add(lbl);
+		if( items.getTipo().equals("Pocion") )
+		{
+			lbl = new Label();
+			lbl.setForeground(Color.BLUE);
+			lbl.setText("Efecto: " + items.getIndex());
+			col.add(lbl);
+		}
+		else if( items.getTipo().equals("Medicina") )
+		{
+			lbl = new Label();
+			lbl.setForeground(Color.BLUE);
+			lbl.setText("Efecto: " + items.getIndex());
+			col.add(lbl);
+		}
+		else if( items.getTipo().equals("Bomba") )
+		{
+			lbl = new Label();
+			lbl.setForeground(Color.RED);
+			lbl.setText("Daño: " + items.getIndex());
+			col.add(lbl);
+		}
 		
 		return col;
 	}
