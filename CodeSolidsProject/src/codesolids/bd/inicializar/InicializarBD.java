@@ -194,22 +194,21 @@ class ItemsBD{
 		AsignarDatos(5, 3, "Piedra Negra", 2500, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png", true);
 		AsignarDatos(6, 3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png", true);
 		AsignarDatos(7, 3, "Bomba", 500, 20, "Bomba", "Bomba común",false,"Images/Items/bomb3.png", true);
-		AsignarDatos(17, 3, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png", true);
+		AsignarDatos(8, 3, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png", true);
 		
-		AsignarDatos(8, 4, "Energia Media", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png", true);
-		AsignarDatos(9, 4, "Medicina Media", 1800, 40, "Medicina", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png", true);
+		AsignarDatos(9, 4, "Energia Media", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png", true);
+		AsignarDatos(10, 4, "Medicina Media", 1800, 40, "Medicina", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png", true);
 		
-		AsignarDatos(10, 5, "Piedra Roja", 3000, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png", true);
-		AsignarDatos(11, 5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png", true);
+		AsignarDatos(11, 5, "Piedra Roja", 3000, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png", true);
+		AsignarDatos(12, 5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png", true);
 		
-		AsignarDatos(12, 6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png", true);
-		AsignarDatos(13, 6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png", true);
+		AsignarDatos(13, 6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png", true);
+		AsignarDatos(14, 6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png", true);
 		
-		AsignarDatos(14, 7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png", true);
-		AsignarDatos(15, 7, "Energia Super", 2500, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png", true);
+		AsignarDatos(15, 7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png", true);
+		AsignarDatos(16, 7, "Energia Super", 2500, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png", true);
 		
-		AsignarDatos(16, 9, "Medicina Super", 3000, 80, "Medicina", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png", true);
-
+		AsignarDatos(17, 9, "Medicina Super", 3000, 80, "Medicina", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png", true);
 	
 	}
 	
