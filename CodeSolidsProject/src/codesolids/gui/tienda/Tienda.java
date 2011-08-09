@@ -1397,16 +1397,12 @@ public class Tienda extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Pocion")).addOrder(Order.asc("id"));
+		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.or(Restrictions.eq("tipo", "Pocion"), Restrictions.eq("tipo", "Medicina"))).addOrder(Order.asc("level"));
 		
 		for (Object obj : criteria.list()) {
 			tableDtaModel.add(obj);
 		}
-		criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Medicina")).addOrder(Order.asc("id"));
-		
-		for (Object obj : criteria.list()) {
-			tableDtaModel.add(obj);
-		}
+
 	    session.getTransaction().commit();
 	    session.close();
 	}

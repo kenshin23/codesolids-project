@@ -17,7 +17,6 @@ import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
 import nextapp.echo.app.Row;
-import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
@@ -33,7 +32,6 @@ import codesolids.bd.clases.PersonajeItem;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.perfil.Perfil;
 import codesolids.gui.principal.PrincipalApp;
-import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
 import codesolids.util.ImageReferenceCache;
 import codesolids.util.MessageBox;
@@ -464,31 +462,37 @@ public class DesktopItem extends ContentPane {
 		{
 			Label lblDamage = new Label();
 			lblDamage.setForeground(Color.RED);
-			lblDamage.setText("Daño " + item.getIndex());
+			lblDamage.setText("Daño: " + item.getIndex());
 			colInfo.add(lblDamage);
 		}
 		else if( item.getTipo().equals("Armadura"))
 		{
 			Label lblDefensa = new Label();
 			lblDefensa.setForeground(Color.GREEN);
-			lblDefensa.setText("Defensa " + item.getIndex());
+			lblDefensa.setText("Defensa: " + item.getIndex());
 			colInfo.add(lblDefensa);
 		}
 		else if( item.getTipo().equals("Bomba") )
 		{
 			Label lblDamage = new Label();
 			lblDamage.setForeground(Color.RED);
-			lblDamage.setText("Daño " + item.getIndex());
+			lblDamage.setText("Daño: " + item.getIndex());
 			colInfo.add(lblDamage);			
 		}
 		else if( item.getTipo().equals("Pocion") )
 		{
 			Label lblEffect = new Label();
 			lblEffect.setForeground(Color.BLUE);
-			lblEffect.setText("Efecto " + item.getIndex());
+			lblEffect.setText("Efecto: " + item.getIndex());
 			colInfo.add(lblEffect);
 		}
-		
+		else if( item.getTipo().equals("Medicina") )
+		{
+			Label lblEffect = new Label();
+			lblEffect.setForeground(Color.BLUE);
+			lblEffect.setText("Efecto: " + item.getIndex());
+			colInfo.add(lblEffect);
+		}
 		row.add(colInfo);
 		
 		col.add(row);
@@ -528,7 +532,7 @@ public class DesktopItem extends ContentPane {
 					btnEquipar.setVisible(false);
 			}	
 		}
-		else if( item.getTipo().equals("Pocion") || item.getTipo().equals("Bomba") )
+		else if( item.getTipo().equals("Pocion") || item.getTipo().equals("Medicina") || item.getTipo().equals("Bomba") )
 		{
 			int countEquip = 0;
 			for( int i = 0; i < pItem.size(); i++ )
@@ -566,11 +570,12 @@ public class DesktopItem extends ContentPane {
 		query.setInteger("idPlayer", personaje.getId());
 		List<PersonajeItem> listEquip = query.list();
 		
-		queryStr = "SELECT pi FROM PersonajeItem AS pi, Item AS it WHERE pi.itemRef = it.id AND personajeref_id = :idPlayer AND pi.equipado = true AND (it.tipo= :tipoIt1 OR it.tipo= :tipoIt2)";
+		queryStr = "SELECT pi FROM PersonajeItem AS pi, Item AS it WHERE pi.itemRef = it.id AND personajeref_id = :idPlayer AND pi.equipado = true AND (it.tipo = :tipoIt1 OR it.tipo = :tipoIt2 OR it.tipo = :tipoIt3)";
 		query  = session.createQuery(queryStr);
 		query.setInteger("idPlayer", personaje.getId());
 		query.setString("tipoIt1", "Pocion");
-		query.setString("tipoIt2", "Bomba");
+		query.setString("tipoIt2", "Medicina");
+		query.setString("tipoIt3", "Bomba");
 		List<PersonajeItem> listCount= query.list();
 		
 		if( item.getTipo().equals("Espada") )
@@ -619,7 +624,7 @@ public class DesktopItem extends ContentPane {
 				createWindow(lblText);
 			}
 		}
-		else if( item.getTipo().equals("Pocion") || item.getTipo().equals("Bomba") )
+		else if( item.getTipo().equals("Pocion") || item.getTipo().equals("Medicina") || item.getTipo().equals("Bomba") )
 		{	
 			int countE = 0;
 			if( listCount.size() < 10 )				
@@ -714,11 +719,12 @@ public class DesktopItem extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		String queryStr = "SELECT pi FROM PersonajeItem AS pi, Item AS it WHERE pi.itemRef = it.id AND personajeref_id = :idPlayer AND pi.equipado = true AND (it.tipo= :tipoIt1 OR it.tipo= :tipoIt2)";				
+		String queryStr = "SELECT pi FROM PersonajeItem AS pi, Item AS it WHERE pi.itemRef = it.id AND personajeref_id = :idPlayer AND pi.equipado = true AND (it.tipo= :tipoIt1 OR it.tipo = :tipoIt2 OR it.tipo= :tipoIt3)";				
 		Query query  = session.createQuery(queryStr);
 		query.setInteger("idPlayer", personaje.getId());
 		query.setString("tipoIt1", "Pocion");
-		query.setString("tipoIt2", "Bomba");
+		query.setString("tipoIt2", "Medicina");
+		query.setString("tipoIt3", "Bomba");
 		List<PersonajeItem> listCount= query.list();
 		
 		session.getTransaction().commit();
@@ -729,7 +735,7 @@ public class DesktopItem extends ContentPane {
 		
 		for( int i = 0; i < listCount.size(); i++ )
 		{
-			if( listCount.get(i).getItemRef().getTipo().equals("Pocion") )
+			if( listCount.get(i).getItemRef().getTipo().equals("Pocion") || listCount.get(i).getItemRef().getTipo().equals("Medicina") )
 				countP++;
 			else if( listCount.get(i).getItemRef().getTipo().equals("Bomba") )
 				countB++;
@@ -804,12 +810,13 @@ public class DesktopItem extends ContentPane {
 			
 			if( tipo.equals("Items") )
 			{
-				String queryStr = "SELECT personajeItemList FROM Item WHERE personajeref_id = :idPlayer AND name= :nameIt AND (tipo= :tipoIt1 OR tipo= :tipoIt2)";				
+				String queryStr = "SELECT personajeItemList FROM Item WHERE personajeref_id = :idPlayer AND name= :nameIt AND (tipo= :tipoIt1 OR tipo = :tipoIt2 OR tipo= :tipoIt3)";				
 				Query query  = session.createQuery(queryStr);
 				query.setInteger("idPlayer", personaje.getId());
 				query.setString("nameIt", item.getName());
 				query.setString("tipoIt1", "Pocion");
-				query.setString("tipoIt2", "Bomba");
+				query.setString("tipoIt2", "Medicina");
+				query.setString("tipoIt3", "Bomba");
 				List<Object> list = query.list();
 					
 				addItemTableType(list,tipo);
@@ -861,6 +868,8 @@ public class DesktopItem extends ContentPane {
 		if( tipo.equals("Items") )
 		{
 			if( item.getTipo().equals("Pocion") )
+				tableDtaModel.add(item);
+			if( item.getTipo().equals("Medicina") )
 				tableDtaModel.add(item);
 			if(  item.getTipo().equals("Bomba") )
 				tableDtaModel.add(item);

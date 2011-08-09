@@ -27,6 +27,7 @@ import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.informagen.echo.app.CapacityBar;
@@ -576,8 +577,11 @@ public class MapaDesktop extends ContentPane {
 				session = SessionHibernate.getInstance().getSession();
 				session.beginTransaction();
 				
-				String queryStr = "SELECT pp FROM Personaje AS pe, PersonajePoderes AS pp WHERE pe.id = pp.personajeRef AND pe.learning = pp.learnProgreso";
-				PersonajePoderes personajePoderes = (PersonajePoderes) session.createQuery(queryStr).uniqueResult();
+				String queryStr = "FROM PersonajePoderes WHERE personajeref_id = :idPlayer AND learnprogreso = true";
+				Query query  = session.createQuery(queryStr);
+				query.setInteger("idPlayer", personaje.getId());
+				
+				PersonajePoderes personajePoderes = (PersonajePoderes) query.uniqueResult();
 				
 				personajePoderes.setLearnProgreso(false);
 				
