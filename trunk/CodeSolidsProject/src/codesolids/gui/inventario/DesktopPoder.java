@@ -367,8 +367,9 @@ public class DesktopPoder extends ContentPane{
 		
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 
-		String queryStr = "SELECT p FROM PersonajePoderes AS pp, Poderes AS p WHERE equipado = true AND pp.poderesRef = p.id AND pp.personajeRef = " + personaje.getId();
-		Query query = session.createQuery(queryStr);
+		String queryStr = "SELECT po FROM PersonajePoderes AS pp, Poderes AS po WHERE personajeref_id = :idPlayer AND pp.poderesRef = po.id AND equipado = true";
+		Query query  = session.createQuery(queryStr);
+		query.setInteger("idPlayer", personaje.getId());
 		
 		final List<Poderes> list = query.list();
 				
@@ -490,16 +491,16 @@ public class DesktopPoder extends ContentPane{
 			    
 	    personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 	    
-	    Criteria criteria = session.createCriteria(PersonajePoderes.class).add(Restrictions.eq("personajeRef", personaje)).addOrder(Order.asc("poderesRef"));
+	    Criteria criteria = session.createCriteria(PersonajePoderes.class).add(Restrictions.and//
+	    																		(Restrictions.eq("personajeRef", personaje), Restrictions.eq("learnProgreso", false))).addOrder(Order.asc("poderesRef"));
+	    
 	    List<PersonajePoderes> listP = criteria.list();
 	    
 	    session.getTransaction().commit();
 	    session.close();
 		
 	    for(int j = 0; j < listP.size(); j++)
-	    {
 	    	tableDtaModel.add(listP.get(j).getPoderesRef());
-	    }
 	}
 
 
