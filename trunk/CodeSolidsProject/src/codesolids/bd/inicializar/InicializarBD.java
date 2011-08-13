@@ -188,27 +188,30 @@ class ItemsBD{
 		AsignarDatos(1, 1, "Armadura", 1500, 20, "Armadura", "Armadura Básica",false,"Images/Items/armor.png", true);
 		AsignarDatos(2, 1, "Daga", 300, 10, "Espada", "Puñal pequeño",false,"Images/Items/daga.png", true);
 		
-		AsignarDatos(3, 2, "Piedra Blanca", 1000, 10, "Piedra", "Piedra mágica de color Blanco",false,"Images/Items/stone1.png", true);
+		AsignarDatos(3, 2, "Piedra Blanca", 50, 10, "Piedra", "Piedra mágica de color Blanco",false,"Images/Items/stone1.png", true);
 		AsignarDatos(4, 2, "Medicina Basica", 800, 20, "Medicina", "Medicina  básica para aumentar la vida",false,"Images/Items/potion1.png", true);
 		
-		AsignarDatos(5, 3, "Piedra Negra", 2500, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png", true);
-		AsignarDatos(6, 3, "Armadura Negra", 5000, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png", true);
-		AsignarDatos(7, 3, "Bomba", 500, 20, "Bomba", "Bomba común",false,"Images/Items/bomb3.png", true);
+		AsignarDatos(5, 3, "Piedra Negra", 75, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png", true);
+		AsignarDatos(6, 3, "Armadura Negra", 2400, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png", true);
+		AsignarDatos(7, 3, "Bomba", 500, 20, "Bomba", "Bomba común",false,"Images/Items/bomb.png", true);
 		AsignarDatos(8, 3, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png", true);
 		
-		AsignarDatos(9, 4, "Energia Media", 1500, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png", true);
-		AsignarDatos(10, 4, "Medicina Media", 1800, 40, "Medicina", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png", true);
+		AsignarDatos(9, 4, "Energia Media", 900, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png", true);
+		AsignarDatos(10, 4, "Medicina Media", 1260, 40, "Medicina", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png", true);
 		
-		AsignarDatos(11, 5, "Piedra Roja", 3000, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png", true);
-		AsignarDatos(12, 5, "Espada Roja", 5000, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png", true);
+		AsignarDatos(11, 5, "Piedra Roja", 100, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png", true);
+		AsignarDatos(12, 5, "Espada Roja", 2500, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png", true);
 		
-		AsignarDatos(13, 6, "Bomba Blanca", 3500, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb.png", true);
-		AsignarDatos(14, 6, "Bomba Negra", 6500, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png", true);
+		AsignarDatos(13, 6, "Bomba Blanca", 700, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb1.png", true);
+		AsignarDatos(14, 6, "Bomba Negra", 800, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png", true);
 		
-		AsignarDatos(15, 7, "Bomba Roja", 9500, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png", true);
-		AsignarDatos(16, 7, "Energia Super", 2500, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png", true);
+		AsignarDatos(15, 7, "Bomba Roja", 1000, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png", true);
+		AsignarDatos(16, 7, "Energia Super", 2350, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png", true);
 		
-		AsignarDatos(17, 9, "Medicina Super", 3000, 80, "Medicina", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png", true);
+		AsignarDatos(18, 8, "Armadura Dorada", 3000, 50, "Armadura", "Poderosa armadura hecha de oro y plata",false,"Images/Items/armor3.png", true);
+		AsignarDatos(19, 8, "Espada Platino", 3000, 40, "Espada", "Poderosa espada",false,"Images/Items/sword3.png", true);
+		
+		AsignarDatos(17, 9, "Medicina Super", 2400, 80, "Medicina", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png", true);
 	
 	}
 	
