@@ -92,6 +92,7 @@ public class Tienda extends ContentPane {
 	private Label index;
 	private Label description;
 	private Label oro;
+	private Label imgIt;
 	
 	WindowPane window;
 
@@ -122,9 +123,7 @@ public class Tienda extends ContentPane {
 			throw new RuntimeException(e);
 		}		
 
-		ImageReference w = ImageReferenceCache.getInstance().getImageReference("Images/Items/pergamino.png");
-		
-		ImageReference image = w;
+		ImageReference image = ImageReferenceCache.getInstance().getImageReference("Images/Items/pergamino.png");
 	
 		HtmlLayoutData hld;
 
@@ -529,13 +528,7 @@ public class Tienda extends ContentPane {
 	
 	
 	//**************************************************************************************************
-	
-	
-	
-	
-	
-	
-	
+
 	private TableColModel initTableColModel(int tipo) {		
 		
 		TableColModel tableColModel = new TableColModel();
@@ -764,6 +757,9 @@ public class Tienda extends ContentPane {
 	        				  
 	        				  ret.setEnabled(consultBD(item));
 	        				  tableDtaModel.currPageChanged();
+	        				  
+	        				  description.setText("Compro "+item.getName()+"!");
+	        				  description.setForeground(Color.BLUE);
 	        			  }
 	        		  });	        	  
 	          }
@@ -877,6 +873,9 @@ public class Tienda extends ContentPane {
     	        				  tableDtaModelPlayer.del(row);        						  
         					  }
 	        				  tableDtaModelPlayer.currPageChanged();
+	        				  
+	        				  description.setText("Vendio "+item.getName()+"!");
+	        				  description.setForeground(Color.BLUE);
 	        				  
 	        				  session.getTransaction().commit();
         					  session.close();
@@ -1112,11 +1111,10 @@ public class Tienda extends ContentPane {
 			session.close();
 			
 			if (recBD.getId() == rec.getId())
-			{
+			{				
 				name.setText("++");
 				index.setText("++");
-				description.setText(recBD.getDescripcion());
-			
+				description.setText(recBD.getDescripcion());			
 			}
 			
 		}
@@ -1130,9 +1128,13 @@ public class Tienda extends ContentPane {
 		
 			if (itemBD.getId() == item.getId())
 			{
+				
+				imgIt.setVisible(true);
+				imgIt.setIcon(ImageReferenceCache.getInstance().getImageReference(itemBD.getDirImage()));
 				name.setText("" + itemBD.getName());
 				index.setText("Indice: "+ itemBD.getIndex());
 				description.setText(itemBD.getDescripcion());
+				description.setForeground(Color.BLACK);
 			
 			}
 		}
@@ -1165,20 +1167,32 @@ public class Tienda extends ContentPane {
 	
 	private Column DscripRow()
 	{
+		Row rowInfo = new Row();
+		rowInfo.setCellSpacing(new Extent(15));
+		Column colInfo = new Column();
+		
+		imgIt = new Label();
+		
 		Column col = new Column();		
 		name = new Label();
-		col.add(name);
+		colInfo.add(name);
 		
 		Row row = new Row();
 		row.setCellSpacing(new Extent(5));
 		
 		index = new Label();
 		row.add(index);
-		col.add(row);
+		colInfo.add(row);
+		
+		rowInfo.add(imgIt);
+		rowInfo.add(colInfo);
+		
+		col.add(rowInfo);
 
 		description = new Label();
 		col.add(description);
 		col.setInsets(new Insets(40));
+		description.setForeground(Color.BLACK);
 
 		return col;
 	}
@@ -1331,6 +1345,7 @@ public class Tienda extends ContentPane {
 	
 	private void btnAllClicked() {
 		
+		imgIt.setVisible(false);
 		name.setText("");
 		index.setText("");
 		description.setText("");
@@ -1351,6 +1366,7 @@ public class Tienda extends ContentPane {
 
 	private void btnArmorClicked() {
 		
+		imgIt.setVisible(false);
 		name.setText("");
 		index.setText("");
 		description.setText("");
@@ -1368,8 +1384,9 @@ public class Tienda extends ContentPane {
 	    session.close();		
 	}
 	
-	private void btnSwordClicked() {
+	private void btnSwordClicked() {		
 		
+		imgIt.setVisible(false);
 		name.setText("");
 		index.setText("");
 		description.setText("");
@@ -1389,6 +1406,7 @@ public class Tienda extends ContentPane {
 	
 	private void btnPotionClicked() {
 		
+		imgIt.setVisible(false);
 		name.setText("");
 		index.setText("");
 		description.setText("");
@@ -1407,8 +1425,9 @@ public class Tienda extends ContentPane {
 	    session.close();
 	}
 	
-	private void btnStoneClicked()
-	{
+	private void btnStoneClicked(){
+		
+		imgIt.setVisible(false);
 		name.setText("");
 		index.setText("");
 		description.setText("");
@@ -1426,8 +1445,9 @@ public class Tienda extends ContentPane {
 	    session.close();		
 	}
 	
-	private void btnBombClicked()
-	{
+	private void btnBombClicked(){
+		
+		imgIt.setVisible(false);
 		name.setText("");
 		index.setText("");
 		description.setText("");

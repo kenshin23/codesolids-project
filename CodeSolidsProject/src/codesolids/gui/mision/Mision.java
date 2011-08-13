@@ -44,6 +44,7 @@ import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.StyleButton;
+import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
 import codesolids.util.ImageReferenceCache;
 import codesolids.util.TestTableModel;
@@ -812,6 +813,7 @@ public class Mision extends ContentPane{
 			windowPane.setClosable(false);
 			windowPane.setMovable(false);
 			windowPane.setPositionX(new Extent(500));
+			windowPane.setStyle(StyleWindow.DEFAULT_STYLE);
 		    Button btnClose = new Button();
 		    btnClose.setText("Aceptar");
 		    btnClose.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
@@ -849,6 +851,7 @@ public class Mision extends ContentPane{
 			windowPane.setClosable(false);
 			windowPane.setMovable(false);
 			windowPane.setPositionX(new Extent(500));
+			windowPane.setStyle(StyleWindow.DEFAULT_STYLE);
 			Session session = SessionHibernate.getInstance().getSession();
 			session.beginTransaction();
 			
@@ -934,7 +937,7 @@ public class Mision extends ContentPane{
 		
 		createListPoderes(listQuery, rowBotonera);
 
-		rowBotonera.setInsets(new Insets(170,30,20,2));
+		rowBotonera.setInsets(new Insets(195,30,20,2));
 
 		return rowBotonera;
 	}
@@ -1168,6 +1171,7 @@ public class Mision extends ContentPane{
 		windowPane.setTitle("Pociones");
 		add(windowPane);
 		
+		windowPane.setStyle(StyleWindow.DEFAULT_STYLE);
 		windowPane.setModal(true);
 		windowPane.setVisible(true);
 		windowPane.setMaximumWidth(new Extent(200));
@@ -1293,6 +1297,7 @@ public class Mision extends ContentPane{
 		windowPane.setTitle("Sus Items");
 		add(windowPane);
 		
+		windowPane.setStyle(StyleWindow.DEFAULT_STYLE);
 		windowPane.setModal(true);
 		windowPane.setVisible(true);
 		windowPane.setMaximumWidth(new Extent(200));
