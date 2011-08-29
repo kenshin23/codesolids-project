@@ -865,6 +865,8 @@ public class Mision extends ContentPane{
 				personaje.setPuntos(personaje.getPuntos() + 3);
 				personaje.setHp(personaje.getHp() + 70);
 				personaje.setMp(personaje.getMp() + 90);
+				personaje.setSpeed(personaje.getSpeed() + 20);
+				
 				msg = new Label("Ha subido de Nivel.! +" +personaje.getLevel());
 				colwin.add(msg);
 				msg = new Label("+3 Ptos.!  + 70 Vida.! + 90 Psinergia.!");

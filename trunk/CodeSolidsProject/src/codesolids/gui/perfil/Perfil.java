@@ -212,63 +212,196 @@ public class Perfil extends ContentPane{
 		
 		col = new Column();
 		col.setCellSpacing(new Extent(4));
-		Row row = new Row();
+
 		lblData = new Label("Subir Ptos - Disponibles " +personaje.getPuntos());
 		lblData.setFont(new Font(null, 1 , new Extent(12)));
 		
 		col.add(lblData);
 		Button btnS = new Button("Subir");
+		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+		btnS.setWidth( new Extent(40));
 		btnS.setStyle(Styles1.DEFAULT_STYLE);
-		Button btnB = new Button("Bajar");
-		btnB.setStyle(Styles1.DEFAULT_STYLE);
-		row.add(btnS);
-		row.add(btnB);
-		col.add(row);
+		btnS.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			subirHpClicked(e);				
+			}
+		});
+		if(personaje.getPuntos() > 0)
+			btnS.setEnabled(true);
+		else if(personaje.getPuntos() == 0)
+			btnS.setEnabled(false);
+
+		col.add(btnS);
 		btnS = new Button("Subir");
+		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+		btnS.setWidth( new Extent(40));
 		btnS.setStyle(Styles1.DEFAULT_STYLE);
-		btnB = new Button("Bajar");
-		btnB.setStyle(Styles1.DEFAULT_STYLE);
-		row = new Row();
-		row.add(btnS);
-		row.add(btnB);
-		col.add(row);
+		btnS.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			subirMpClicked(e);				
+			}
+		});
+		if(personaje.getPuntos() > 0)
+			btnS.setEnabled(true);
+		else if(personaje.getPuntos() == 0)
+			btnS.setEnabled(false);
+
+		col.add(btnS);
 		btnS = new Button("Subir");
+		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+		btnS.setWidth( new Extent(40));
 		btnS.setStyle(Styles1.DEFAULT_STYLE);
-		btnB = new Button("Bajar");
-		btnB.setStyle(Styles1.DEFAULT_STYLE);
-		row = new Row();
-		row.add(btnS);
-		row.add(btnB);
-		col.add(row);
+		btnS.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			subirDpClicked(e);				
+			}
+		});
+		if(personaje.getPuntos() > 0)
+			btnS.setEnabled(true);
+		else if(personaje.getPuntos() == 0)
+			btnS.setEnabled(false);
+
+		col.add(btnS);
 		btnS = new Button("Subir");
+		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+		btnS.setWidth( new Extent(40));
 		btnS.setStyle(Styles1.DEFAULT_STYLE);
-		btnB = new Button("Bajar");
-		btnB.setStyle(Styles1.DEFAULT_STYLE);
-		row = new Row();
-		row.add(btnS);
-		row.add(btnB);
-		col.add(row);
+		btnS.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			subirSpClicked(e);				
+			}
+		});
+		if(personaje.getPuntos() > 0)
+			btnS.setEnabled(true);
+		else if(personaje.getPuntos() == 0)
+			btnS.setEnabled(false);
+
+		col.add(btnS);
 		btnS = new Button("Subir");
+		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+		btnS.setWidth( new Extent(40));
 		btnS.setStyle(Styles1.DEFAULT_STYLE);
-		btnB = new Button("Bajar");
-		btnB.setStyle(Styles1.DEFAULT_STYLE);
-		row = new Row();
-		row.add(btnS);
-		row.add(btnB);
-		col.add(row);
+		btnS.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			subirAbClicked(e);				
+			}
+		});
+		if(personaje.getPuntos() > 0)
+			btnS.setEnabled(true);
+		else if(personaje.getPuntos() == 0)
+			btnS.setEnabled(false);
+
+		col.add(btnS);
 		btnS = new Button("Subir");
+		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
+		btnS.setWidth( new Extent(40));
 		btnS.setStyle(Styles1.DEFAULT_STYLE);
-		btnB = new Button("Bajar");
-		btnB.setStyle(Styles1.DEFAULT_STYLE);
-		row = new Row();
-		row.add(btnS);
-		row.add(btnB);
-		col.add(row);
+		btnS.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			subirAeClicked(e);				
+			}
+		});
+		if(personaje.getPuntos() > 0)
+			btnS.setEnabled(true);
+		else if(personaje.getPuntos() == 0)
+			btnS.setEnabled(false);
+
+		col.add(btnS);
 
 		rowTab.add(col);
 		panel.add(rowTab);
 		
 		return panel;
+	}
+	
+	private void subirHpClicked(ActionEvent e){
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		personaje.setHp(personaje.getHp() + 10);
+		personaje.setPuntos(personaje.getPuntos() - 1);
+		
+		session.getTransaction().commit();
+	    session.close();
+		
+		descrip.remove(0);
+		descrip.add(btnSeeClicked());
+	}
+	
+	private void subirMpClicked(ActionEvent e){
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		personaje.setMp(personaje.getMp() + 5);
+		personaje.setPuntos(personaje.getPuntos() - 1);
+		
+		session.getTransaction().commit();
+	    session.close();
+		
+		descrip.remove(0);
+		descrip.add(btnSeeClicked());
+	}
+	
+	private void subirDpClicked(ActionEvent e){
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		personaje.setDefensa(personaje.getDefensa() + 1);
+		personaje.setPuntos(personaje.getPuntos() - 1);
+		
+		session.getTransaction().commit();
+	    session.close();
+		
+		descrip.remove(0);
+		descrip.add(btnSeeClicked());
+	}
+	
+	private void subirSpClicked(ActionEvent e){
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		personaje.setSpeed(personaje.getSpeed() + 10);
+		personaje.setPuntos(personaje.getPuntos() - 1);
+		
+		session.getTransaction().commit();
+	    session.close();
+		
+		descrip.remove(0);
+		descrip.add(btnSeeClicked());
+	}
+	
+	private void subirAbClicked(ActionEvent e){
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+//		personaje.setAtaqueBasico(personaje.getAtaqueBasico() + 5/100);
+		personaje.setPuntos(personaje.getPuntos() - 1);
+		
+		session.getTransaction().commit();
+	    session.close();
+		
+		descrip.remove(0);
+		descrip.add(btnSeeClicked());
+	}
+	
+	private void subirAeClicked(ActionEvent e){
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+//		personaje.setAtaqueEspecial(personaje.getAtaqueEspecial() + 5/100);
+		personaje.setPuntos(personaje.getPuntos() - 1);
+		
+		session.getTransaction().commit();
+	    session.close();
+		
+		descrip.remove(0);
+		descrip.add(btnSeeClicked());
 	}
 	
 	private void buttonExitClicked(ActionEvent e) {
