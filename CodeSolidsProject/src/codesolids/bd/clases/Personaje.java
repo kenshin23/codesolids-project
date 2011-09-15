@@ -38,8 +38,8 @@ public class Personaje {
 	private int xp;
 	private int hp;
 	private int mp;
-	private float ataqueBasico;
-	private float ataqueEspecial;
+	private double ataqueBasico;
+	private double ataqueEspecial;
 	private int speed;
 	private int defensa;
 	private int puntos;
@@ -112,19 +112,19 @@ public class Personaje {
 		this.mp = mp;
 	}
 	
-	public float getAtaqueBasico() {
+	public double getAtaqueBasico() {
 		return ataqueBasico;
 	}
 
-	public void setAtaqueBasico(float ataqueBasico) {
+	public void setAtaqueBasico(double ataqueBasico) {
 		this.ataqueBasico = ataqueBasico;
 	}
 
-	public float getAtaqueEspecial() {
+	public double getAtaqueEspecial() {
 		return ataqueEspecial;
 	}
 
-	public void setAtaqueEspecial(float ataqueEspecial) {
+	public void setAtaqueEspecial(double ataqueEspecial) {
 		this.ataqueEspecial = ataqueEspecial;
 	}
 
