@@ -393,7 +393,7 @@ public class Mision extends ContentPane{
 	private Panel createInfoRegion(Region region){
 		Panel panel = new Panel();
 		panel.setWidth(new Extent(300));
-		panel.setHeight(new Extent(250));
+		panel.setHeight(new Extent(270));
 		panel.setInsets(new Insets(20, 60, 20, 10));
 		panel.setAlignment(Alignment.ALIGN_CENTER);
 
@@ -865,7 +865,7 @@ public class Mision extends ContentPane{
 				personaje.setPuntos(personaje.getPuntos() + 3);
 				personaje.setHp(personaje.getHp() + 70);
 				personaje.setMp(personaje.getMp() + 90);
-				personaje.setSpeed(personaje.getSpeed() + 20);
+				personaje.setSpeed(personaje.getSpeed() + 5);
 				
 				msg = new Label("Ha subido de Nivel.! +" +personaje.getLevel());
 				colwin.add(msg);
@@ -939,7 +939,7 @@ public class Mision extends ContentPane{
 		
 		createListPoderes(listQuery, rowBotonera);
 
-		rowBotonera.setInsets(new Insets(195,30,20,2));
+		rowBotonera.setInsets(new Insets(195,10,20,0));
 
 		return rowBotonera;
 	}
@@ -1056,7 +1056,7 @@ public class Mision extends ContentPane{
 		});		
 		rowBotonera.add(toolTip);
 		
-		rowBotonera.setInsets(new Insets(255,2,20,20));
+		rowBotonera.setInsets(new Insets(255,0,20,0));
 		
 		return rowBotonera;
 	}	
