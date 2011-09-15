@@ -221,13 +221,21 @@ public class Tienda extends ContentPane {
 	    
 	    grid.add(table);
 	    
-	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
-	    grid.add(tableNavigation);
-	    
 	    loadBD();
 	    
 		grid.setLayoutData(hld);
 		htmlLayout.add(grid);
+		
+		hld = new HtmlLayoutData("navigation");
+		
+	    Column colNav = new Column();
+	    colNav.setInsets(new Insets(500, 0, 0, 0));
+	    
+	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
+	    
+	    colNav.add(tableNavigation);	    
+	    colNav.setLayoutData(hld);
+	    htmlLayout.add(colNav);
 	    
 	    Column col = new Column();
 	    col.add(initFoot());
@@ -278,12 +286,20 @@ public class Tienda extends ContentPane {
 	    
 	    grid.add(tablePlayer);
 	    
-	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModelPlayer);
-	    grid.add(tableNavigation);
-	    
 	    loadItemPlayer();
 		grid.setLayoutData(hld);
 		htmlLayout.add(grid);
+		
+		hld = new HtmlLayoutData("navigation");
+		
+	    Column colNav = new Column();
+	    colNav.setInsets(new Insets(500, 0, 0, 0));
+	    
+	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModelPlayer);
+	    
+	    colNav.add(tableNavigation);	    
+	    colNav.setLayoutData(hld);
+	    htmlLayout.add(colNav);
 		
 	    Column col = new Column();
 	    col.add(initFoot());
@@ -294,12 +310,8 @@ public class Tienda extends ContentPane {
 		
 		return htmlLayout;
 	}
-
-
-	
 	
 //**********************************************************************************************************************************
-	
 	
 	private Component initRefineria()
 	{		
@@ -340,13 +352,21 @@ public class Tienda extends ContentPane {
 	    
 	    grid.add(tableBuild);
 	    
-	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModelBuild);
-	    grid.add(tableNavigation);
-	    
 	    loadRecipes();
 	    
 		grid.setLayoutData(hld);
 		htmlLayout.add(grid);
+		
+		hld = new HtmlLayoutData("navigation");
+		
+	    Column colNav = new Column();
+	    colNav.setInsets(new Insets(500, 0, 0, 0));
+	    
+	    ETableNavigation tableNavigation = new ETableNavigation(tableDtaModelBuild);
+	    
+	    colNav.add(tableNavigation);	    
+	    colNav.setLayoutData(hld);
+	    htmlLayout.add(colNav);
 		
 	    Column col = new Column();
 	    col.add(initFoot());
@@ -359,15 +379,7 @@ public class Tienda extends ContentPane {
 	}
 
 	
-	
 //**********************************************************************************************************************************	
-	
-	
-	
-	
-//**********************************************************************************************************************************	
-	
-
 	
 	private TableColModel initTableColModelBuild() {		
 		
@@ -1300,7 +1312,7 @@ public class Tienda extends ContentPane {
 	private Row initTopRowVender() {
 		
 		Row row = new Row();
-	    row.setCellSpacing(new Extent(150));
+	    row.setCellSpacing(new Extent(200));
 		
 		Row rowBtn = new Row();
 		rowBtn.setCellSpacing(new Extent(5));
