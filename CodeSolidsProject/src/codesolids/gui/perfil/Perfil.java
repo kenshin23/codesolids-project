@@ -159,7 +159,8 @@ public class Perfil extends ContentPane{
 		colCentral.add(grid);
 		
 		Column colBar = new Column();
-		colBar.setCellSpacing(new Extent(5));
+		colBar.setInsets(new Insets(0, 0, 0, 50));
+		colBar.setCellSpacing(new Extent(4));
 		Row rowBar = new Row();
 		
 		Panel panelImage = new Panel();
@@ -173,7 +174,7 @@ public class Perfil extends ContentPane{
 		rowCentral.add(panelImage);
 		
 		rowBar.setCellSpacing(new Extent(10));
-		rowBar.add(new Label("HP"));
+		rowBar.add(new Label("XP"));
 		barraXp = createBar(Color.GREEN,Color.WHITE,personaje.getXp(), consultXp(personaje.getLevel()) - personaje.getXp());
 		rowBar.add(barraXp);
 		rowBar.add(new Label(consultXp(personaje.getLevel())+"/"+personaje.getXp()));
@@ -233,12 +234,9 @@ public class Perfil extends ContentPane{
 		});
 		rowBar = new Row();
 		rowBar.add(btnItem);
-		rowBar.setInsets(new Insets(50, 0, 0, 0));
-		colBar.add(rowBar);
-		
-		rowBar = new Row();
+		rowBar.setInsets(new Insets(25, 15, 0, 0));
+		rowBar.setCellSpacing(new Extent(10));
 		rowBar.add(btnPoderes);
-		rowBar.setInsets(new Insets(50, 0, 0, 0));
 		colBar.add(rowBar);
 		
 		Grid gridAt = new Grid(3);
@@ -420,7 +418,7 @@ public class Perfil extends ContentPane{
 	
 	public CapacityBar createBar(Color color1, Color color2, int indice1,int indice2){
 
-		CapacityBar barra = new CapacityBar(12, 120); 
+		CapacityBar barra = new CapacityBar(13, 120); 
 		barra.setShowTicks(false);
 		barra.setReflectivity(0.1);
 		List<Color> listColor = new ArrayList<Color>();
