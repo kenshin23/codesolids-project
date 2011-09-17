@@ -4,30 +4,33 @@
 package codesolids.gui.perfil;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
+import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
-import nextapp.echo.app.Font;
+import nextapp.echo.app.Grid;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
 import nextapp.echo.app.Row;
+import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+import org.informagen.echo.app.CapacityBar;
 
+import codesolids.bd.clases.Nivel;
 import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.PersonajeItem;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.inventario.DesktopItem;
@@ -49,11 +52,14 @@ import echopoint.layout.HtmlLayoutData;
 public class Perfil extends ContentPane{
 	private Usuario usuario;
 	private Personaje personaje;
-	private Label lblData;
-	Panel descrip = new Panel();
+	private Panel descrip = new Panel();
 	List<Personaje> results = new ArrayList<Personaje>();
 	
 	private HtmlLayout htmlLayout;
+	private List<Number> listNumber;
+	private CapacityBar barraHp;
+	private CapacityBar barraMp;
+	private CapacityBar barraXp;
 	
 	public Perfil() {
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
@@ -96,24 +102,25 @@ public class Perfil extends ContentPane{
 		hld = new HtmlLayoutData("body");
 		
 		Row rowCentral = new Row();
-  	    descrip.add(btnSeeClicked());
+  	    descrip.add(datos());
 		rowCentral.add(descrip);
 		rowCentral.setLayoutData(hld);
 		htmlLayout.add(rowCentral);		
 		
 		return htmlLayout;
 	}
-
-	public Panel btnSeeClicked() {
+	
+	public Panel datos(){
+		
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 		session.getTransaction().commit();
 	    session.close();
-
+		
 		Panel panel = new Panel();
-		panel.setInsets(new Insets(20, 35, 20, 20));
+		panel.setInsets(new Insets(10, 45, 10, 10));
 		panel.setAlignment(Alignment.ALIGN_CENTER);
 		
 		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/cartel3.png");
@@ -122,34 +129,72 @@ public class Perfil extends ContentPane{
 		panel.setHeight(new Extent(350));
 		panel.setBackgroundImage(imgF);
 		
-		Panel panelImage= new Panel();
-		Row rowTab = new Row();
-		rowTab.setInsets(new Insets(20, 35, 20, 20));
-		Column colTab = new Column();
-		colTab.setCellSpacing(new Extent(4));
-		Column col = new Column();
-		col.setCellSpacing(new Extent(9));
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/pto.png");
+		imgF = new FillImage(imgR);
 		
+		Column colCentral = new Column();
+		Row rowCentral = new Row();
+
+		Grid grid = new Grid(3);
+		grid.setBackground(Color.WHITE);
+		grid.setInsets(new Insets(0, 2, 90, 2));
+		
+		Label lbl = new Label("Datos Generales");		
+		grid.add(lbl);
+		lbl = new Label(" ");
+		grid.add(lbl);
+		lbl = new Label(" ");
+		grid.add(lbl);
+		lbl = new Label("Usuario  " +usuario.getLogin(), imgR);
+		grid.add(lbl);
+		lbl = new Label("Nivel  " +personaje.getLevel(), imgR);
+		grid.add(lbl);
+		lbl = new Label("Oro  " +personaje.getGold(), imgR);
+		grid.add(lbl);
+		lbl = new Label("Id  " +personaje.getId(), imgR);
+		grid.add(lbl);
+		lbl = new Label("Tipo  " +personaje.getTipo(), imgR);
+		grid.add(lbl);
+		
+		colCentral.add(grid);
+		
+		Column colBar = new Column();
+		colBar.setCellSpacing(new Extent(5));
+		Row rowBar = new Row();
+		
+		Panel panelImage = new Panel();
 	    ImageReference ir = ImageReferenceCache.getInstance().getImageReference(personaje.getDirImage());
 		
 		Label lblImage = new Label(ir);
 		panelImage.add(lblImage);
 		panelImage.setHeight(new Extent(255));
 		panelImage.setWidth(new Extent(200));
-
-		lblData = new Label("Datos Generales ");
-		lblData.setFont(new Font(null, 1 , new Extent(12)));
-		colTab.add(lblData);
-		lblData = new Label("Usuario " + usuario.getLogin());
-		colTab.add(lblData);
-		lblData = new Label("Tipo " + personaje.getTipo());
-		colTab.add(lblData);
-		lblData = new Label("Nivel " + personaje.getLevel());
-		colTab.add(lblData);
-		lblData = new Label("XP " + personaje.getXp());
-		colTab.add(lblData);
-		lblData = new Label("Oro " + personaje.getGold());
-		colTab.add(lblData);
+		
+		rowCentral.add(panelImage);
+		
+		rowBar.setCellSpacing(new Extent(10));
+		rowBar.add(new Label("HP"));
+		barraXp = createBar(Color.GREEN,Color.WHITE,personaje.getXp(), consultXp(personaje.getLevel()) - personaje.getXp());
+		rowBar.add(barraXp);
+		rowBar.add(new Label(consultXp(personaje.getLevel())+"/"+personaje.getXp()));
+		colBar.add(rowBar);
+		
+		rowBar = new Row();
+		rowBar.setCellSpacing(new Extent(10));
+		rowBar.add(new Label("HP"));
+		barraHp = createBar(Color.RED,Color.WHITE,personaje.getHp(),0);
+		rowBar.add(barraHp);
+		rowBar.add(new Label(personaje.getHp()+"/"+barraHp.getValues().get(0).intValue()));
+		colBar.add(rowBar);
+		
+		rowBar = new Row();
+		rowBar.setCellSpacing(new Extent(10));
+		rowBar.add(new Label("MP"));
+		barraMp = createBar(Color.BLUE,Color.WHITE,personaje.getMp(),0);
+		rowBar.add(barraMp);
+		rowBar.add(new Label(personaje.getMp()+"/"+barraMp.getValues().get(0).intValue()));
+		colBar.add(rowBar);
+		
 		Button btnItem = new Button();
 		btnItem.setText("Objetos");
 		btnItem.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
@@ -167,7 +212,6 @@ public class Perfil extends ContentPane{
 			add(new DesktopItem());
 		}
 		});
-		colTab.add(btnItem);
 		
 		Button btnPoderes = new Button();
 		btnPoderes.setText("Poderes");
@@ -187,40 +231,35 @@ public class Perfil extends ContentPane{
 				add(new DesktopPoder());
 			}
 		});
+		rowBar = new Row();
+		rowBar.add(btnItem);
+		rowBar.setInsets(new Insets(50, 0, 0, 0));
+		colBar.add(rowBar);
 		
-		colTab.add(btnPoderes);
-		rowTab.add(panelImage);
-		rowTab.setCellSpacing(new Extent(15));
-		rowTab.add(colTab);
+		rowBar = new Row();
+		rowBar.add(btnPoderes);
+		rowBar.setInsets(new Insets(50, 0, 0, 0));
+		colBar.add(rowBar);
 		
-		lblData = new Label("Atributos Generales");
-		lblData.setFont(new Font(null, 1 , new Extent(12)));
-		col.add(lblData);
-		lblData = new Label("Vida "+ personaje.getHp());
-		col.add(lblData);
-		lblData = new Label("Psinergia "+ personaje.getMp());
-		col.add(lblData);
-		lblData = new Label("Defensa " + personaje.getDefensa());
-		col.add(lblData);
-		lblData = new Label("Velocidad " + personaje.getSpeed());
-		col.add(lblData);
-		lblData = new Label("Ataque Básico "+ personaje.getAtaqueBasico());
-		col.add(lblData);
-		lblData = new Label("Ataque Especial "+personaje.getAtaqueEspecial());
-		col.add(lblData);
-		rowTab.add(col);
+		Grid gridAt = new Grid(3);
+		gridAt.setInsets(new Insets(0, 2, 10, 0));
 		
-		col = new Column();
-		col.setCellSpacing(new Extent(4));
-
-		lblData = new Label("Subir Ptos - Disponibles " +personaje.getPuntos());
-		lblData.setFont(new Font(null, 1 , new Extent(12)));
+		TextField txtData = new TextField();
+		txtData.setWidth(new Extent(50));
+		txtData.setEditable(false);
+		txtData.setBackground(Color.WHITE);
 		
-		col.add(lblData);
-		Button btnS = new Button("Subir");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/mas.png");
+		
+		lbl = new Label("Vida");
+		gridAt.add(lbl);
+		txtData.setText(""+personaje.getHp());
+		gridAt.add(txtData);
+		Button btnS = new Button();
+		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnS.setWidth( new Extent(40));
-		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnS.setWidth( new Extent(10));
+		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirHpClicked(e);				
@@ -231,11 +270,21 @@ public class Perfil extends ContentPane{
 		else if(personaje.getPuntos() == 0)
 			btnS.setEnabled(false);
 
-		col.add(btnS);
-		btnS = new Button("Subir");
+		gridAt.add(btnS);
+		
+		lbl = new Label("Psinergia");
+		gridAt.add(lbl);
+		txtData = new TextField();
+		txtData.setWidth(new Extent(50));
+		txtData.setEditable(false);
+		txtData.setBackground(Color.WHITE);
+		txtData.setText(""+personaje.getMp());
+		gridAt.add(txtData);
+		btnS = new Button();
+		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnS.setWidth( new Extent(40));
-		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnS.setWidth( new Extent(10));
+		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirMpClicked(e);				
@@ -246,11 +295,21 @@ public class Perfil extends ContentPane{
 		else if(personaje.getPuntos() == 0)
 			btnS.setEnabled(false);
 
-		col.add(btnS);
-		btnS = new Button("Subir");
+		gridAt.add(btnS);
+		
+		lbl = new Label("Defensa");
+		gridAt.add(lbl);
+		txtData = new TextField();
+		txtData.setWidth(new Extent(50));
+		txtData.setEditable(false);
+		txtData.setBackground(Color.WHITE);
+		txtData.setText(""+personaje.getDefensa());
+		gridAt.add(txtData);
+		btnS = new Button();
+		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnS.setWidth( new Extent(40));
-		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnS.setWidth( new Extent(10));
+		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirDpClicked(e);				
@@ -261,11 +320,21 @@ public class Perfil extends ContentPane{
 		else if(personaje.getPuntos() == 0)
 			btnS.setEnabled(false);
 
-		col.add(btnS);
-		btnS = new Button("Subir");
+		gridAt.add(btnS);
+		
+		lbl = new Label("Velocidad");
+		gridAt.add(lbl);
+		txtData = new TextField();
+		txtData.setWidth(new Extent(50));
+		txtData.setEditable(false);
+		txtData.setBackground(Color.WHITE);
+		txtData.setText(""+personaje.getSpeed());
+		gridAt.add(txtData);
+		btnS = new Button();
+		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnS.setWidth( new Extent(40));
-		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnS.setWidth( new Extent(10));
+		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirSpClicked(e);				
@@ -276,11 +345,22 @@ public class Perfil extends ContentPane{
 		else if(personaje.getPuntos() == 0)
 			btnS.setEnabled(false);
 
-		col.add(btnS);
-		btnS = new Button("Subir");
+		gridAt.add(btnS);
+		
+		lbl = new Label("Ataque Básico");
+		gridAt.add(lbl);
+		txtData = new TextField();
+		txtData.setWidth(new Extent(50));
+		txtData.setEditable(false);
+		txtData.setBackground(Color.WHITE);
+		txtData.setMaximumLength(4);
+		txtData.setText(""+personaje.getAtaqueBasico());
+		gridAt.add(txtData);
+		btnS = new Button();
+		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnS.setWidth( new Extent(40));
-		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnS.setWidth( new Extent(10));
+		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirAbClicked(e);				
@@ -291,11 +371,22 @@ public class Perfil extends ContentPane{
 		else if(personaje.getPuntos() == 0)
 			btnS.setEnabled(false);
 
-		col.add(btnS);
-		btnS = new Button("Subir");
+		gridAt.add(btnS);
+		
+		lbl = new Label("Ataque Especial");
+		gridAt.add(lbl);
+		txtData = new TextField();
+		txtData.setWidth(new Extent(50));
+		txtData.setEditable(false);
+		txtData.setBackground(Color.WHITE);
+		txtData.setMaximumLength(4);
+		txtData.setText(""+personaje.getAtaqueEspecial());
+		gridAt.add(txtData);
+		btnS = new Button();
+		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnS.setWidth( new Extent(40));
-		btnS.setStyle(Styles1.DEFAULT_STYLE);
+		btnS.setWidth( new Extent(10));
+		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirAeClicked(e);				
@@ -306,12 +397,54 @@ public class Perfil extends ContentPane{
 		else if(personaje.getPuntos() == 0)
 			btnS.setEnabled(false);
 
-		col.add(btnS);
-
-		rowTab.add(col);
-		panel.add(rowTab);
+		gridAt.add(btnS);
+		
+		lbl = new Label("Puntos");
+		gridAt.add(lbl);
+		txtData = new TextField();
+		txtData.setWidth(new Extent(50));
+		txtData.setEditable(false);
+		txtData.setBackground(Color.WHITE);
+		txtData.setToolTipText("Puntos Disponibles");
+		txtData.setText(""+personaje.getPuntos());
+		gridAt.add(txtData);
+		
+		rowCentral.add(colBar);
+		rowCentral.setCellSpacing(new Extent(20));
+		rowCentral.add(gridAt);
+		colCentral.add(rowCentral);
+		panel.add(colCentral);
 		
 		return panel;
+	}
+	
+	public CapacityBar createBar(Color color1, Color color2, int indice1,int indice2){
+
+		CapacityBar barra = new CapacityBar(12, 120); 
+		barra.setShowTicks(false);
+		barra.setReflectivity(0.1);
+		List<Color> listColor = new ArrayList<Color>();
+		listColor.add(color1);
+		listColor.add(color2);
+		barra.setColors(listColor);
+		listNumber = new ArrayList<Number>();
+		listNumber.add(indice1);
+		listNumber.add(indice2); 
+		barra.setValues(listNumber);     
+
+		return barra;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private int consultXp(int num){
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		List<Nivel> list = session.createCriteria(Nivel.class).add(Restrictions.gt("level", num)).list();
+		session.getTransaction().commit();
+		session.close();
+		
+		return list.get(0).getCantidadExp();		
 	}
 	
 	private void subirHpClicked(ActionEvent e){
@@ -326,7 +459,7 @@ public class Perfil extends ContentPane{
 	    session.close();
 		
 		descrip.remove(0);
-		descrip.add(btnSeeClicked());
+		descrip.add(datos());
 	}
 	
 	private void subirMpClicked(ActionEvent e){
@@ -341,7 +474,7 @@ public class Perfil extends ContentPane{
 	    session.close();
 		
 		descrip.remove(0);
-		descrip.add(btnSeeClicked());
+		descrip.add(datos());
 	}
 	
 	private void subirDpClicked(ActionEvent e){
@@ -356,7 +489,7 @@ public class Perfil extends ContentPane{
 	    session.close();
 		
 		descrip.remove(0);
-		descrip.add(btnSeeClicked());
+		descrip.add(datos());
 	}
 	
 	private void subirSpClicked(ActionEvent e){
@@ -371,7 +504,7 @@ public class Perfil extends ContentPane{
 	    session.close();
 		
 		descrip.remove(0);
-		descrip.add(btnSeeClicked());
+		descrip.add(datos());
 	}
 	
 	private void subirAbClicked(ActionEvent e){
@@ -379,14 +512,14 @@ public class Perfil extends ContentPane{
 		session.beginTransaction();
 		
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
-//		personaje.setAtaqueBasico(personaje.getAtaqueBasico() + 5/100);
+		personaje.setAtaqueBasico(personaje.getAtaqueBasico() + 0.05);
 		personaje.setPuntos(personaje.getPuntos() - 1);
 		
 		session.getTransaction().commit();
 	    session.close();
 		
 		descrip.remove(0);
-		descrip.add(btnSeeClicked());
+		descrip.add(datos());
 	}
 	
 	private void subirAeClicked(ActionEvent e){
@@ -394,14 +527,14 @@ public class Perfil extends ContentPane{
 		session.beginTransaction();
 		
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
-//		personaje.setAtaqueEspecial(personaje.getAtaqueEspecial() + 5/100);
+		personaje.setAtaqueEspecial(personaje.getAtaqueEspecial() + 0.05);
 		personaje.setPuntos(personaje.getPuntos() - 1);
 		
 		session.getTransaction().commit();
 	    session.close();
 		
 		descrip.remove(0);
-		descrip.add(btnSeeClicked());
+		descrip.add(datos());
 	}
 	
 	private void buttonExitClicked(ActionEvent e) {
