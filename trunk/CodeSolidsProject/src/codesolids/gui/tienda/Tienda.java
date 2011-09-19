@@ -375,6 +375,9 @@ public class Tienda extends ContentPane {
 	    col.setLayoutData(hld);
 		htmlLayout.add(col);
 		cantPiedras();
+		
+		tableDtaModelBuild.currPageChanged();
+		
 		return htmlLayout;
 	}
 
@@ -519,7 +522,7 @@ public class Tienda extends ContentPane {
 	    tableColModel.getTableColumnList().add(tableColumn);
 	    
 	    tableColumn.setWidth(new Extent(50));
-	    tableColumn.setHeadValue("Reagent");
+	    tableColumn.setHeadValue("Reactivo");
 	    
 	    
 	    tableColumn = new TableColumn();
@@ -998,6 +1001,7 @@ public class Tienda extends ContentPane {
         						 }
         					  else
         						  ret.setEnabled(false);
+        					  tableDtaModelBuild.currPageChanged();
 	        			  }
 	        		  });	        	  
 	          }
