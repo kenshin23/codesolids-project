@@ -3,6 +3,7 @@ package codesolids.gui.mision;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
@@ -15,6 +16,7 @@ import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Font;
+import nextapp.echo.app.Grid;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
@@ -23,8 +25,11 @@ import nextapp.echo.app.Row;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+import nextapp.echo.app.layout.ColumnLayoutData;
+import nextapp.echo.app.layout.GridLayoutData;
 import nextapp.echo.extras.app.ToolTipContainer;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -84,6 +89,7 @@ public class Mision extends ContentPane{
 	private Column col;
 	private Column colA;
 	private Row row;
+	private Label labelHp;
 	private Label labelCp;
 	private Label lblAttack1;
 	private Label lblAttack2;
@@ -104,6 +110,8 @@ public class Mision extends ContentPane{
 	private CapacityBar barraXp;
 
 	private List<Number> listNumber;
+	private List<Integer> listCooldown;
+	private List<Object> listQuery;
 
 	private boolean flag=false;
 	
@@ -665,7 +673,7 @@ public class Mision extends ContentPane{
 		row.add(new Label("XP"));
 		barraXp = createBar(Color.GREEN,Color.WHITE,personaje.getXp(), consultXp(personaje.getLevel()) - personaje.getXp());
 		row.add(barraXp);
-		row.add(new Label(consultXp(personaje.getLevel())+"/"+personaje.getXp()));
+		row.add(new Label(personaje.getXp()+"/"+consultXp(personaje.getLevel())));
 		colEstado.add(row);
 
 		row = new Row();
@@ -673,7 +681,9 @@ public class Mision extends ContentPane{
 		row.add(new Label("HP"));
 		barraVida1 = createBar(Color.RED,Color.WHITE,personaje.getHp(),0);
 		row.add(barraVida1);
-		row.add(new Label(personaje.getHp()+"/"+barraVida1.getValues().get(0).intValue()));
+		labelHp = new Label();
+		labelHp.setText(barraVida1.getValues().get(0).intValue()+"/"+personaje.getHp());
+		row.add(labelHp);
 		colEstado.add(row);
 
 		row = new Row();
@@ -682,7 +692,7 @@ public class Mision extends ContentPane{
 		barraPsinergia = createBar(Color.BLUE,Color.WHITE,personaje.getMp(),0);
 		row.add(barraPsinergia);
 		labelCp = new Label();
-		labelCp.setText(personaje.getMp()+"/"+barraPsinergia.getValues().get(0).intValue());
+		labelCp.setText(barraPsinergia.getValues().get(0).intValue()+"/"+personaje.getMp());
 		row.add(labelCp);
 		colEstado.add(row);
 
@@ -701,11 +711,6 @@ public class Mision extends ContentPane{
 
 		col.add(rowM);
 
-		Row rowA = new Row();
-		rowA.setCellSpacing(new Extent(5));
-		rowA.add(new Label("Lv "+ personaje.getLevel()));
-		rowA.add(barraVida1);
-
 		Row rowB = new Row();
 		rowB.setCellSpacing(new Extent(5));
 		rowB.add(new Label("Lv "+ enemigo.getNivel()));
@@ -713,8 +718,7 @@ public class Mision extends ContentPane{
 		rowB.add(barraVida2);
 
 		row = new Row();
-		row.setCellSpacing(new Extent(205));
-		row.add(rowA);
+		row.setInsets(new Insets(400, 0, 0, 0));
 		row.add(rowB);
 		lblAttack1 = new Label();
 		lblAttack2 = new Label();
@@ -932,21 +936,29 @@ public class Mision extends ContentPane{
 		Query query  = session.createQuery(queryStr);
 		query.setInteger("idPlayer", personaje.getId());
 		query.setBoolean("e", true);
-		List<Object> listQuery = query.list();			
+		listQuery = query.list();			
 		
 		session.getTransaction().commit();			  	        
 		session.close();
-		
+		createListCooldown();
 		createListPoderes(listQuery, rowBotonera);
+		
 
 		rowBotonera.setInsets(new Insets(195,10,20,0));
 
 		return rowBotonera;
 	}
 	
+	private void createListCooldown(){
+		listCooldown = new ArrayList<Integer>();
+		for(int i = 0; i <listQuery.size(); i++)
+			listCooldown.add(0);
+	}
+	
 	private void createListPoderes( List<Object> listQuery, Row rowBotonera){
 		ImageReference ir;
-		Iterator<Object> iter = listQuery.iterator();
+		final Iterator<Object> iter = listQuery.iterator();
+		int itr = 0;
 
   	    if (!iter.hasNext()) {
   	    	ir = ImageReferenceCache.getInstance().getImageReference("Images/Util/vacioAtaque.png");
@@ -968,7 +980,7 @@ public class Mision extends ContentPane{
   	    }
   	    while (iter.hasNext()) {  
   	    	final PersonajePoderes p = (PersonajePoderes) iter.next();
-			
+  	    	String subStr = p.getPoderesRef().getDirImage().substring(0, p.getPoderesRef().getDirImage().length() - 4);
 			ir = ImageReferenceCache.getInstance().getImageReference(p.getPoderesRef().getDirImage());	
 			
 			btnAttack1 = new Button();
@@ -977,15 +989,25 @@ public class Mision extends ContentPane{
 			ToolTipContainer toolTip = new ToolTipContainer();
 			toolTip.add(btnAttack1);
 			toolTip.add(toolTipPower(p.getPoderesRef()));
-			
-			btnAttack1.setIcon(ir);
-			
+			if(listCooldown.get(itr) == 0){
+				btnAttack1.setIcon(ir);
+				btnAttack1.setEnabled(true);
+			}
+			else if(listCooldown.get(itr) > 0){
+				
+				btnAttack1.setIcon(ImageReferenceCache.getInstance().getImageReference(subStr + "Opaca.png"));
+				btnAttack1.setEnabled(false);
+			}
+			final int it = itr;
 			btnAttack1.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
-					b1Clicked(p.getPoderesRef());
+					listCooldown.set(it, p.getPoderesRef().getCooldown() + 1);
+					AtaqueEspecialClicked(p.getPoderesRef());
 				}
 			});	
 			rowBotonera.add(toolTip);
+			
+			itr++;
   	    }
   	    if(listQuery.size() <6){
   	    	ir = ImageReferenceCache.getInstance().getImageReference("Images/Util/vacioAtaque.png");
@@ -1011,27 +1033,21 @@ public class Mision extends ContentPane{
 		rowBotonera.setCellSpacing(new Extent(2));
 		
 		ImageReference ir = ImageReferenceCache.getInstance().getImageReference("Images/Poderes/Basico/ataque.png");
-		ToolTipContainer toolTip = new ToolTipContainer();
 	
 		btnHit = new Button();
 		btnHit.setIcon(ir);
-		toolTip.add(btnHit);
-		toolTip.add(toolTipBasico("Ataque Básico "));
 		btnHit.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
 		btnHit.setStyle(StyleButton.BATALLA_STYLE);
 		btnHit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				btnHitClicked();
+				AtaqueBasicoClicked();
 			}
 		});		
-		rowBotonera.add(toolTip);
+		rowBotonera.add(btnHit);
 		
 		ir = ImageReferenceCache.getInstance().getImageReference("Images/Poderes/Basico/manapoint.png");
 		btnLoad = new Button();
 		btnLoad.setIcon(ir);
-		toolTip = new ToolTipContainer();
-		toolTip.add(btnLoad);
-		toolTip.add(toolTipBasico("Pocion "));
 		btnLoad.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
 		btnLoad.setStyle(StyleButton.BATALLA_STYLE);
 		btnLoad.addActionListener(new ActionListener(){
@@ -1039,14 +1055,11 @@ public class Mision extends ContentPane{
 				consultItemEnergia();
 			}
 		});		
-		rowBotonera.add(toolTip);
+		rowBotonera.add(btnLoad);
 		
 		ir = ImageReferenceCache.getInstance().getImageReference("Images/Poderes/Basico/items.png");
 		btnLoad = new Button();
 		btnLoad.setIcon(ir);
-		toolTip = new ToolTipContainer();
-		toolTip.add(btnLoad);
-		toolTip.add(toolTipBasico("Items "));
 		btnLoad.setTextAlignment((new Alignment(Alignment.CENTER,Alignment.CENTER)));
 		btnLoad.setStyle(StyleButton.BATALLA_STYLE);
 		btnLoad.addActionListener(new ActionListener(){
@@ -1054,14 +1067,14 @@ public class Mision extends ContentPane{
 				consultItem();
 			}
 		});		
-		rowBotonera.add(toolTip);
+		rowBotonera.add(btnLoad);
 		
 		rowBotonera.setInsets(new Insets(255,0,20,0));
 		
 		return rowBotonera;
 	}	
 
-	public void b1Clicked(Poderes poder){
+	public void AtaqueEspecialClicked(Poderes poder){
 
 		int dano = ((int)(Math.random()*(3)));
 		PoderEnemigo pe = new PoderEnemigo();
@@ -1072,6 +1085,13 @@ public class Mision extends ContentPane{
 			listNumber.add(0);
 			listNumber.add(enemigo.getVida());
 			barraVida2.setValues(listNumber);
+			
+			listNumber = new ArrayList<Number>();
+			listNumber.add(barraPsinergia.getValues().get(0).intValue() - poder.getPsinergia());
+			listNumber.add( personaje.getMp() - (barraPsinergia.getValues().get(0).intValue() - poder.getPsinergia()) );
+			barraPsinergia.setValues(listNumber);
+			
+			labelCp.setText(barraPsinergia.getValues().get(0).intValue()+"/"+personaje.getMp());
 
 			flag=true;
 		}
@@ -1079,7 +1099,7 @@ public class Mision extends ContentPane{
 		else if( (barraVida2.getValues().get(0).intValue() - poder.getDamage() - personaje.getAtaqueEspecial() > 0) && flag==false ){
 			if(barraPsinergia.getValues().get(0).intValue() < poder.getPsinergia() )
 			{
-				labelCp.setText(personaje.getMp()+"/"+barraPsinergia.getValues().get(0).intValue());
+				labelCp.setText(barraPsinergia.getValues().get(0).intValue()+"/"+personaje.getMp());
 			}
 
 			else{
@@ -1094,12 +1114,15 @@ public class Mision extends ContentPane{
 				listNumber.add( personaje.getMp() - (barraPsinergia.getValues().get(0).intValue() - poder.getPsinergia()) );
 				barraPsinergia.setValues(listNumber);
 				
-				labelCp.setText(personaje.getMp()+"/"+barraPsinergia.getValues().get(0).intValue());
+				labelCp.setText(barraPsinergia.getValues().get(0).intValue()+"/"+personaje.getMp());
 
 				simular(pe);
 			}
 		}		
 		FinalBattle();
+		
+		updateCooldown();
+		cooldown();
 	}
 	
 	private PoderEnemigo consultAtaque(int ataque){
@@ -1125,11 +1148,13 @@ public class Mision extends ContentPane{
 
 		barraVida1.setValues(listNumber);
 		
+		labelHp.setText(barraVida1.getValues().get(0).intValue()+"/"+personaje.getHp());
+		
 		lblAttack1.setText(""+enemigo.getNombre());
 		lblAttack2.setText("Lanzo ataque "+poder.getNombre());
 	}
 	
-	private void btnHitClicked()
+	private void AtaqueBasicoClicked()
 	{		
 		int dano = ((int)(Math.random()*(3)));
 		PoderEnemigo pe = new PoderEnemigo();
@@ -1152,23 +1177,31 @@ public class Mision extends ContentPane{
 				barraVida2.setValues(listNumber);
 				simular(pe);
 		}
-		FinalBattle();
+		FinalBattle();		
+		
+		updateCooldown();
+		cooldown();
+	}	
+	
+	private void cooldown(){
+		Row botonera = new Row();
+		botonera.setCellSpacing(new Extent(2));
+		
+		createListPoderes(listQuery, botonera);
+		botonera.setInsets(new Insets(195,10,20,0));
+		
+		col.remove(3);
+		col.add(botonera, 3);
+	}
+	
+	private void updateCooldown(){
+		for(int i = 0; i<listCooldown.size(); i++){
+			if(listCooldown.get(i) > 0)
+				listCooldown.set(i, listCooldown.get(i)-1); 
+		}
 	}
 	
 	private void consultItemEnergia(){
-		Session session = SessionHibernate.getInstance().getSession();
-		session.beginTransaction();
-		String queryStr = "SELECT personajeItemList FROM Item WHERE personajeref_id = :idPlayer AND tipo= :tipoIt AND equipado = :e";
-		Query query  = session.createQuery(queryStr);
-		query.setInteger("idPlayer", personaje.getId());
-		query.setString("tipoIt", "Pocion");
-		query.setBoolean("e", true);
-		List<PersonajeItem> list = query.list();
-		session.getTransaction().commit();			  	        
-		session.close();
-		
-		Column colwin = new Column();
-		
 		final WindowPane windowPane = new WindowPane();
 		windowPane.setTitle("Pociones");
 		add(windowPane);
@@ -1176,34 +1209,71 @@ public class Mision extends ContentPane{
 		windowPane.setStyle(StyleWindow.DEFAULT_STYLE);
 		windowPane.setModal(true);
 		windowPane.setVisible(true);
-		windowPane.setMaximumWidth(new Extent(200));
-		windowPane.setMaximumHeight(new Extent(300));
-	    for(final PersonajeItem obj: list){
-	    Button btnClose = new Button();
-	    btnClose.setText(""+obj.getItemRef().getName());
-	    btnClose.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-	    btnClose.setHeight(new Extent(15));
-	    btnClose.setWidth( new Extent(100));
-	    btnClose.setStyle(Styles1.DEFAULT_STYLE);
-	    btnClose.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			btnLoadMpClicked(obj);
-			windowPane.userClose();
-			}
-		});
-	    colwin.add(btnClose);
-	    	
-	    }
-	    windowPane.add(colwin);
+		windowPane.setMaximumWidth(new Extent(380));
+		windowPane.setMaximumHeight(new Extent(170));
+		
+		Grid grid = new Grid(5);
+		
+		GridLayoutData gld;
+		gld = new GridLayoutData();
+		gld.setAlignment(Alignment.ALIGN_LEFT);
+		grid.setLayoutData(gld);
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		String queryStr = "SELECT new Map(count(*) AS cantidad, it AS item) FROM PersonajeItem AS pi, Item AS it WHERE pi.itemRef = it.id AND personajeref_id = :idPlayer AND pi.equipado = true AND (it.tipo = :tipoIt1) GROUP BY it.id ORDER BY it.id";
+		Query query = session.createQuery(queryStr);
+		query.setInteger("idPlayer", personaje.getId());
+		query.setString("tipoIt1", "Pocion");
+		List<Map> listItems = query.list();
+		
+		for( int i = 0; i < listItems.size(); i++ )
+		{
+			Map mapa = listItems.get(i);
+			
+			Item item = new Item();
+			item = (Item) mapa.get("item");
+			final Item it = item;
+			
+			Row row = new Row();
+			row.setCellSpacing(new Extent(2));
+			row.setInsets(new Insets(10, 10, 10, 10));
+			
+			Button btnItem = new Button();
+		    btnItem.setIcon(ImageReferenceCache.getInstance().getImageReference(item.getDirImage()));
+		    btnItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnLoadMpClicked(it);
+				
+				windowPane.userClose();
+				}
+			});
+			ToolTipContainer toolTip = new ToolTipContainer();
+			toolTip.add(btnItem);			
+			toolTip.add(toolTipItem(item));
+			
+			row.add(toolTip);
+			row.add(new Label("x" + Integer.parseInt(mapa.get("cantidad").toString()) ));
+			grid.add(row);
+		}
+		
+		session.getTransaction().commit();
+		session.close();
+
+	    windowPane.add(grid);
 	}
 	
-	private void btnLoadMpClicked(PersonajeItem obj)
+	private void btnLoadMpClicked(Item obj)
 	{				
 		int dano = ((int)(Math.random()*(3)));
 		PoderEnemigo pe = new PoderEnemigo();
-		pe = consultAtaque(dano);		
+		pe = consultAtaque(dano);
 		
-		if((barraPsinergia.getValues().get(0).intValue() + obj.getItemRef().getIndex()) >= personaje.getMp())
+		
+		if((barraPsinergia.getValues().get(0).intValue() + obj.getIndex()) >= personaje.getMp())
 		{	
 			labelCp.setText(personaje.getMp()+"/"+personaje.getMp());	
 			
@@ -1216,7 +1286,7 @@ public class Mision extends ContentPane{
 		}
 		else
 		{
-			int aux = (barraPsinergia.getValues().get(0).intValue() + obj.getItemRef().getIndex());
+			int aux = (barraPsinergia.getValues().get(0).intValue() + obj.getIndex());
 			
 			labelCp.setText(  aux+ "/" + personaje.getMp());
 			
@@ -1225,28 +1295,33 @@ public class Mision extends ContentPane{
 			listNumber.add( personaje.getMp() - aux );
 			barraPsinergia.setValues(listNumber);
 			
-			labelCp.setText(personaje.getMp()+"/"+barraPsinergia.getValues().get(0).intValue());
+			labelCp.setText(barraPsinergia.getValues().get(0).intValue()+"/"+personaje.getMp());
 			
 			simular(pe);
 		}
 		FinalBattle();
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
-		session.delete(obj);
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", personaje), Restrictions.eq("itemRef", obj)));
+		List<PersonajeItem> pItem = criteria.list();
+		
+		session.delete(pItem.get(0));
 
 		session.getTransaction().commit();			  	        
 		session.close();		
 	}
 	
-	private void btnLoadHpClicked(PersonajeItem obj)
+	private void btnLoadHpClicked(Item obj)
 	{				
 		int dano = ((int)(Math.random()*(3)));
 		PoderEnemigo pe = new PoderEnemigo();
 		pe = consultAtaque(dano);		
 		
-		if((barraVida1.getValues().get(0).intValue() + obj.getItemRef().getIndex()) >= personaje.getHp())
+		if((barraVida1.getValues().get(0).intValue() + obj.getIndex()) >= personaje.getHp())
 		{	
-			labelCp.setText(personaje.getHp()+"/"+personaje.getHp());	
+			labelHp.setText(personaje.getHp()+"/"+personaje.getHp());	
 			
 			listNumber = new ArrayList<Number>();
 			listNumber.add(personaje.getHp());
@@ -1257,16 +1332,16 @@ public class Mision extends ContentPane{
 		}
 		else
 		{
-			int aux = (barraVida1.getValues().get(0).intValue() + obj.getItemRef().getIndex());
+			int aux = (barraVida1.getValues().get(0).intValue() + obj.getIndex());
 			
-			labelCp.setText(  aux+ "/" + personaje.getMp());
+			labelHp.setText(  aux+ "/" + personaje.getMp());
 			
 			listNumber = new ArrayList<Number>();
 			listNumber.add(aux);
 			listNumber.add( personaje.getHp() - aux );
 			barraVida1.setValues(listNumber);
 			
-			labelCp.setText(personaje.getHp()+"/"+barraVida1.getValues().get(0).intValue());
+			labelHp.setText(personaje.getHp()+"/"+barraVida1.getValues().get(0).intValue());
 			
 			simular(pe);
 		}
@@ -1274,68 +1349,95 @@ public class Mision extends ContentPane{
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		session.delete(obj);
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", personaje), Restrictions.eq("itemRef", obj)));
+		List<PersonajeItem> pItem = criteria.list();
+		
+		session.delete(pItem.get(0));
 
 		session.getTransaction().commit();			  	        
 		session.close();			
 	}
 	
 	private void consultItem(){
-		Session session = SessionHibernate.getInstance().getSession();
-		session.beginTransaction();
-		String queryStr = "SELECT personajeItemList FROM Item WHERE personajeref_id = :idPlayer AND tipo = :tipoM OR tipo = :tipoB AND equipado = :e";
-		Query query  = session.createQuery(queryStr);
-		query.setInteger("idPlayer", personaje.getId());
-		query.setString("tipoM", "Medicina");
-		query.setString("tipoB", "Bomba");
-		query.setBoolean("e", true);
-		List<PersonajeItem> list = query.list();
-		session.getTransaction().commit();			  	        
-		session.close();
-		
-		Column colwin = new Column();
-		
 		final WindowPane windowPane = new WindowPane();
-		windowPane.setTitle("Sus Items");
+		windowPane.setTitle("Items");
 		add(windowPane);
 		
 		windowPane.setStyle(StyleWindow.DEFAULT_STYLE);
 		windowPane.setModal(true);
 		windowPane.setVisible(true);
-		windowPane.setMaximumWidth(new Extent(200));
-		windowPane.setMaximumHeight(new Extent(300));
-	    for(final PersonajeItem obj: list){
-	    Button btnClose = new Button();
-	    btnClose.setText(""+obj.getItemRef().getName());
-	    btnClose.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-	    btnClose.setHeight(new Extent(15));
-	    btnClose.setWidth( new Extent(100));
-	    btnClose.setStyle(Styles1.DEFAULT_STYLE);
-	    btnClose.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			if(obj.getItemRef().getTipo().contentEquals("Medicina")){
-				btnLoadHpClicked(obj);
-			}
-			else if(obj.getItemRef().getTipo().contentEquals("Bomba")){
-				btnLoadArmorClicked(obj);
-			}
+		windowPane.setMaximumWidth(new Extent(380));
+		windowPane.setMaximumHeight(new Extent(170));
+		
+		Grid grid = new Grid(5);
+		
+		GridLayoutData gld;
+		gld = new GridLayoutData();
+		gld.setAlignment(Alignment.ALIGN_LEFT);
+		grid.setLayoutData(gld);
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		String queryStr = "SELECT new Map(count(*) AS cantidad, it AS item) FROM PersonajeItem AS pi, Item AS it WHERE pi.itemRef = it.id AND personajeref_id = :idPlayer AND pi.equipado = true AND (it.tipo = :tipoIt1 OR it.tipo = :tipoIt2) GROUP BY it.id ORDER BY it.id";
+		Query query = session.createQuery(queryStr);
+		query.setInteger("idPlayer", personaje.getId());
+		query.setString("tipoIt1", "Medicina");
+		query.setString("tipoIt2", "Bomba");
+		List<Map> listItems = query.list();
+		
+		for( int i = 0; i < listItems.size(); i++ )
+		{
+			Map mapa = listItems.get(i);
 			
-			windowPane.userClose();
-			}
-		});
-	    colwin.add(btnClose);
-	    	
-	    }
-	    windowPane.add(colwin);
+			Item item = new Item();
+			item = (Item) mapa.get("item");
+			final Item it = item;
+			
+			Row row = new Row();
+			row.setCellSpacing(new Extent(2));
+			row.setInsets(new Insets(10, 10, 10, 10));
+			
+			Button btnItem = new Button();
+		    btnItem.setIcon(ImageReferenceCache.getInstance().getImageReference(item.getDirImage()));
+		    btnItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(it.getTipo().contentEquals("Medicina")){
+					btnLoadHpClicked(it);
+				}
+				else if(it.getTipo().contentEquals("Bomba")){
+					btnLoadArmorClicked(it);
+				}
+				
+				windowPane.userClose();
+				}
+			});
+			ToolTipContainer toolTip = new ToolTipContainer();
+			toolTip.add(btnItem);			
+			toolTip.add(toolTipItem(item));
+			
+			row.add(toolTip);
+			row.add(new Label("x" + Integer.parseInt(mapa.get("cantidad").toString()) ));
+			grid.add(row);
+		}
+		
+		session.getTransaction().commit();
+		session.close();
+
+	    windowPane.add(grid);
 	}
 	
-	private void btnLoadArmorClicked(PersonajeItem obj)
+	private void btnLoadArmorClicked(Item obj)
 	{
 		int dano = ((int)(Math.random()*(3)));
 		PoderEnemigo pe = new PoderEnemigo();
 		pe = consultAtaque(dano);
 
-		if( (barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()<=0) && flag==false ){
+		if( (barraVida2.getValues().get(0).intValue() - obj.getIndex()<=0) && flag==false ){
 			listNumber = new ArrayList<Number>();
 			listNumber.add(0);
 			listNumber.add(enemigo.getVida());
@@ -1343,10 +1445,10 @@ public class Mision extends ContentPane{
 
 			flag=true;
 		}
-		else if( (barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()>0) && flag==false ){
+		else if( (barraVida2.getValues().get(0).intValue() - obj.getIndex()>0) && flag==false ){
 				listNumber = new ArrayList<Number>();
-				listNumber.add(barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()); 
-				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - obj.getItemRef().getIndex()) );
+				listNumber.add(barraVida2.getValues().get(0).intValue() - obj.getIndex()); 
+				listNumber.add( enemigo.getVida() - (barraVida2.getValues().get(0).intValue() - obj.getIndex()) );
 
 				barraVida2.setValues(listNumber);
 
@@ -1356,24 +1458,58 @@ public class Mision extends ContentPane{
 		FinalBattle();
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
-		String queryStr = "FROM Item WHERE tipo = :tipoB";
-		Query query  = session.createQuery(queryStr);
-		query.setString("tipoB", "Bomba");
-		List<Item> list = query.list();
-
-		session.getTransaction().commit();			  	        
-		session.close();
-
-		session = SessionHibernate.getInstance().getSession();
-		session.beginTransaction();
-		for(Item it: list){
-			if(obj.getItemRef().getId() == it.getId()){
-
-				session.delete(obj);
-			}
-		}
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+		
+		Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", personaje), Restrictions.eq("itemRef", obj)));
+		List<PersonajeItem> pItem = criteria.list();
+		
+		session.delete(pItem.get(0));
+		
 		session.getTransaction().commit();			  	        
 		session.close();		
+	}
+	
+	private Column toolTipItem(Item items)
+	{
+		
+		Column col = new Column();
+		col.setBorder(new Border(3, Color.BLACK, Border.STYLE_RIDGE));
+		col.setCellSpacing(new Extent(10));
+		col.setInsets(new Insets(5, 5, 5, 5));
+		col.setBackground(new Color(226,211,161));
+		
+	    ColumnLayoutData cld;
+		
+		Label lbl = new Label();
+	    cld = new ColumnLayoutData();
+	    cld.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+	    lbl.setLayoutData(cld);
+		lbl.setText(items.getName());
+		col.add(lbl);
+		
+		if( items.getTipo().equals("Pocion") )
+		{
+			lbl = new Label();
+			lbl.setForeground(Color.BLUE);
+			lbl.setText("Efecto: " + items.getIndex());
+			col.add(lbl);
+		}
+		else if( items.getTipo().equals("Medicina") )
+		{
+			lbl = new Label();
+			lbl.setForeground(Color.BLUE);
+			lbl.setText("Efecto: " + items.getIndex());
+			col.add(lbl);
+		}
+		else if( items.getTipo().equals("Bomba") )
+		{
+			lbl = new Label();
+			lbl.setForeground(Color.RED);
+			lbl.setText("Daño: " + items.getIndex());
+			col.add(lbl);
+		}
+		
+		return col;
 	}
 	
 	private Column toolTipPower(Poderes poder)
@@ -1402,22 +1538,6 @@ public class Mision extends ContentPane{
 		lbl = new Label();
 		lbl.setForeground(Color.ORANGE);
 		lbl.setText("Cooldown: " + poder.getCooldown());
-		col.add(lbl);
-		
-		return col;
-	}
-	
-	private Column toolTipBasico(String boton)
-	{		
-		Column col = new Column();
-		col.setBorder(new Border(3, Color.BLACK, Border.STYLE_RIDGE));
-		col.setCellSpacing(new Extent(10));
-		col.setInsets(new Insets(5, 5, 5, 5));
-		col.setBackground(new Color(226,211,161));
-		
-		Label lbl = new Label();
-		lbl.setTextPosition(Alignment.ALIGN_CENTER);
-		lbl.setText(boton);
 		col.add(lbl);
 		
 		return col;

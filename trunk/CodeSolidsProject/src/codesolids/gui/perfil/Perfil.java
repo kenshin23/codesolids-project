@@ -53,7 +53,6 @@ public class Perfil extends ContentPane{
 	private Usuario usuario;
 	private Personaje personaje;
 	private Panel descrip = new Panel();
-	List<Personaje> results = new ArrayList<Personaje>();
 	
 	private HtmlLayout htmlLayout;
 	private List<Number> listNumber;
@@ -129,7 +128,7 @@ public class Perfil extends ContentPane{
 		panel.setHeight(new Extent(350));
 		panel.setBackgroundImage(imgF);
 		
-		imgR = ImageReferenceCache.getInstance().getImageReference("Images/pto.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/pto.png");
 		imgF = new FillImage(imgR);
 		
 		Column colCentral = new Column();
@@ -177,7 +176,7 @@ public class Perfil extends ContentPane{
 		rowBar.add(new Label("XP"));
 		barraXp = createBar(Color.GREEN,Color.WHITE,personaje.getXp(), consultXp(personaje.getLevel()) - personaje.getXp());
 		rowBar.add(barraXp);
-		rowBar.add(new Label(consultXp(personaje.getLevel())+"/"+personaje.getXp()));
+		rowBar.add(new Label(personaje.getXp()+"/"+consultXp(personaje.getLevel())));
 		colBar.add(rowBar);
 		
 		rowBar = new Row();
@@ -247,7 +246,7 @@ public class Perfil extends ContentPane{
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
 		
-		imgR = ImageReferenceCache.getInstance().getImageReference("Images/mas.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/mas.png");
 		
 		lbl = new Label("Vida");
 		gridAt.add(lbl);
