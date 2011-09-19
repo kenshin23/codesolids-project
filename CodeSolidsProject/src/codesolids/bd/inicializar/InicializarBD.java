@@ -341,7 +341,7 @@ class EnemigosBD{
 		AsignarDatos(1, 1, "Minotauro", 110, 10, 150, 50, "Monte Aleph", "Images/Enemigos/minotauro.png");
 		AsignarDatos(2, 1, "Ogro", 100, 11, 170, 30, "Monte Aleph", "Images/Enemigos/ogro.png");
 		AsignarDatos(3, 2, "Dragon Negro", 120, 15, 190, 80, "Monte Aleph", "Images/Enemigos/dragon_negro.png");
-		AsignarDatos(4, 3, "Dragon OjoNegro", 190, 20, 190, 50, "Monte Aleph", "Images/Enemigos/dragon_ojosnegros.png");
+		AsignarDatos(4, 3, "Dragon Ojo Negro", 190, 20, 190, 50, "Monte Aleph", "Images/Enemigos/dragon_ojosnegros.png");
 		AsignarDatos(8, 4, "Elfo", 350, 40, 410, 120, "Monte Aleph", "Images/Enemigos/elfo.png");
 		AsignarDatos(5, 5, "Dragon Gris", 350, 30, 250, 50, "Monte Aleph", "Images/Enemigos/dragon_gris.png");
 		AsignarDatos(6, 6, "3 Cabezas", 500, 30, 450, 60, "Monte Aleph", "Images/Enemigos/dragon3cabezas.png");
