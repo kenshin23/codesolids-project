@@ -989,11 +989,11 @@ public class Mision extends ContentPane{
 			ToolTipContainer toolTip = new ToolTipContainer();
 			toolTip.add(btnAttack1);
 			toolTip.add(toolTipPower(p.getPoderesRef()));
-			if(listCooldown.get(itr) == 0){
+			if(listCooldown.get(itr) == 0 && barraPsinergia.getValues().get(0).intValue() >= p.getPoderesRef().getPsinergia()){
 				btnAttack1.setIcon(ir);
 				btnAttack1.setEnabled(true);
 			}
-			else if(listCooldown.get(itr) > 0){
+			else if(listCooldown.get(itr) > 0 || barraPsinergia.getValues().get(0).intValue() < p.getPoderesRef().getPsinergia()){
 				
 				btnAttack1.setIcon(ImageReferenceCache.getInstance().getImageReference(subStr + "Opaca.png"));
 				btnAttack1.setEnabled(false);
@@ -1122,7 +1122,6 @@ public class Mision extends ContentPane{
 		FinalBattle();
 		
 		updateCooldown();
-		cooldown();
 	}
 	
 	private PoderEnemigo consultAtaque(int ataque){
@@ -1180,10 +1179,14 @@ public class Mision extends ContentPane{
 		FinalBattle();		
 		
 		updateCooldown();
-		cooldown();
 	}	
 	
-	private void cooldown(){
+	private void updateCooldown(){
+		for(int i = 0; i<listCooldown.size(); i++){
+			if(listCooldown.get(i) > 0)
+				listCooldown.set(i, listCooldown.get(i)-1); 
+		}
+		
 		Row botonera = new Row();
 		botonera.setCellSpacing(new Extent(2));
 		
@@ -1192,13 +1195,6 @@ public class Mision extends ContentPane{
 		
 		col.remove(3);
 		col.add(botonera, 3);
-	}
-	
-	private void updateCooldown(){
-		for(int i = 0; i<listCooldown.size(); i++){
-			if(listCooldown.get(i) > 0)
-				listCooldown.set(i, listCooldown.get(i)-1); 
-		}
 	}
 	
 	private void consultItemEnergia(){
@@ -1247,7 +1243,7 @@ public class Mision extends ContentPane{
 		    btnItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnLoadMpClicked(it);
-				
+				updateCooldown();
 				windowPane.userClose();
 				}
 			});
@@ -1412,7 +1408,7 @@ public class Mision extends ContentPane{
 				else if(it.getTipo().contentEquals("Bomba")){
 					btnLoadArmorClicked(it);
 				}
-				
+				updateCooldown();
 				windowPane.userClose();
 				}
 			});
