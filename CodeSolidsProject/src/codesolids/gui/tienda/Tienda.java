@@ -994,7 +994,8 @@ public class Tienda extends ContentPane {
 	        				  
         					  session.getTransaction().commit();
         					  session.close();
-	        				  
+        					  
+        					  cantPiedras();
 	        				  
         					  if ( consultBDBuild(itemElim,rec.getCantRojas(),rec.getCantBlancas(),rec.getCantNegras()) ){
         						  ret.setEnabled(true);
@@ -1123,13 +1124,18 @@ public class Tienda extends ContentPane {
 			Criteria criteria = session.createCriteria(Receta.class).add(Restrictions.eq("id", rec.getId()));
 			recBD = (Receta) criteria.uniqueResult();
 			
+			Criteria criteriaI = session.createCriteria(Item.class).add(Restrictions.eq("id", rec.getItemCrear().getId()));
+			itemBD = (Item) criteriaI.uniqueResult();
+			
 			session.getTransaction().commit();
 			session.close();
 			
 			if (recBD.getId() == rec.getId())
-			{				
-				name.setText("++");
-				index.setText("++");
+			{	
+				imgIt.setVisible(true);
+				imgIt.setIcon(ImageReferenceCache.getInstance().getImageReference(itemBD.getDirImage()));
+				name.setText("" + itemBD.getName());
+				index.setText("Indice: "+ itemBD.getIndex());
 				description.setText(recBD.getDescripcion());			
 			}
 			
@@ -1256,7 +1262,7 @@ public class Tienda extends ContentPane {
         });
         rowBtn.add(btnPotion);
         
-	    Button btnStone = new Button("Piedras Magicas");
+	    Button btnStone = new Button("Piedras");
 	    btnStone.setStyle(Styles1.DEFAULT_STYLE);
 	    btnStone.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -1265,7 +1271,7 @@ public class Tienda extends ContentPane {
         });
         rowBtn.add(btnStone);
         
-        Button btnBomb = new Button("Bombas Magicas");
+        Button btnBomb = new Button("Bombas");
         btnBomb.setStyle(Styles1.DEFAULT_STYLE);
         btnBomb.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -1371,10 +1377,15 @@ public class Tienda extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		Criteria criteria = session.createCriteria(Item.class).addOrder(Order.asc("id"));
-		
-		for (Object obj : criteria.list()) {
-			tableDtaModel.add(obj);
+		List<Item> list = session.createCriteria(Item.class).addOrder(Order.asc("id")).list();
+
+		for(Item obj : list)
+		{			
+			if(obj.isInshop() == true){
+
+				tableDtaModel.add(obj);
+			}			
+
 		}
 	    session.getTransaction().commit();
 	    session.close();		
@@ -1391,10 +1402,14 @@ public class Tienda extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Armadura")).addOrder(Order.asc("id"));
-		
-		for (Object obj : criteria.list()) {
-			tableDtaModel.add(obj);
+		List<Item> list = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Armadura")).addOrder(Order.asc("id")).list();
+
+		for(Item obj : list)
+		{			
+			if(obj.isInshop() == true){
+				tableDtaModel.add(obj);
+			}			
+
 		}
 	    session.getTransaction().commit();
 	    session.close();		
@@ -1411,10 +1426,13 @@ public class Tienda extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		Criteria criteria = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Espada")).addOrder(Order.asc("id"));
-		
-		for (Object obj : criteria.list()) {
-			tableDtaModel.add(obj);
+		List<Item> list = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Espada")).addOrder(Order.asc("id")).list();
+
+		for(Item obj : list)
+		{			
+			if(obj.isInshop() == true){
+				tableDtaModel.add(obj);
+			}
 		}
 	    session.getTransaction().commit();
 	    session.close();
@@ -1588,10 +1606,12 @@ public class Tienda extends ContentPane {
 			item.setUso(obj.isUso());
 			item.setDirImage(obj.getDirImage());
 			item.setInshop(obj.isInshop());
+			
+			if(item.isInshop() == true){
 
-						
-			tableDtaModel.add(item);
-			listItem.add(item);
+				tableDtaModel.add(item);
+				listItem.add(item);
+			}			
 
 		}			
 		session.getTransaction().commit();

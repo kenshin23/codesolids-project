@@ -36,6 +36,7 @@ import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
+import codesolids.util.ImageReferenceCache;
 import codesolids.util.TestTableModel;
 
 import com.minotauro.echo.table.base.ETable;
@@ -82,8 +83,7 @@ public class Ranking extends ContentPane {
 		HtmlLayoutData hld;
         hld = new HtmlLayoutData("fondoPantalla");
         
-		ResourceImageReference w = new ResourceImageReference("Images/Fondos/mago_fuego4.jpg");		
-		ImageReference image = w;
+		ImageReference image = ImageReferenceCache.getInstance().getImageReference("Images/Fondos/ranking.png");
 		FillImage imagep = new FillImage(image);
 		
 		setBackgroundImage(imagep);
