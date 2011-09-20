@@ -8,6 +8,7 @@ import java.util.List;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
@@ -24,6 +25,7 @@ import nextapp.echo.app.Row;
 import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+import nextapp.echo.extras.app.ToolTipContainer;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -31,6 +33,7 @@ import org.informagen.echo.app.CapacityBar;
 
 import codesolids.bd.clases.Nivel;
 import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.inventario.DesktopItem;
@@ -238,25 +241,33 @@ public class Perfil extends ContentPane{
 		rowBar.add(btnPoderes);
 		colBar.add(rowBar);
 		
-		Grid gridAt = new Grid(3);
+		Grid gridAt = new Grid(4);
 		gridAt.setInsets(new Insets(0, 2, 10, 0));
 		
 		TextField txtData = new TextField();
-		txtData.setWidth(new Extent(50));
+		txtData.setWidth(new Extent(40));
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
+		txtData.setAlignment(Alignment.ALIGN_CENTER);
 		
 		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/mas.png");
 		
+		ImageReference imgA = ImageReferenceCache.getInstance().getImageReference("Images/Util/ayuda.png");
+		
+		Label lblAyuda = new Label(imgA);
+		ToolTipContainer toolTip = new ToolTipContainer();
+		toolTip.add(lblAyuda);
+		toolTip.add(toolTipHelp("Cada punto equivale a 15 unidades de vida"));
+
+		gridAt.add(toolTip);
 		lbl = new Label("Vida");
 		gridAt.add(lbl);
-		txtData.setText(""+personaje.getHp());
+		txtData.setText(""+(personaje.getHp()-100*personaje.getLevel())/15);
 		gridAt.add(txtData);
 		Button btnS = new Button();
 		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnS.setWidth( new Extent(10));
-		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirHpClicked(e);				
@@ -269,19 +280,25 @@ public class Perfil extends ContentPane{
 
 		gridAt.add(btnS);
 		
+		lblAyuda = new Label(imgA);
+		toolTip = new ToolTipContainer();
+		toolTip.add(lblAyuda);
+		toolTip.add(toolTipHelp("Cada punto equivale a 15 unidades de psinergia"));
+
+		gridAt.add(toolTip);		
 		lbl = new Label("Psinergia");
 		gridAt.add(lbl);
 		txtData = new TextField();
-		txtData.setWidth(new Extent(50));
+		txtData.setWidth(new Extent(40));
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
-		txtData.setText(""+personaje.getMp());
+		txtData.setAlignment(Alignment.ALIGN_CENTER);
+		txtData.setText(""+(personaje.getMp()-100*personaje.getLevel())/15);
 		gridAt.add(txtData);
 		btnS = new Button();
 		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnS.setWidth( new Extent(10));
-		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirMpClicked(e);				
@@ -294,19 +311,25 @@ public class Perfil extends ContentPane{
 
 		gridAt.add(btnS);
 		
+		lblAyuda = new Label(imgA);
+		toolTip = new ToolTipContainer();
+		toolTip.add(lblAyuda);
+		toolTip.add(toolTipHelp("Cada punto equivale a 1 unidad de defensa"));
+
+		gridAt.add(toolTip);
 		lbl = new Label("Defensa");
 		gridAt.add(lbl);
 		txtData = new TextField();
-		txtData.setWidth(new Extent(50));
+		txtData.setWidth(new Extent(40));
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
+		txtData.setAlignment(Alignment.ALIGN_CENTER);
 		txtData.setText(""+personaje.getDefensa());
 		gridAt.add(txtData);
 		btnS = new Button();
 		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnS.setWidth( new Extent(10));
-		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirDpClicked(e);				
@@ -318,20 +341,26 @@ public class Perfil extends ContentPane{
 			btnS.setEnabled(false);
 
 		gridAt.add(btnS);
-		
+
+		lblAyuda = new Label(imgA);
+		toolTip = new ToolTipContainer();
+		toolTip.add(lblAyuda);
+		toolTip.add(toolTipHelp("Cada punto equivale a 10 unidades de velocidad"));
+
+		gridAt.add(toolTip);
 		lbl = new Label("Velocidad");
 		gridAt.add(lbl);
 		txtData = new TextField();
-		txtData.setWidth(new Extent(50));
+		txtData.setWidth(new Extent(40));
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
-		txtData.setText(""+personaje.getSpeed());
+		txtData.setAlignment(Alignment.ALIGN_CENTER);
+		txtData.setText(""+personaje.getSpeed()/10);
 		gridAt.add(txtData);
 		btnS = new Button();
 		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnS.setWidth( new Extent(10));
-		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirSpClicked(e);				
@@ -343,21 +372,27 @@ public class Perfil extends ContentPane{
 			btnS.setEnabled(false);
 
 		gridAt.add(btnS);
-		
+
+		lblAyuda = new Label(imgA);
+		toolTip = new ToolTipContainer();
+		toolTip.add(lblAyuda);
+		toolTip.add(toolTipHelp("Cada punto equivale a 5% del ataque básico "));
+
+		gridAt.add(toolTip);
 		lbl = new Label("Ataque Básico");
 		gridAt.add(lbl);
 		txtData = new TextField();
-		txtData.setWidth(new Extent(50));
+		txtData.setWidth(new Extent(40));
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
+		txtData.setAlignment(Alignment.ALIGN_CENTER);
 		txtData.setMaximumLength(4);
-		txtData.setText(""+personaje.getAtaqueBasico());
+		txtData.setText(""+personaje.getAtaqueBasico()/0.05);
 		gridAt.add(txtData);
 		btnS = new Button();
 		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnS.setWidth( new Extent(10));
-		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirAbClicked(e);				
@@ -369,21 +404,27 @@ public class Perfil extends ContentPane{
 			btnS.setEnabled(false);
 
 		gridAt.add(btnS);
-		
+
+		lblAyuda = new Label(imgA);
+		toolTip = new ToolTipContainer();
+		toolTip.add(lblAyuda);
+		toolTip.add(toolTipHelp("Cada punto equivale a 5% ataque especial"));
+
+		gridAt.add(toolTip);
 		lbl = new Label("Ataque Especial");
 		gridAt.add(lbl);
 		txtData = new TextField();
-		txtData.setWidth(new Extent(50));
+		txtData.setWidth(new Extent(40));
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
+		txtData.setAlignment(Alignment.ALIGN_CENTER);
 		txtData.setMaximumLength(4);
-		txtData.setText(""+personaje.getAtaqueEspecial());
+		txtData.setText(""+personaje.getAtaqueEspecial()/0.05);
 		gridAt.add(txtData);
 		btnS = new Button();
 		btnS.setIcon(imgR);
 		btnS.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
 		btnS.setWidth( new Extent(10));
-		btnS.setToolTipText("Incrementar este atributo");
 		btnS.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			subirAeClicked(e);				
@@ -395,14 +436,20 @@ public class Perfil extends ContentPane{
 			btnS.setEnabled(false);
 
 		gridAt.add(btnS);
-		
+
+		lblAyuda = new Label(imgA);
+		toolTip = new ToolTipContainer();
+		toolTip.add(lblAyuda);
+		toolTip.add(toolTipHelp("Puntos disponibles"));
+
+		gridAt.add(toolTip);
 		lbl = new Label("Puntos");
 		gridAt.add(lbl);
 		txtData = new TextField();
-		txtData.setWidth(new Extent(50));
+		txtData.setWidth(new Extent(40));
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
-		txtData.setToolTipText("Puntos Disponibles");
+		txtData.setAlignment(Alignment.ALIGN_CENTER);
 		txtData.setText(""+personaje.getPuntos());
 		gridAt.add(txtData);
 		
@@ -449,7 +496,7 @@ public class Perfil extends ContentPane{
 		session.beginTransaction();
 		
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
-		personaje.setHp(personaje.getHp() + 10);
+		personaje.setHp(personaje.getHp() + 15);
 		personaje.setPuntos(personaje.getPuntos() - 1);
 		
 		session.getTransaction().commit();
@@ -464,7 +511,7 @@ public class Perfil extends ContentPane{
 		session.beginTransaction();
 		
 		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
-		personaje.setMp(personaje.getMp() + 5);
+		personaje.setMp(personaje.getMp() + 15);
 		personaje.setPuntos(personaje.getPuntos() - 1);
 		
 		session.getTransaction().commit();
@@ -539,4 +586,25 @@ public class Perfil extends ContentPane{
 		add(new MapaDesktop());
 	}
 	
+	private Panel toolTipHelp(String str)
+	{
+		Panel panel = new Panel();
+		panel.setWidth(new Extent(120));
+		panel.setHeight(new Extent(80));
+		
+		Column col = new Column();
+		col.setBorder(new Border(3, Color.BLACK, Border.STYLE_RIDGE));
+		col.setCellSpacing(new Extent(10));
+		col.setInsets(new Insets(5, 5, 5, 5));
+		col.setBackground(Color.WHITE);
+		
+		Label lbl = new Label();
+		lbl.setTextPosition(Alignment.ALIGN_CENTER);
+		lbl.setText(str);
+		col.add(lbl);
+		panel.add(col);
+		
+		return panel;
+	}
+
 }

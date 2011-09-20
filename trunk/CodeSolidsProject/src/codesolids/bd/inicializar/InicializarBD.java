@@ -185,31 +185,31 @@ class ItemsBD{
 	
 	public void createList(){
 		
-		AsignarDatos(1, 1, "Armadura", 1500, 20, "Armadura", "Armadura Básica",false,"Images/Items/armor.png", true);
+		AsignarDatos(1, 1, "Armadura", 1500, 5, "Armadura", "Armadura Básica",false,"Images/Items/armor.png", true);
 		AsignarDatos(2, 1, "Daga", 300, 10, "Espada", "Puñal pequeño",false,"Images/Items/daga.png", true);
 		
 		AsignarDatos(3, 4, "Piedra Blanca", 50, 10, "Piedra", "Piedra mágica de color Blanco",false,"Images/Items/stone1.png", true);
 		AsignarDatos(4, 2, "Medicina Basica", 800, 20, "Medicina", "Medicina  básica para aumentar la vida",false,"Images/Items/potion1.png", true);
 		
 		AsignarDatos(5, 3, "Piedra Negra", 75, 25, "Piedra", "Piedra mágica de color Negro",false,"Images/Items/stone2.png", true);
-		AsignarDatos(6, 3, "Armadura Negra", 2400, 30, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png", true);
-		AsignarDatos(7, 3, "Bomba", 500, 20, "Bomba", "Bomba común",false,"Images/Items/bomb.png", true);
-		AsignarDatos(8, 3, "Espada", 1500, 20, "Espada", "Espada Básica",false,"Images/Items/sword.png", true);
+		AsignarDatos(6, 8, "Armadura Negra", 2500, 10, "Armadura", "Armadura Avanzada",false,"Images/Items/armor2.png", true);
+		AsignarDatos(7, 3, "Bomba", 500, 70, "Bomba", "Bomba común",false,"Images/Items/bomb.png", true);
+		AsignarDatos(8, 3, "Espada", 1500, 150, "Espada", "Espada Básica",false,"Images/Items/sword.png", true);
 		
 		AsignarDatos(9, 4, "Energia Media", 900, 20, "Pocion", "Pocion para aumentar la psinergia",false,"Images/Items/potion2.png", true);
 		AsignarDatos(10, 4, "Medicina Media", 1260, 40, "Medicina", "Medicina de media categoría para aumentar la vida",false,"Images/Items/potion1.png", true);
 		
 		AsignarDatos(11, 5, "Piedra Roja", 100, 35, "Piedra", "Piedra mágica de color Rojo",false,"Images/Items/stone3.png", true);
-		AsignarDatos(12, 5, "Espada Roja", 2500, 30, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png", true);
+		AsignarDatos(12, 8, "Espada Roja", 3500, 350, "Espada", "Espada Avanzada",false,"Images/Items/sword2.png", true);
 		
-		AsignarDatos(13, 4, "Bomba Blanca", 700, 30, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb1.png", true);
-		AsignarDatos(14, 4, "Bomba Negra", 800, 60, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png", true);
+		AsignarDatos(13, 4, "Bomba Blanca", 700, 100, "Bomba", "Bomba mágica creada con piedras de color blanco",false,"Images/Items/bomb1.png", true);
+		AsignarDatos(14, 4, "Bomba Negra", 800, 130, "Bomba", "Bomba mágica creada con piedras de color negro",false,"Images/Items/bomb2.png", true);
 		
-		AsignarDatos(15, 7, "Bomba Roja", 1000, 90, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png", true);
+		AsignarDatos(15, 7, "Bomba Roja", 1000, 200, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png", true);
 		AsignarDatos(16, 7, "Energia Super", 2350, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png", true);
 		
-		AsignarDatos(18, 8, "Armadura Dorada", 3000, 50, "Armadura", "Poderosa armadura hecha de oro y plata",false,"Images/Items/armor3.png", true);
-		AsignarDatos(19, 8, "Espada Platino", 3000, 40, "Espada", "Poderosa espada",false,"Images/Items/sword3.png", true);
+		AsignarDatos(18, 15, "Armadura Dorada", 3000, 15, "Armadura", "Poderosa armadura hecha de oro y plata",false,"Images/Items/armor3.png", false);
+		AsignarDatos(19, 15, "Espada Platino", 3000, 700, "Espada", "Poderosa espada",false,"Images/Items/sword3.png", false);
 		
 		AsignarDatos(17, 9, "Medicina Super", 2400, 80, "Medicina", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png", true);
 	
@@ -251,8 +251,8 @@ class ItemsBD{
 	}
 	public void createListRecetas(){
 		
-		asignarReceta(1,5,2,"Para crear Armadura Negra", "Armadura Negra", "Armadura");
-		asignarReceta(5,3,1,"Para crear Espada Roja", "Espada Roja", "Espada");
+		asignarReceta(11,15,12,"Para crear Armadura Dorada", "Armadura Dorada", "Armadura Negra");
+		asignarReceta(15,13,11,"Para crear Espada Platino", "Espada Platino", "Espada Roja");
 		asignarReceta(0,0,3,"Para crear Bomba Blanca", "Bomba Blanca", "Bomba");
 		asignarReceta(0,3,0,"Para crear Bomba Negra", "Bomba Negra", "Bomba");
 		asignarReceta(3,0,0,"Para crear Bomba Roja", "Bomba Roja", "Bomba");
