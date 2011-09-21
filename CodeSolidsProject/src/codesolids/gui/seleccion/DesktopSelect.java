@@ -98,8 +98,7 @@ public class DesktopSelect extends ContentPane{
 	    table.setTableColModel(tableColModel);
 	    table.setTableSelModel(tableSelModel);
 	    
-	    table.setBorder(new Border(1, Color.BLACK, Border.STYLE_RIDGE));
-	    table.setInsets(new Insets(5, 2, 5, 2));
+	    table.setBorder(new Border(new Extent(1), new Color(87, 205, 211), Border.STYLE_RIDGE));
 		
 	    colT.add(table);
 		
@@ -376,13 +375,9 @@ public class DesktopSelect extends ContentPane{
 	    Personaje pBean = new Personaje();
     	
 	    for( int i = 0; i < (3 - index); i++ )
-	    {
-	    	
-	    	tableDtaModel.add(pBean);
-	    	
-	    }
-	    
+	    {   	
+	    	tableDtaModel.add(pBean);	
+	    }	    
 	}
-	
-	
+
 }
