@@ -112,6 +112,8 @@
 		<mapping class="codesolids.bd.clases.Receta" />
 		<mapping class="codesolids.bd.clases.Nivel"/>
 		<mapping class="codesolids.bd.clases.Batalla"/>
+		<mapping class="codesolids.bd.clases.Clan"/>
+		<mapping class="codesolids.bd.clases.Mensaje"/>	
 
 	</session-factory>
 </hibernate-configuration>
