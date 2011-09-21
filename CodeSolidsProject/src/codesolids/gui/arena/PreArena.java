@@ -67,9 +67,9 @@ public class PreArena extends ContentPane{
 	private TestTableModel tableDtaModelInvitacion;
 	List<Personaje> results = new ArrayList<Personaje>();
 	List<Invitacion> resultsI = new ArrayList<Invitacion>();
-	
+
 	private HtmlLayout htmlLayout;
-	
+
 	TaskQueueHandle taskQueue;
 	TimedServerPush inviteServerPush;
 	
@@ -78,24 +78,24 @@ public class PreArena extends ContentPane{
 		taskQueue = ApplicationInstance.getActive().createTaskQueue();		
 		usuario = app.getUsuario();	
 		personaje = app.getPersonaje();
-	    initGUI();
+		initGUI();
 	}
-	
+
 	private void initGUI() {
 		add(initPreArena());
 	}
-	
+
 	public Component initPreArena(){
 		try {
 			htmlLayout = new HtmlLayout(getClass().getResourceAsStream("prearena.html"), "UTF-8");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		HtmlLayoutData hld;
 		hld = new HtmlLayoutData("head");		
 		Row menu = new Row();
-		
+
 		Button returnButton = new Button();
 		returnButton.setText("Salir");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
@@ -103,102 +103,102 @@ public class PreArena extends ContentPane{
 		returnButton.setToolTipText("Regresar al Mapa Principal");
 		returnButton.setStyle(Styles1.DEFAULT_STYLE);
 		returnButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {			
-			inviteServerPush.end();
-			buttonExitClicked(e);				
+			public void actionPerformed(ActionEvent e) {			
+				inviteServerPush.end();
+				buttonExitClicked(e);				
 			}
 		});
 		menu.add(returnButton);
 		menu.setLayoutData(hld);
 		htmlLayout.add(menu);
-		
+
 		hld = new HtmlLayoutData("descrip");
 		menu = new Row();
-	    lblData = new Label("Usuarios en linea");
-	    lblData.setForeground(Color.WHITE);
-	    menu.add(lblData);
-	    menu.setCellSpacing(new Extent(250));
-	    lblData = new Label("Invitaciones recibidas");
-	    lblData.setForeground(Color.WHITE);
-	    menu.add(lblData);
+		lblData = new Label("Usuarios en linea");
+		lblData.setForeground(Color.WHITE);
+		menu.add(lblData);
+		menu.setCellSpacing(new Extent(250));
+		lblData = new Label("Invitaciones recibidas");
+		lblData.setForeground(Color.WHITE);
+		menu.add(lblData);
 		menu.setLayoutData(hld);
 		htmlLayout.add(menu);
-		
+
 		hld = new HtmlLayoutData("central");
-		
+
 		Row rowCentral = new Row();
 		tableDtaModelPersonaje = new TestTableModel();
 		tableDtaModelInvitacion = new TestTableModel();
 
-	    ApplicationInstance app = ApplicationInstance.getActive();
-	    inviteServerPush = new TimedServerPush(1000, app, taskQueue, new Runnable() {
-	    	@SuppressWarnings("unchecked")
+		ApplicationInstance app = ApplicationInstance.getActive();
+		inviteServerPush = new TimedServerPush(1000, app, taskQueue, new Runnable() {
+			@SuppressWarnings("unchecked")
 			@Override
-	    	public void run(){
-	    			Session session = SessionHibernate.getInstance().getSession();
-			  	    session.beginTransaction();
-			  	    String queryStr;
-			  	    Query query;
-			  		Calendar cal = Calendar.getInstance(); // La fecha actual
-//			  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
-			  	    
-			  	    if(actual == 0){
-				  	    queryStr = "UPDATE t_personaje SET arena = :date WHERE id = :idPlayer";
-				  	    query = session.createSQLQuery(queryStr);
-				  	    query.setCalendar("date", cal);
-				  	    query.setInteger("idPlayer", personaje.getId());
-					    query.executeUpdate();
-					    actual = 1;
-			  	    }
-			  	    actual++;
-			  	    if (actual == 29){
-			  	    	actual = 0;
-			  	    }
+			public void run(){
+				Session session = SessionHibernate.getInstance().getSession();
+				session.beginTransaction();
+				String queryStr;
+				Query query;
+				Calendar cal = Calendar.getInstance(); // La fecha actual
+				//			  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
 
-			  		cal.add(Calendar.MINUTE, -1); // La fecha actual menos un minuto
+				if(actual == 0){
+					queryStr = "UPDATE t_personaje SET arena = :date WHERE id = :idPlayer";
+					query = session.createSQLQuery(queryStr);
+					query.setCalendar("date", cal);
+					query.setInteger("idPlayer", personaje.getId());
+					query.executeUpdate();
+					actual = 1;
+				}
+				actual++;
+				if (actual == 29){
+					actual = 0;
+				}
 
-			  		queryStr = "FROM Personaje WHERE arena >= :oneMinuteAgo ORDER BY id ASC";
-			  		query = session.createQuery(queryStr);
-			  		query.setCalendar("oneMinuteAgo", cal);
-			  	    
-			  		List<Object> resultQuery =  query.list();
-			  		
-			  	    createListTable(resultQuery);
-			  	    consultEstado();
-	    		
-			  	    session.getTransaction().commit();			  	        
-			  	    session.close();
-	    	}
-	    });
-		
-	    activate();
-	    
-	    rowCentral.add(createTable(tableDtaModelPersonaje, initTableColModel(1)));
-	    rowCentral.add(createTable(tableDtaModelInvitacion, initTableColModel(2)));
+				cal.add(Calendar.MINUTE, -1); // La fecha actual menos un minuto
+
+				queryStr = "FROM Personaje WHERE arena >= :oneMinuteAgo ORDER BY id ASC";
+				query = session.createQuery(queryStr);
+				query.setCalendar("oneMinuteAgo", cal);
+
+				List<Object> resultQuery =  query.list();
+
+				createListTable(resultQuery);
+				consultEstado();
+
+				session.getTransaction().commit();			  	        
+				session.close();
+			}
+		});
+
+		activate();
+
+		rowCentral.add(createTable(tableDtaModelPersonaje, initTableColModel(1)));
+		rowCentral.add(createTable(tableDtaModelInvitacion, initTableColModel(2)));
 		rowCentral.setLayoutData(hld);
 		htmlLayout.add(rowCentral);
-		
+
 		return htmlLayout;		
 	}
-	
+
 	public void createListTable(List<Object> resultQuery) {
 		Iterator<Object> iter = resultQuery.iterator();
-  	    if (!iter.hasNext()) {
-  	    	return;
-  	    }
-  	    results.clear();
-  	    tableDtaModelPersonaje.clear();
-  	    while (iter.hasNext()) {  	        
+		if (!iter.hasNext()) {
+			return;
+		}
+		results.clear();
+		tableDtaModelPersonaje.clear();
+		while (iter.hasNext()) {  	        
 			Personaje per = (Personaje) iter.next();
 			results.add(per);  	            
-  	    }
-  	    
+		}
+
 		for (int i = 0; i < results.size(); i++) {
 			tableDtaModelPersonaje.add(results.get(i));
 		}
 		consultInvitations();    		
 	}
-	
+
 	public Panel createTable(TestTableModel tableDtaModel, TableColModel initTableColModel) {
 
 		Panel panel = new Panel();
@@ -221,7 +221,7 @@ public class PreArena extends ContentPane{
 		table.setEasyview(false);
 		table.setBorder(new Border(1, Color.BLACK, Border.STYLE_NONE));
 		col.add(table);
-		
+
 		Row row = new Row();
 		row.setAlignment(Alignment.ALIGN_CENTER);
 
@@ -234,417 +234,424 @@ public class PreArena extends ContentPane{
 		return panel;
 
 	}
-	
+
 	private TableColModel initTableColModel(final int tipo) {
-		
+
 		TableColModel tableColModel = new TableColModel();
-	    TableColumn tableColumn;
-	    LabelCellRenderer lcr;
-	    
-	    tableColumn = new TableColumn(){      
-	    	@Override
-	    	public Object getValue(ETable table, Object element) {
-	    		Object obj = new Object();
-	    		if(tipo == 1){
-		    		Personaje per = (Personaje) element;
-		    		obj = per.getUsuarioRef().getLogin();
-	    		}
-	    		else if(tipo == 2){
-	    			Invitacion iv = (Invitacion) element;
-	    			obj = iv.getPersonajeGeneratesRef().getUsuarioRef().getLogin();
-	    		}
-	    		return obj;
-	    	}
-	    };
-	    
-	    lcr = new LabelCellRenderer();
-	    lcr.setBackground(new Color(87, 205, 211));
-	    lcr.setForeground(Color.WHITE);
-	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
-	    tableColumn.setHeadCellRenderer(lcr);
+		TableColumn tableColumn;
+		LabelCellRenderer lcr;
 
-	    lcr = new LabelCellRenderer();
-	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
-	    
-	    tableColumn.setDataCellRenderer(lcr);
-	    tableColModel.getTableColumnList().add(tableColumn);
-	    
-	    tableColumn.setWidth(new Extent(50));
-	    tableColumn.setHeadValue("Usuario");
-	    
-	    tableColumn = new TableColumn(){      
-	    	@Override
-	    	public Object getValue(ETable table, Object element) {
-	    		Object obj = new Object();
-	    		if(tipo == 1){
-		    		Personaje per = (Personaje) element;
-		    		obj = per.getTipo();
-	    		}
-	    		else if(tipo == 2){
-	    			Invitacion iv = (Invitacion) element;
-	    			obj = iv.getPersonajeGeneratesRef().getTipo();
-	    		}
-	    		return obj;
-	    	}
-	    };
-	    
-	    lcr = new LabelCellRenderer();
-	    lcr.setBackground(new Color(87, 205, 211));
-	    lcr.setForeground(Color.WHITE);
-	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
-	    tableColumn.setHeadCellRenderer(lcr);
+		tableColumn = new TableColumn(){      
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Object obj = new Object();
+				if(tipo == 1){
+					Personaje per = (Personaje) element;
+					obj = per.getUsuarioRef().getLogin();
+				}
+				else if(tipo == 2){
+					Invitacion iv = (Invitacion) element;
+					obj = iv.getPersonajeGeneratesRef().getUsuarioRef().getLogin();
+				}
+				return obj;
+			}
+		};
 
-	    lcr = new LabelCellRenderer();
-	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
-	    
-	    tableColumn.setDataCellRenderer(lcr);
-	    tableColModel.getTableColumnList().add(tableColumn);
-	    
-	    tableColumn.setWidth(new Extent(50));
-	    tableColumn.setHeadValue("Tipo");
-	    
-	    tableColumn = new TableColumn(){      
-	    	@Override
-	    	public Object getValue(ETable table, Object element) {
-	    		Object obj = new Object();
-	    		if(tipo == 1){
-		    		Personaje per = (Personaje) element;
-		    		obj = per.getLevel();
-	    		}
-	    		else if(tipo == 2){
-	    			Invitacion iv = (Invitacion) element;
-	    			obj = iv.getPersonajeGeneratesRef().getLevel();
-	    		}
-	    		return obj;
-	    	}
-	    };
-	    
-	    lcr = new LabelCellRenderer();
-	    lcr.setBackground(new Color(87, 205, 211));
-	    lcr.setForeground(Color.WHITE);
-	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
-	    tableColumn.setHeadCellRenderer(lcr);
+		lcr = new LabelCellRenderer();
+		lcr.setBackground(new Color(87, 205, 211));
+		lcr.setForeground(Color.WHITE);
+		lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+		tableColumn.setHeadCellRenderer(lcr);
 
-	    lcr = new LabelCellRenderer();
-	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
-	    
-	    tableColumn.setDataCellRenderer(lcr);
-	    tableColModel.getTableColumnList().add(tableColumn);
-	    
-	    tableColumn.setWidth(new Extent(50));
-	    tableColumn.setHeadValue("Nivel");
-	    
-	    tableColumn = new TableColumn();
-	    tableColumn.setWidth(new Extent(100));
-	    tableColumn.setHeadValue("");
-	    
-	    lcr = new LabelCellRenderer();
-	    lcr.setBackground(new Color(87, 205, 211));
-	    tableColumn.setHeadCellRenderer(lcr);
-		
-	    if(tipo == 1)
-	    	tableColumn.setDataCellRenderer(initNestedCellRenderer1());
-	    else if(tipo == 2)
-	    	tableColumn.setDataCellRenderer(initNestedCellRenderer2());
-	    tableColModel.getTableColumnList().add(tableColumn);
-	    
+		lcr = new LabelCellRenderer();
+		lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
+
+		tableColumn.setWidth(new Extent(50));
+		tableColumn.setHeadValue("Usuario");
+
+		tableColumn = new TableColumn(){      
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Object obj = new Object();
+				if(tipo == 1){
+					Personaje per = (Personaje) element;
+					obj = per.getTipo();
+				}
+				else if(tipo == 2){
+					Invitacion iv = (Invitacion) element;
+					obj = iv.getPersonajeGeneratesRef().getTipo();
+				}
+				return obj;
+			}
+		};
+
+		lcr = new LabelCellRenderer();
+		lcr.setBackground(new Color(87, 205, 211));
+		lcr.setForeground(Color.WHITE);
+		lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+		tableColumn.setHeadCellRenderer(lcr);
+
+		lcr = new LabelCellRenderer();
+		lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
+
+		tableColumn.setWidth(new Extent(50));
+		tableColumn.setHeadValue("Tipo");
+
+		tableColumn = new TableColumn(){      
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Object obj = new Object();
+				if(tipo == 1){
+					Personaje per = (Personaje) element;
+					obj = per.getLevel();
+				}
+				else if(tipo == 2){
+					Invitacion iv = (Invitacion) element;
+					obj = iv.getPersonajeGeneratesRef().getLevel();
+				}
+				return obj;
+			}
+		};
+
+		lcr = new LabelCellRenderer();
+		lcr.setBackground(new Color(87, 205, 211));
+		lcr.setForeground(Color.WHITE);
+		lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+		tableColumn.setHeadCellRenderer(lcr);
+
+		lcr = new LabelCellRenderer();
+		lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
+
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
+
+		tableColumn.setWidth(new Extent(50));
+		tableColumn.setHeadValue("Nivel");
+
+		tableColumn = new TableColumn();
+		tableColumn.setWidth(new Extent(100));
+		tableColumn.setHeadValue("");
+
+		lcr = new LabelCellRenderer();
+		lcr.setBackground(new Color(87, 205, 211));
+		tableColumn.setHeadCellRenderer(lcr);
+
+		if(tipo == 1)
+			tableColumn.setDataCellRenderer(initNestedCellRenderer1());
+		else if(tipo == 2)
+			tableColumn.setDataCellRenderer(initNestedCellRenderer2());
+		tableColModel.getTableColumnList().add(tableColumn);
+
 		return tableColModel;
 
 	}
-	
+
 	private CellRenderer initNestedCellRenderer1() {
 		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
-		
+
 		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
 			@Override
 			public Component getCellRenderer( //
-	            final ETable table, final Object value, final int col, final int row) {
+					final ETable table, final Object value, final int col, final int row) {
 
-	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+				boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          Personaje per = (Personaje) tableDtaModelPersonaje.getElementAt(row);
-	          Button ret = new Button("Invitar");
-	          ret.setStyle(Styles1.DEFAULT_STYLE);
-	          ret.setEnabled(editable);
-	          ret.setToolTipText("Invitar");
-			  final Invitacion invitation = new Invitacion();
-			  invitation.setPersonajeGeneratesRef(personaje);
-			  invitation.setPersonajeReceivesRef(per);
-	          if (personaje.getUsuarioRef().getId() != per.getUsuarioRef().getId() )
-	          {
-	        	  ret.addActionListener(new ActionListener() {
-        			  public void actionPerformed(ActionEvent e) {
-        				  btnInviteClicked(invitation);
-        			  }
-        		  });
-	          }
-	          
-	          else{
-	        	  ret.setVisible(false);	        	  
-	          }
-	          consultBtn(ret, invitation);
-	          return ret;
-	        }
-	    });
-	
-	    return nestedCellRenderer;
+				Personaje per = (Personaje) tableDtaModelPersonaje.getElementAt(row);
+				Button ret = new Button("Invitar");
+				ret.setStyle(Styles1.DEFAULT_STYLE);
+				ret.setEnabled(editable);
+				ret.setToolTipText("Invitar");
+				final Invitacion invitation = new Invitacion();
+				invitation.setPersonajeGeneratesRef(personaje);
+				invitation.setPersonajeReceivesRef(per);
+				if (personaje.getUsuarioRef().getId() != per.getUsuarioRef().getId() )
+				{
+					ret.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							btnInviteClicked(invitation);
+						}
+					});
+				}
+
+				else{
+					ret.setVisible(false);	        	  
+				}
+				consultBtn(ret, invitation);
+				return ret;
+			}
+		});
+
+		return nestedCellRenderer;
 	}
-	
+
 	private CellRenderer initNestedCellRenderer2() {
 		NestedCellRenderer nestedCellRenderer = new NestedCellRenderer();
-		
+
 		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
 			@Override
 			public Component getCellRenderer( //
-	            final ETable table, final Object value, final int col, final int row) {
+					final ETable table, final Object value, final int col, final int row) {
 
-	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+				boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          final Invitacion inv = (Invitacion) tableDtaModelInvitacion.getElementAt(row);
-	          Button ret = new Button("Acpt");
-	          ret.setStyle(Styles1.DEFAULT_STYLE);
-	          ret.setEnabled(editable);
-	          ret.setToolTipText("Aceptar");
+				final Invitacion inv = (Invitacion) tableDtaModelInvitacion.getElementAt(row);
+				Button ret = new Button("Acpt");
+				ret.setStyle(Styles1.DEFAULT_STYLE);
+				ret.setEnabled(editable);
+				ret.setToolTipText("Aceptar");
 
-	          if (personaje.getUsuarioRef() != inv.getPersonajeGeneratesRef().getUsuarioRef() )
-	          {	  
-	        		  ret.addActionListener(new ActionListener() {
-	        			  public void actionPerformed(ActionEvent e) {
-	        				  BtnClicked(row);
-	        			  }	        		  
-	        			  private void BtnClicked(int row) {	        				
-	      	          		inviteServerPush.end();
-	      	          		
-	      	          		//Va a la Batalla!!
-	      	          		Session session = SessionHibernate.getInstance().getSession();
-	      	          		session.beginTransaction();
-	      	          	
-	      	          		Batalla battle = new Batalla();
-	      	          		       		
-	      	          		Personaje pJuagadorCreate = (Personaje) session.load(Personaje.class, inv.getPersonajeGeneratesRef().getId()); 
-	      	          		Personaje pJuagadorRetador = (Personaje) session.load(Personaje.class, inv.getPersonajeReceivesRef().getId());
+				if (personaje.getUsuarioRef() != inv.getPersonajeGeneratesRef().getUsuarioRef() )
+				{	  
+					ret.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							BtnClicked(row);
+						}	        		  
+						private void BtnClicked(int row) {	        				
+							inviteServerPush.end();
 
-	      	          		battle.setJugadorCreadorRef(pJuagadorCreate);
-	      	          		pJuagadorCreate.getCreadores().add(battle);
-		
-	      	          		battle.setJugadorRetadorRef(pJuagadorRetador);
-	      	          		pJuagadorRetador.getRetadores().add(battle);
-	      	          		
-	      	          		if( pJuagadorCreate.getSpeed() > pJuagadorRetador.getSpeed() )
-	      	          			battle.setTurno("Creador");
-	      	          		else if( pJuagadorCreate.getSpeed() < pJuagadorRetador.getSpeed() )
-	      	          			battle.setTurno("Retador");
-	      	          		else
-	      	          		{
-	      	          			int numeroAleatorio = (int) (Math.random()*2 + 0);
-	      	          			if( numeroAleatorio == 0 )
-	      	          				battle.setTurno("Creador");
-	      	          			else
-	      	          				battle.setTurno("Retador");
-	      	          		}
-	      	          			
-	      	          		battle.setInBattle(true);
-	      	          		battle.setSecuenciaTurno(1);
-	      	          		
-	      	          		battle.setVidaCreador(pJuagadorCreate.getHp());
-	      	          		battle.setVidaRetador(pJuagadorRetador.getHp());
-	      	          		battle.setPsinergiaCreador(pJuagadorCreate.getMp());
-	      	          		battle.setPsinergiaRetador(pJuagadorRetador.getMp());
-	      	          		
-	      	          		inv.setEstado(true);
-	      	   
-	      	          		session.save(battle);
-	      	          		
-	      	          		session.getTransaction().commit();
-	      	          		session.close();
-	      	          		
-	      	          		UpdateInvitation(inv);
-	      	          		UpdateOutOfArena();
-	    	          		removeAll();
-	    	          		add(new Desktop());
-	        			  }
-	        		  });	        	  
-	          }
-	          else{
-	        	  ret.setVisible(false);	        	  
-	          }
-	          return ret;
-	        }
-	    });
-		
+							//Va a la Batalla!!
+							Session session = SessionHibernate.getInstance().getSession();
+							session.beginTransaction();
+
+							Batalla battle = new Batalla();
+
+							Personaje pJuagadorCreate = (Personaje) session.load(Personaje.class, inv.getPersonajeGeneratesRef().getId()); 
+							Personaje pJuagadorRetador = (Personaje) session.load(Personaje.class, inv.getPersonajeReceivesRef().getId());
+
+							battle.setJugadorCreadorRef(pJuagadorCreate);
+							pJuagadorCreate.getCreadores().add(battle);
+
+							battle.setJugadorRetadorRef(pJuagadorRetador);
+							pJuagadorRetador.getRetadores().add(battle);
+
+							if( pJuagadorCreate.getSpeed() > pJuagadorRetador.getSpeed() )
+								battle.setTurno("Creador");
+							else if( pJuagadorCreate.getSpeed() < pJuagadorRetador.getSpeed() )
+								battle.setTurno("Retador");
+							else
+							{
+								int numeroAleatorio = (int) (Math.random()*2 + 0);
+								if( numeroAleatorio == 0 )
+									battle.setTurno("Creador");
+								else
+									battle.setTurno("Retador");
+							}
+
+							battle.setInBattle(true);
+							battle.setSecuenciaTurno(1);
+
+							battle.setVidaCreador(pJuagadorCreate.getHp());
+							battle.setVidaRetador(pJuagadorRetador.getHp());
+							battle.setPsinergiaCreador(pJuagadorCreate.getMp());
+							battle.setPsinergiaRetador(pJuagadorRetador.getMp());
+
+							inv.setEstado(true);
+
+							int numeroAleatorio = (int) (Math.random()*3 + 0);	
+							
+							battle.setEscenario(numeroAleatorio);
+							
+							session.save(battle);
+
+							session.getTransaction().commit();
+							session.close();
+							
+							UpdateInvitation(inv);
+							UpdateOutOfArena();
+							consultEstado();
+							removeAll();
+							
+							add(new Desktop());
+						}
+					});	        	  
+				}
+				else{
+					ret.setVisible(false);	        	  
+				}
+				return ret;
+			}
+		});
+
 		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
 			@Override
 			public Component getCellRenderer( //
-	          final ETable table, final Object value, final int col, final int row) {
+					final ETable table, final Object value, final int col, final int row) {
 
-	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+				boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          final Invitacion inv = (Invitacion) tableDtaModelInvitacion.getElementAt(row);
-	          Button ret = new Button("Rech");
-	          ret.setStyle(Styles1.DEFAULT_STYLE);
-	          ret.setEnabled(editable);
-	          ret.setToolTipText("Rechazar");	          
-	          ret.addActionListener(new ActionListener() {
-	        		public void actionPerformed(ActionEvent e) {
-	        			  btnDeleteClicked(inv);
-	        		}
-	          });	        	  
-	          return ret;
-	        }
-	    });	
-	    return nestedCellRenderer;
+				final Invitacion inv = (Invitacion) tableDtaModelInvitacion.getElementAt(row);
+				Button ret = new Button("Rech");
+				ret.setStyle(Styles1.DEFAULT_STYLE);
+				ret.setEnabled(editable);
+				ret.setToolTipText("Rechazar");	          
+				ret.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						btnDeleteClicked(inv);
+					}
+				});	        	  
+				return ret;
+			}
+		});	
+		return nestedCellRenderer;
 	}
-	
+
 	private void activate(){
 		inviteServerPush.beg();
-		
+
 	}
-	
+
 	private void UpdateInvitation(Invitacion inv){
 		Session session = SessionHibernate.getInstance().getSession();
-	    session.beginTransaction();
-	    
-	    inv.setEstado(true);
-	    session.update(inv);
-	    
-	    session.getTransaction().commit();
-	    session.close();
-		
+		session.beginTransaction();
+
+		inv.setEstado(true);
+		session.update(inv);
+
+		session.getTransaction().commit();
+		session.close();
+
 	}
 	
 	private void consultEstado(){
-	    Session session = SessionHibernate.getInstance().getSession();
-	    session.beginTransaction();
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
 
 		List<Invitacion> listA = session.createCriteria(Invitacion.class).list();
-	    
-	    for( int i = 0; i < listA.size(); i++){
-	    	if(listA.get(i).getPersonajeGeneratesRef().getId() == personaje.getId()){
-	    		if(listA.get(i).isEstado() == true){
-	    			inviteServerPush.end();
-	    			UpdateOutOfArena();
-	    			btnDeleteClicked(listA.get(i));
-	    			removeAll();
-	    			add(new Desktop());
-	    		}
-	    	}
-	    }
-		  
-	    session.getTransaction().commit();
-	    session.close();
+
+		for( int i = 0; i < listA.size(); i++){
+			if(listA.get(i).getPersonajeGeneratesRef().getId() == personaje.getId()){
+				if(listA.get(i).isEstado() == true){
+					inviteServerPush.end();
+					UpdateOutOfArena();
+					btnDeleteClicked(listA.get(i));
+					removeAll();
+					
+					add(new Desktop());
+				}
+			}
+		}
+
+		session.getTransaction().commit();
+		session.close();
 	}
-	
+
 	private void consultBtn(Button btn, Invitacion invitation){
-	    Session session = SessionHibernate.getInstance().getSession();
-	    session.beginTransaction();
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
 
 		List<Invitacion> listA = session.createCriteria(Invitacion.class).list();
-	    
-	    for( int i = 0; i < listA.size(); i++){
-	    	if(listA.get(i).getPersonajeGeneratesRef().getId() == invitation.getPersonajeGeneratesRef().getId() && //
-	    		listA.get(i).getPersonajeReceivesRef().getId() == invitation.getPersonajeReceivesRef().getId()	){
-	    		btn.setEnabled(false);
-	    	}
-	    	if(listA.get(i).getPersonajeGeneratesRef().getId() == invitation.getPersonajeReceivesRef().getId() && //
-		    		listA.get(i).getPersonajeReceivesRef().getId() == invitation.getPersonajeGeneratesRef().getId()	){
-		    		btn.setEnabled(false);
-		    }
-	    }
-		  
-	    session.getTransaction().commit();
-	    session.close();
-	}
-	
-	private void consultInvitations(){
-		
-	    Session session = SessionHibernate.getInstance().getSession();
-	    session.beginTransaction();
-	      
-	    personaje = (Personaje) session.load(Personaje.class, personaje.getId());
 
-	    Invitacion obj = new Invitacion();
+		for( int i = 0; i < listA.size(); i++){
+			if(listA.get(i).getPersonajeGeneratesRef().getId() == invitation.getPersonajeGeneratesRef().getId() && //
+					listA.get(i).getPersonajeReceivesRef().getId() == invitation.getPersonajeReceivesRef().getId()	){
+				btn.setEnabled(false);
+			}
+			if(listA.get(i).getPersonajeGeneratesRef().getId() == invitation.getPersonajeReceivesRef().getId() && //
+					listA.get(i).getPersonajeReceivesRef().getId() == invitation.getPersonajeGeneratesRef().getId()	){
+				btn.setEnabled(false);
+			}
+		}
+
+		session.getTransaction().commit();
+		session.close();
+	}
+
+	private void consultInvitations(){
+
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+
+		Invitacion obj = new Invitacion();
 		obj.setPersonajeReceivesRef(personaje);
 		List<Invitacion> list = session.createCriteria(Invitacion.class).add(Example.create(obj)).list();
-  
-	    session.getTransaction().commit();
-	    session.close();
 
-	    resultsI.clear();
-	    tableDtaModelInvitacion.clear();
-   	  	for( int i = 0; i < list.size(); i++){
-   	  		if(personaje.getId() == list.get(i).getPersonajeReceivesRef().getId()){
-	   			Invitacion iv = new Invitacion();
-	   			iv.setId(list.get(i).getId());
-	   			iv.setPersonajeGeneratesRef(list.get(i).getPersonajeGeneratesRef());
-	   			iv.setPersonajeReceivesRef(list.get(i).getPersonajeReceivesRef());
+		session.getTransaction().commit();
+		session.close();
+
+		resultsI.clear();
+		tableDtaModelInvitacion.clear();
+		for( int i = 0; i < list.size(); i++){
+			if(personaje.getId() == list.get(i).getPersonajeReceivesRef().getId()){
+				Invitacion iv = new Invitacion();
+				iv.setId(list.get(i).getId());
+				iv.setPersonajeGeneratesRef(list.get(i).getPersonajeGeneratesRef());
+				iv.setPersonajeReceivesRef(list.get(i).getPersonajeReceivesRef());
 				resultsI.add(iv);
-   	  		}
-   	  	}
-   	  	for( int i = 0; i < resultsI.size(); i++){
-   			tableDtaModelInvitacion.add(resultsI.get(i));
-   	  	}
+			}
+		}
+		for( int i = 0; i < resultsI.size(); i++){
+			tableDtaModelInvitacion.add(resultsI.get(i));
+		}
 	}
-	
+
 	private void btnInviteClicked(Invitacion invitation) {  		
-	    Session session = null;
-	    try {
-	      session = SessionHibernate.getInstance().getSession();
-	      session.beginTransaction();
-	      
-		  Invitacion bean = new Invitacion();
-		  bean.setPersonajeGeneratesRef(invitation.getPersonajeGeneratesRef());
-		  bean.setPersonajeReceivesRef(invitation.getPersonajeReceivesRef());
+		Session session = null;
+		try {
+			session = SessionHibernate.getInstance().getSession();
+			session.beginTransaction();
 
-		  session.save(bean);
-	    } finally {
+			Invitacion bean = new Invitacion();
+			bean.setPersonajeGeneratesRef(invitation.getPersonajeGeneratesRef());
+			bean.setPersonajeReceivesRef(invitation.getPersonajeReceivesRef());
 
-	      if (session != null) {
-	        if (session.getTransaction() != null) {
-	          session.getTransaction().commit();
-	        }
-	        session.close();
-	      }
-	    }
-    }
-	
+			session.save(bean);
+		} finally {
+
+			if (session != null) {
+				if (session.getTransaction() != null) {
+					session.getTransaction().commit();
+				}
+				session.close();
+			}
+		}
+	}
+
 	private void btnDeleteClicked(Invitacion invitation) {  		
-	    Session session = null;
-	    try {
-	      session = SessionHibernate.getInstance().getSession();
-	      session.beginTransaction();
-	      
-	      session.delete(invitation);		  
+		Session session = null;
+		try {
+			session = SessionHibernate.getInstance().getSession();
+			session.beginTransaction();
 
-	    } finally {
+			session.delete(invitation);		  
 
-	      if (session != null) {
-	        if (session.getTransaction() != null) {
-	          session.getTransaction().commit();
-	        }
-	        session.close();
-	      }
-	    }
-    }
-	
+		} finally {
+
+			if (session != null) {
+				if (session.getTransaction() != null) {
+					session.getTransaction().commit();
+				}
+				session.close();
+			}
+		}
+	}
+
 	private void UpdateOutOfArena() {
-		
+
 		Session session = SessionHibernate.getInstance().getSession();
-  	    session.beginTransaction();
-  	    String queryStr;
-  	    Query query;
-  		Calendar cal = Calendar.getInstance(); // La fecha actual
-  		cal.add(Calendar.MINUTE, -5);
-//  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
-  	    
-  	    queryStr = "UPDATE t_personaje SET arena = :date WHERE id = :idPlayer";
-  	    query = session.createSQLQuery(queryStr);
-  	    query.setCalendar("date", cal);
-  	    query.setInteger("idPlayer", personaje.getId());
-	    query.executeUpdate();
-	    
-	    personaje = (Personaje) session.load(Personaje.class, personaje.getId());
-	    
-	    Invitacion obj = new Invitacion();
+		session.beginTransaction();
+		String queryStr;
+		Query query;
+		Calendar cal = Calendar.getInstance(); // La fecha actual
+		cal.add(Calendar.MINUTE, -5);
+		//  	    usuario = (Usuario) session.load(Usuario.class, usuario.getId());
+
+		queryStr = "UPDATE t_personaje SET arena = :date WHERE id = :idPlayer";
+		query = session.createSQLQuery(queryStr);
+		query.setCalendar("date", cal);
+		query.setInteger("idPlayer", personaje.getId());
+		query.executeUpdate();
+
+		personaje = (Personaje) session.load(Personaje.class, personaje.getId());
+
+		Invitacion obj = new Invitacion();
 		obj.setPersonajeReceivesRef(personaje);
 
 		List<Invitacion> list = session.createCriteria(Invitacion.class).list();
@@ -657,10 +664,10 @@ public class PreArena extends ContentPane{
 			}
 		}
 
-  	    session.getTransaction().commit();			  	        
-  	    session.close();
-}
-	
+		session.getTransaction().commit();			  	        
+		session.close();
+	}
+
 	private void buttonExitClicked(ActionEvent e) {	
 		UpdateOutOfArena();
 		removeAll();

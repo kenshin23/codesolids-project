@@ -14,6 +14,8 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
+import nextapp.echo.app.Font;
+import nextapp.echo.app.Font.Typeface;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
@@ -155,8 +157,7 @@ public class AcademiaDesktop extends ContentPane {
 	    table.setTableSelModel(tableSelModel);
 
 	    
-	    table.setBorder(new Border(1, Color.BLACK, Border.STYLE_RIDGE));
-	    table.setInsets(new Insets(5, 2, 5, 2));
+	    table.setBorder(new Border(new Extent(1), new Color(87, 205, 211), Border.STYLE_RIDGE));
 	    
 	    colW.add(table);
 	    
@@ -604,7 +605,7 @@ public class AcademiaDesktop extends ContentPane {
 	    lcr.setForeground(Color.WHITE);
 	    lcr.setAlignment(new Alignment(Alignment.CENTER, Alignment.DEFAULT));
 	    tableColumn.setHeadCellRenderer(lcr);
-
+	    
 	    lcr = new LabelCellRenderer();
 	    lcr.setBackground(new Color(226,211,161));
 	    lcr.setForeground(Color.BLACK);
@@ -682,14 +683,13 @@ public class AcademiaDesktop extends ContentPane {
 
 	    lcr = new LabelCellRenderer();
 	    lcr.setBackground(new Color(226,211,161));
-	    lcr.setForeground(new Color(251,255,0));
+	    lcr.setForeground(new Color(247,240,30));
 	    
 	    tableColumn.setDataCellRenderer(lcr);
 	    tableColModel.getTableColumnList().add(tableColumn);
 	    
 	    tableColumn.setWidth(new Extent(50));
 	    tableColumn.setHeadValue("Oro");
-	    
 	    
 	    tableColumn = new TableColumn();
 	    tableColumn.setWidth(new Extent(50));
