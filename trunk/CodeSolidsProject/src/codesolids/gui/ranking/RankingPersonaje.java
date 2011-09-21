@@ -22,7 +22,6 @@ import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
-import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
@@ -50,7 +49,7 @@ import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
 
 @SuppressWarnings("serial")
-public class Ranking extends ContentPane {
+public class RankingPersonaje extends ContentPane {
 
 	private Usuario usuario;
 	private Personaje personaje;
@@ -62,7 +61,7 @@ public class Ranking extends ContentPane {
 
 	Panel panel = new Panel();
 
-	public Ranking() {
+	public RankingPersonaje() {
 
 		super(); // SIN ESTE SUPER FUE UN DOLOR PARA QUE FUNCIONARA, este salva vidas
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
@@ -81,26 +80,26 @@ public class Ranking extends ContentPane {
 		}
 
 		HtmlLayoutData hld;
-        hld = new HtmlLayoutData("fondoPantalla");
-        
+		hld = new HtmlLayoutData("fondoPantalla");
+
 		ImageReference image = ImageReferenceCache.getInstance().getImageReference("Images/Fondos/ranking.png");
 		FillImage imagep = new FillImage(image);
-		
+
 		setBackgroundImage(imagep);
 
-//		setBackground(Color.BLACK);
+		//		setBackground(Color.BLACK);
 
 		//al panel inicial le coloco las medidas exactas a usar
-//		panel.setHeight(new Extent(983, Extent.PX));
-//		panel.setWidth(new Extent (1280, Extent.PX));
-//		panel.setAlignment(Alignment.ALIGN_CENTER);
-//		panel.setBorder(new Border(new Extent(5, Extent.PX), //
-//				new Color(0xd4630c), Border.STYLE_DOUBLE));
-//		panel.setBackground(Color.BLACK);
-//		panel.setBackgroundImage(new FillImage( //
-//				new ResourceImageReference("/Images/Mapa/mago_fuego4.jpg"), //
-//				new Extent(50, Extent.PERCENT), new Extent(50, Extent.PERCENT), //
-//				FillImage.NO_REPEAT));
+		//		panel.setHeight(new Extent(983, Extent.PX));
+		//		panel.setWidth(new Extent (1280, Extent.PX));
+		//		panel.setAlignment(Alignment.ALIGN_CENTER);
+		//		panel.setBorder(new Border(new Extent(5, Extent.PX), //
+		//				new Color(0xd4630c), Border.STYLE_DOUBLE));
+		//		panel.setBackground(Color.BLACK);
+		//		panel.setBackgroundImage(new FillImage( //
+		//				new ResourceImageReference("/Images/Mapa/mago_fuego4.jpg"), //
+		//				new Extent(50, Extent.PERCENT), new Extent(50, Extent.PERCENT), //
+		//				FillImage.NO_REPEAT));
 
 		Column col = new Column();
 		col.setCellSpacing(new Extent(10));
@@ -147,12 +146,12 @@ public class Ranking extends ContentPane {
 		col.add(row);
 
 		panel.add(col);
-		
-        panel.setLayoutData(hld);
-        
-        htmllayaut.add(panel);
-		
-		
+
+		panel.setLayoutData(hld);
+
+		htmllayaut.add(panel);
+
+
 		add(htmllayaut);
 
 	}
@@ -176,7 +175,7 @@ public class Ranking extends ContentPane {
 		personajes = session.createCriteria( //
 				Personaje.class).addOrder(Order.desc("level")).list();
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < personajes.size(); i++) {
 
 			Personaje per = new Personaje();
 
@@ -243,7 +242,7 @@ public class Ranking extends ContentPane {
 		ETableNavigation tableNavigation = new ETableNavigation(tableDtaModel);
 		tableNavigation.setForeground(Color.WHITE);
 		row.add(tableNavigation);
-		
+
 		col.add(row);
 		panel.add(col);
 		return panel;
@@ -252,87 +251,87 @@ public class Ranking extends ContentPane {
 
 	private TableColModel initTableColModel(){ 
 
-	TableColModel tableColModel = new TableColModel();
-	TableColumn tableColumn;
+		TableColModel tableColModel = new TableColModel();
+		TableColumn tableColumn;
 
-	LabelCellRenderer headLcr = new LabelCellRenderer();
-	headLcr.setBackground(new Color(87, 205, 211));
-	headLcr.setForeground(Color.WHITE);
-	headLcr.setAlignment(Alignment.ALIGN_CENTER);
+		LabelCellRenderer headLcr = new LabelCellRenderer();
+		headLcr.setBackground(new Color(87, 205, 211));
+		headLcr.setForeground(Color.WHITE);
+		headLcr.setAlignment(Alignment.ALIGN_CENTER);
 
-	LabelCellRenderer lcr;
-	lcr = new LabelCellRenderer();
-	lcr.setBackground(new Color(226, 211, 161));
-	lcr.setAlignment(Alignment.ALIGN_CENTER);
+		LabelCellRenderer lcr;
+		lcr = new LabelCellRenderer();
+		lcr.setBackground(new Color(226, 211, 161));
+		lcr.setAlignment(Alignment.ALIGN_CENTER);
 
-	tableColumn = new TableColumn() {
-		@Override
-		public Object getValue(ETable table, Object element) {
-			Personaje per = (Personaje) element;
-			int lugar = 0;
-			for(int i = 0; i < personajes.size(); i++){
-				if(personajes.get(i).getId() == per.getId()){
-					lugar = i +1;
+		tableColumn = new TableColumn() {
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Personaje per = (Personaje) element;
+				int lugar = 0;
+				for(int i = 0; i < personajes.size(); i++){
+					if(personajes.get(i).getId() == per.getId()){
+						lugar = i +1;
+					}
 				}
+				return lugar;
 			}
-			return lugar;
-		}
-	};
-	tableColumn.setWidth(new Extent(20));
-	tableColumn.setHeadValue("Ranking");
-	tableColumn.setHeadCellRenderer(headLcr);
-	tableColumn.setDataCellRenderer(lcr);
-	tableColModel.getTableColumnList().add(tableColumn);
+		};
+		tableColumn.setWidth(new Extent(20));
+		tableColumn.setHeadValue("Ranking");
+		tableColumn.setHeadCellRenderer(headLcr);
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
 
-	tableColumn = new TableColumn() {
-		@Override
-		public Object getValue(ETable table, Object element) {
-			Personaje per = (Personaje) element;
-			Session session = SessionHibernate.getInstance().getSession();
-			session.beginTransaction();
+		tableColumn = new TableColumn() {
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Personaje per = (Personaje) element;
+				Session session = SessionHibernate.getInstance().getSession();
+				session.beginTransaction();
 
-			per = (Personaje) session.load(Personaje.class, per.getId());
-			
-			session.getTransaction().commit();
-			session.close();
+				per = (Personaje) session.load(Personaje.class, per.getId());
 
-			return per.getUsuarioRef().getLogin();
-		}
-	};
-	tableColumn.setWidth(new Extent(20));
-	tableColumn.setHeadValue("Usuario");
-	tableColumn.setHeadCellRenderer(headLcr);
-	tableColumn.setDataCellRenderer(lcr);
-	tableColModel.getTableColumnList().add(tableColumn);
+				session.getTransaction().commit();
+				session.close();
 
-	tableColumn = new TableColumn() {
-		@Override
-		public Object getValue(ETable table, Object element) {
-			Personaje per = (Personaje) element;
-			return per.getLevel();
-		}
-	};
-	tableColumn.setWidth(new Extent(20));
-	tableColumn.setHeadValue("Nivel");
-	tableColumn.setHeadCellRenderer(headLcr);
-	tableColumn.setDataCellRenderer(lcr);
-	tableColModel.getTableColumnList().add(tableColumn);
+				return per.getUsuarioRef().getLogin();
+			}
+		};
+		tableColumn.setWidth(new Extent(20));
+		tableColumn.setHeadValue("Usuario");
+		tableColumn.setHeadCellRenderer(headLcr);
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
 
-	tableColumn = new TableColumn() {
-		@Override
-		public Object getValue(ETable table, Object element) {
-			Personaje per = (Personaje) element;
-			return per.getTipo();
-		}
-	};
-	tableColumn.setWidth(new Extent(20));
-	tableColumn.setHeadValue("Tipo");
-	tableColumn.setHeadCellRenderer(headLcr);
-	tableColumn.setDataCellRenderer(lcr);
-	tableColModel.getTableColumnList().add(tableColumn);
+		tableColumn = new TableColumn() {
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Personaje per = (Personaje) element;
+				return per.getLevel();
+			}
+		};
+		tableColumn.setWidth(new Extent(20));
+		tableColumn.setHeadValue("Nivel");
+		tableColumn.setHeadCellRenderer(headLcr);
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
 
-	return tableColModel;
+		tableColumn = new TableColumn() {
+			@Override
+			public Object getValue(ETable table, Object element) {
+				Personaje per = (Personaje) element;
+				return per.getTipo();
+			}
+		};
+		tableColumn.setWidth(new Extent(20));
+		tableColumn.setHeadValue("Tipo");
+		tableColumn.setHeadCellRenderer(headLcr);
+		tableColumn.setDataCellRenderer(lcr);
+		tableColModel.getTableColumnList().add(tableColumn);
 
-}
+		return tableColModel;
+
+	}
 
 }
