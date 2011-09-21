@@ -103,7 +103,6 @@
 		<mapping class="codesolids.bd.clases.Chat" />		
 		<mapping class="codesolids.bd.clases.ChatBatalla"/>
 				
-		<mapping class="codesolids.bd.clases.Ataque" />
 		<mapping class="codesolids.bd.clases.Item" />
 		<mapping class="codesolids.bd.clases.PersonajeItem" />
 		<mapping class="codesolids.bd.clases.Enemigo" />
