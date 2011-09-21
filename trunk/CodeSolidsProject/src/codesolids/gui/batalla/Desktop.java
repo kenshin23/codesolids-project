@@ -52,6 +52,7 @@ import codesolids.gui.style.StyleButton;
 import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
 import codesolids.util.ImageReferenceCache;
+import codesolids.util.MessageLevel;
 import codesolids.util.TimedServerPush;
 import echopoint.HtmlLayout;
 import echopoint.ImageIcon;
@@ -87,6 +88,7 @@ public class Desktop extends ContentPane{
 	private Label labelCp;
 	private Label labelOponente;
 	private Label labelPoder;
+	private Label labelLevel;
 	
 	private CapacityBar barraVida1;
 	private CapacityBar barraVida2;
@@ -112,6 +114,10 @@ public class Desktop extends ContentPane{
 	private WindowPane ventanaItem;
 	
 	private List<Number> listCooldown;
+	
+	private static final int vidaHp = 70;
+	private static final int psinergiaMp = 90;
+	
 	
 	public Desktop()
 	{
@@ -142,19 +148,34 @@ public class Desktop extends ContentPane{
 		txtCharla.setInsets(new Insets(15, 10, 15, 15));
 		txtCharla.setWidth(new Extent(238));
 		txtCharla.setHeight(new Extent(65));
-		
+		txtCharla.setEnabled(false);
+		txtCharla.setDisabledBackground(Color.WHITE);
 
 		txtMsg = new TextArea();
 		txtMsg.setMaximumLength(100);
 		txtMsg.setWidth(new Extent(400));
 		txtMsg.setHeight(new Extent(14));
-
-		setBackground(Color.WHITE);
 		
 		HtmlLayout retHtmlLayout;
 		
 		try {
-			retHtmlLayout = new HtmlLayout(getClass().getResourceAsStream("templatebattle.html"), "UTF-8");
+			
+			Session session = SessionHibernate.getInstance().getSession();
+			session.beginTransaction();
+			
+			Criteria criteria = session.createCriteria(Batalla.class).add(Restrictions.and(Restrictions.or(Restrictions.eq("jugadorCreadorRef", jugador),Restrictions.eq("jugadorRetadorRef", jugador)), Restrictions.eq("inBattle", true)));
+			Batalla batalla = (Batalla) criteria.uniqueResult();
+			
+			session.getTransaction().commit();
+			session.close();
+			
+			if( batalla.getEscenario() == 0 )
+				retHtmlLayout = new HtmlLayout(getClass().getResourceAsStream("templatebattle1.html"), "UTF-8");
+			else if( batalla.getEscenario() == 1 )
+				retHtmlLayout = new HtmlLayout(getClass().getResourceAsStream("templatebattle2.html"), "UTF-8");
+			else
+				retHtmlLayout = new HtmlLayout(getClass().getResourceAsStream("templatebattle3.html"), "UTF-8");
+		
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -188,8 +209,7 @@ public class Desktop extends ContentPane{
 		session.close();
 		
 		Row row = new Row();
-		row.setCellSpacing(new Extent(300));
-		
+		row.setCellSpacing(new Extent(300));	
 		
 		row.add(infoColumn());
 		row.add(initChat());
@@ -261,7 +281,7 @@ public class Desktop extends ContentPane{
 							listNumber.add(150);
 
 							barraVida1.setValues(listNumber);
-							labelHp.setText(jugador.getHp() + "/" + battle.getVidaCreador());
+							labelHp.setText(battle.getVidaCreador() + "/" + jugador.getHp());
 							
 							session = SessionHibernate.getInstance().getSession();
 							session.beginTransaction();
@@ -290,7 +310,7 @@ public class Desktop extends ContentPane{
 
 							barraVida1.setValues(listNumber);
 
-							labelHp.setText(jugador.getHp() + "/" + battle.getVidaCreador());
+							labelHp.setText(battle.getVidaCreador() + "/" + jugador.getHp());
 						}
 						timeTurno();
 					}
@@ -309,7 +329,7 @@ public class Desktop extends ContentPane{
 							listNumber.add(150);
 
 							barraVida1.setValues(listNumber);
-							labelHp.setText(jugador.getHp() + "/" + battle.getVidaRetador());
+							labelHp.setText(battle.getVidaRetador() + "/" + jugador.getHp());
 							
 							session = SessionHibernate.getInstance().getSession();
 							session.beginTransaction();
@@ -337,7 +357,7 @@ public class Desktop extends ContentPane{
 							listNumber.add(jugador.getHp() - battle.getVidaRetador());
 
 							barraVida1.setValues(listNumber);
-							labelHp.setText(jugador.getHp() + "/" + battle.getVidaRetador());
+							labelHp.setText(battle.getVidaRetador() + "/" + jugador.getHp());
 						}
 						timeTurno();
 					}
@@ -374,10 +394,10 @@ public class Desktop extends ContentPane{
 		Row row = new Row();
 		row.setCellSpacing(new Extent(50));
 		
-		lbl = new Label();
-		lbl.setForeground(Color.YELLOW);
-		lbl.setText("Lv. "+ jugador.getLevel());
-		row.add(lbl);
+		labelLevel = new Label();
+		labelLevel.setForeground(Color.YELLOW);
+		labelLevel.setText("Lv. "+ jugador.getLevel());
+		row.add(labelLevel);
 		
         Panel panelGold = new Panel();
         panelGold.setWidth(new Extent(150));
@@ -422,7 +442,7 @@ public class Desktop extends ContentPane{
 		
 		labelXp = new Label();
 		labelXp.setForeground(Color.WHITE);		
-		labelXp.setText(nivelExp.getCantidadExp() + "/" + jugador.getXp());
+		labelXp.setText(jugador.getXp() + "/" + nivelExp.getCantidadExp());
 		row.add(labelXp);
 		col.add(row);
 		
@@ -439,7 +459,7 @@ public class Desktop extends ContentPane{
 		
 		labelHp = new Label();
 		labelHp.setForeground(Color.WHITE);
-		labelHp.setText(jugador.getHp() + "/" + barraVida1.getValues().get(0).intValue());
+		labelHp.setText(barraVida1.getValues().get(0).intValue() + "/" + jugador.getHp());
 		row.add(labelHp);
 		col.add(row);
 
@@ -456,7 +476,7 @@ public class Desktop extends ContentPane{
 		
 		labelCp = new Label();
 		labelCp.setForeground(Color.WHITE);
-		labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+		labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + jugador.getMp());
 		row.add(labelCp);
 		col.add(row);
 		
@@ -466,6 +486,7 @@ public class Desktop extends ContentPane{
 		col.add(panel);
 		
 		return col;
+		
 	}
 	
 	private Column statusColumn()
@@ -521,6 +542,7 @@ public class Desktop extends ContentPane{
 		Label magoB = new Label(mB);
 		
 		Row rowM = new Row();
+		rowM.setAlignment(Alignment.ALIGN_CENTER);
 		rowM.setCellSpacing(new Extent(500, Extent.PX));
 		rowM.add(magoA);
 		rowM.add(magoB);
@@ -530,13 +552,14 @@ public class Desktop extends ContentPane{
 		Row rowA = new Row();
 
 		Row rowB = new Row();
+		rowB.setAlignment(Alignment.ALIGN_CENTER);
 		rowB.setCellSpacing(new Extent(5));
 		rowB.add(new Label("Lv. " + jugadorOponente.getLevel()));
 		barraVida2 = createBarra(Color.RED,Color.WHITE,jugadorOponente.getHp(),0);
 		rowB.add(barraVida2);
 
 		Row row = new Row();
-		row.setCellSpacing(new Extent(630));
+		row.setCellSpacing(new Extent(690));
 		row.add(rowA);
 		row.add(rowB);
 
@@ -788,7 +811,8 @@ public class Desktop extends ContentPane{
 			lblSec.setText("21");
 			lblSec.setForeground(Color.GREEN);
 			
-			ventanaItem.userClose();
+			remove(ventanaItem);
+			
 		}
 		else if( Integer.parseInt(lblSec.getText()) < 7 )
 		{
@@ -818,6 +842,7 @@ public class Desktop extends ContentPane{
 
 		lblSec = new Label();
 		lblSec.setForeground(Color.GREEN);
+		lblSec.setFont(new Font(Font.COURIER_NEW,Font.BOLD, null));
 		lblSec.setText("20");		
 		col.add(lblSec);
 
@@ -899,7 +924,7 @@ public class Desktop extends ContentPane{
 				listNumber.add( jugador.getMp() - (battle.getPsinergiaCreador() - poder.getPsinergia()) );
 				barraPsinergia.setValues(listNumber);
 
-				labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+				labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + jugador.getMp());
 
 				battle.setPsinergiaCreador(battle.getPsinergiaCreador() - poder.getPsinergia());
 				battle.setVidaRetador(battle.getVidaRetador() - damage);
@@ -939,7 +964,7 @@ public class Desktop extends ContentPane{
 				listNumber.add( jugador.getMp() - (battle.getPsinergiaRetador() - poder.getPsinergia()) );
 				barraPsinergia.setValues(listNumber);
 
-				labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+				labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + jugador.getMp());
 
 				battle.setPsinergiaRetador(battle.getPsinergiaRetador() - poder.getPsinergia());
 				battle.setVidaCreador(battle.getVidaCreador() - damage);
@@ -1049,7 +1074,7 @@ public class Desktop extends ContentPane{
 					barraPsinergia.setValues(listNumber);
 					
 					battle.setPsinergiaCreador(battle.getPsinergiaCreador() + 15 );
-					labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+					labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + jugador.getMp());
 					
 					listNumber = new ArrayList<Number>();
 					listNumber.add(battle.getVidaRetador() - damage); 
@@ -1102,7 +1127,7 @@ public class Desktop extends ContentPane{
 					barraPsinergia.setValues(listNumber);
 					
 					battle.setPsinergiaRetador( battle.getPsinergiaRetador() + 15 );
-					labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+					labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + jugador.getMp());
 					
 					listNumber = new ArrayList<Number>();
 					listNumber.add(battle.getVidaCreador() - damage); 
@@ -1158,7 +1183,7 @@ public class Desktop extends ContentPane{
 				listNumber.add( jugador.getMp() - (battle.getPsinergiaCreador() + 30) );
 				barraPsinergia.setValues(listNumber);
 				
-				labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+				labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + jugador.getMp());
 				battle.setPsinergiaCreador(battle.getPsinergiaCreador() + 30);
 			}
 			
@@ -1185,7 +1210,7 @@ public class Desktop extends ContentPane{
 				listNumber.add( jugador.getMp() - (battle.getPsinergiaRetador() + 30) );
 				barraPsinergia.setValues(listNumber);
 				
-				labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+				labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + jugador.getMp());
 				battle.setPsinergiaRetador(battle.getPsinergiaRetador() + 30);		
 			}
 		}
@@ -1330,7 +1355,7 @@ public class Desktop extends ContentPane{
 					listNumber.add( jugador.getHp() - (battle.getVidaCreador() + porcentaje) );
 					barraVida1.setValues(listNumber);
 					
-					labelHp.setText(jugador.getMp() + "/" + barraVida1.getValues().get(0).intValue());
+					labelHp.setText(barraVida1.getValues().get(0).intValue() + "/" + jugador.getHp());
 
 					battle.setVidaCreador(battle.getVidaCreador() + porcentaje);
 					battle.setTurno("Retador");
@@ -1368,7 +1393,7 @@ public class Desktop extends ContentPane{
 					listNumber.add( jugador.getMp() - (battle.getPsinergiaCreador() + porcentaje) );
 					barraPsinergia.setValues(listNumber);
 					
-					labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+					labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + jugador.getMp());
 					battle.setPsinergiaCreador(battle.getPsinergiaCreador() + porcentaje);	
 					
 					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
@@ -1459,7 +1484,7 @@ public class Desktop extends ContentPane{
 					listNumber.add( jugador.getHp() - (battle.getVidaRetador() + porcentaje) );
 					barraVida1.setValues(listNumber);
 					
-					labelHp.setText(jugador.getMp() + "/" + barraVida1.getValues().get(0).intValue());
+					labelHp.setText(barraVida1.getValues().get(0).intValue() + "/" + jugador.getHp());
 
 					battle.setVidaRetador(battle.getVidaRetador() + porcentaje);
 					battle.setTurno("Creador");
@@ -1497,7 +1522,7 @@ public class Desktop extends ContentPane{
 					listNumber.add( jugador.getMp() - (battle.getPsinergiaRetador() + porcentaje) );
 					barraPsinergia.setValues(listNumber);
 					
-					labelCp.setText(jugador.getMp() + "/" + barraPsinergia.getValues().get(0).intValue());
+					labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + jugador.getMp());
 					battle.setPsinergiaRetador(battle.getPsinergiaRetador() + porcentaje);	
 					
 					Criteria criteria = session.createCriteria(PersonajeItem.class).add(Restrictions.and(Restrictions.eq("personajeRef", jugador), Restrictions.eq("itemRef", item)));
@@ -1620,9 +1645,16 @@ public class Desktop extends ContentPane{
 	private void finalBattle()
 	{
 		
+		checkServerPush.end();
+		
 		final WindowPane ventanaFinal = new WindowPane();
 		ventanaFinal.setStyle(StyleWindow.ACADEMY_STYLE);
+		ventanaFinal.setModal(true);
+		ventanaFinal.setMovable(false);
+		ventanaFinal.setResizable(false);
 		ventanaFinal.setClosable(false);
+		ventanaFinal.setWidth(new Extent(400));
+		ventanaFinal.setHeight(new Extent(200));
 		
 		if( jugador.getId() == battle.getJugadorCreadorRef().getId() )
 		{
@@ -1633,10 +1665,13 @@ public class Desktop extends ContentPane{
 				int xp = 50;
 				int gold = 500;
 				
-				ventanaFinal.add(validateRecompensa(ventanaFinal, xp, gold, "VICTORIA!"));
-				ventanaFinal.setModal(true);			
-	
+				ventanaFinal.add(validateRecompensa(ventanaFinal, xp, gold, "VICTORIA!"));			
 				add(ventanaFinal);
+				
+				validateLevel(xp, gold);
+				
+				battle.setVictoria(jugador.getId());
+				battle.setDerrota(jugadorOponente.getId());
 			}
 			if( battle.getVidaCreador() == 0 )
 			{	
@@ -1645,8 +1680,12 @@ public class Desktop extends ContentPane{
 				int xp = 3;
 				
 				ventanaFinal.add(validateRecompensa(ventanaFinal, xp, 0, "PERDISTE!"));			
-				ventanaFinal.setModal(true);
 				add(ventanaFinal);
+				
+				validateLevel(xp, 0);
+				
+				battle.setDerrota(jugador.getId());
+				battle.setVictoria(jugadorOponente.getId());
 			}
 		}		
 		else if( jugador.getId() == battle.getJugadorRetadorRef().getId() )
@@ -1659,8 +1698,12 @@ public class Desktop extends ContentPane{
 				int gold = 500;
 
 				ventanaFinal.add(validateRecompensa(ventanaFinal, xp, gold, "VICTORIA!"));
-				ventanaFinal.setModal(true);
 				add(ventanaFinal);
+				
+				validateLevel(xp, gold);
+				
+				battle.setVictoria(jugador.getId());
+				battle.setDerrota(jugadorOponente.getId());
 			}
 			if( battle.getVidaRetador() == 0 )
 			{
@@ -1669,8 +1712,12 @@ public class Desktop extends ContentPane{
 				int xp = 3;
 
 				ventanaFinal.add(validateRecompensa(ventanaFinal, xp, 0, "PERDISTE!"));				
-				ventanaFinal.setModal(true);
 				add(ventanaFinal);
+				
+				validateLevel(xp, 0);
+				
+				battle.setDerrota(jugador.getId());
+				battle.setVictoria(jugadorOponente.getId());
 			}			
 		}
 		
@@ -1698,38 +1745,6 @@ public class Desktop extends ContentPane{
 		col.setLayoutData(cld);
 		
 		col.add(cartelRecompensa(xp, gold, titulo));
-		
-		Session session = SessionHibernate.getInstance().getSession();
-		session.beginTransaction();
-		
-		jugador = (Personaje) session.load(Personaje.class, jugador.getId());
-		
-		nivelExp = (Nivel) session.load(Nivel.class, (jugador.getLevel() + 1));
-						
-		if( jugador.getXp() + xp > nivelExp.getCantidadExp() )
-		{
-			jugador.setXp(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-			jugador.setLevel(jugador.getLevel() + 1);
-			jugador.setGold(jugador.getGold() + gold);
-		}
-		else
-		{
-			jugador.setXp(jugador.getXp() + xp);
-			jugador.setGold(jugador.getGold() + gold);
-		}
-		
-		session.getTransaction().commit();
-		session.close();
-		
-		listNumber = new ArrayList<Number>();
-		listNumber.add(jugador.getXp() + xp);
-		listNumber.add(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
-		barraXp.setValues(listNumber);
-
-		labelXp.setText(nivelExp.getCantidadExp() + "/" + jugador.getXp());
-
-		jugador.setGold(jugador.getGold() + gold);
-		labelGold.setText(" " + jugador.getGold());
 
 		Button btnAceptar = new Button();
 		btnAceptar.setLayoutData(cld);
@@ -1744,7 +1759,6 @@ public class Desktop extends ContentPane{
 			}
 		});				
 		col.add(btnAceptar);
-
 		
 		return col;
 	}
@@ -1797,6 +1811,52 @@ public class Desktop extends ContentPane{
 		col.add(panel);
 		
 		return col;
+	}
+	
+	private void validateLevel(int xp, int gold)
+	{
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+		jugador = (Personaje) session.load(Personaje.class, jugador.getId());
+		
+		nivelExp = (Nivel) session.load(Nivel.class, (jugador.getLevel() + 1));
+						
+		if( jugador.getXp() + xp >= nivelExp.getCantidadExp() )
+		{
+			jugador.setXp((jugador.getXp() + xp) - nivelExp.getCantidadExp());
+			jugador.setLevel(jugador.getLevel() + 1);
+			jugador.setGold(jugador.getGold() + gold);			
+			
+			labelLevel.setText("Lv. "+ jugador.getLevel());
+			
+			labelHp.setText(barraVida1.getValues().get(0).intValue() + "/" + (jugador.getHp() + vidaHp));
+			labelCp.setText(barraPsinergia.getValues().get(0).intValue() + "/" + (jugador.getMp() + psinergiaMp));
+			
+			MessageLevel msgLevel = new MessageLevel(jugador,vidaHp,psinergiaMp);
+			add(msgLevel);
+			
+		}
+		else
+		{
+			jugador.setXp(jugador.getXp() + xp);
+			jugador.setGold(jugador.getGold() + gold);
+			
+		}
+		
+		session.getTransaction().commit();
+		session.close();
+		
+		listNumber = new ArrayList<Number>();
+		listNumber.add(jugador.getXp() + xp);
+		listNumber.add(nivelExp.getCantidadExp() - (jugador.getXp() + xp));
+		barraXp.setValues(listNumber);
+
+		labelXp.setText(jugador.getXp() + "/" + nivelExp.getCantidadExp());
+
+		labelGold.setText(" " + jugador.getGold());
+		
 	}
 	
 	private Column panelLetrero()
