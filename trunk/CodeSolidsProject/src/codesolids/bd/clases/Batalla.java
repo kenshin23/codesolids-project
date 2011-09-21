@@ -37,6 +37,8 @@ public class Batalla {
 	
 	private int secuenciaTurno; 
 	
+	private int escenario;
+	
 	private Personaje jugadorCreadorRef;
 	private Personaje jugadorRetadorRef;
 	
@@ -45,7 +47,10 @@ public class Batalla {
 	
 	private int psinergiaCreador;
 	private int psinergiaRetador;
-		
+	
+	private int victoria;
+	private int derrota;
+	
 	private List<ChatBatalla> chatBatallaList = new ArrayList<ChatBatalla>();
 	
 	@Id
@@ -80,6 +85,14 @@ public class Batalla {
 	
 	public void setSecuenciaTurno(int secuenciaTurno) {
 		this.secuenciaTurno = secuenciaTurno;
+	}
+	
+	public int getEscenario() {
+		return escenario;
+	}
+
+	public void setEscenario(int escenario) {
+		this.escenario = escenario;
 	}
 	
 	@ManyToOne
@@ -132,9 +145,25 @@ public class Batalla {
 		this.psinergiaRetador = psinergiaRetador;
 	}
 	
+	public int getVictoria() {
+		return victoria;
+	}
+
+	public void setVictoria(int victoria) {
+		this.victoria = victoria;
+	}
+
+	public int getDerrota() {
+		return derrota;
+	}
+
+	public void setDerrota(int derrota) {
+		this.derrota = derrota;
+	}
+	
 	@OneToMany(mappedBy = "batallaChatRef", orphanRemoval = true)
-	  @LazyCollection(LazyCollectionOption.TRUE)
-	  @Cascade({CascadeType.ALL})
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
 	public List<ChatBatalla> getChatBatallaList() {
 		return chatBatallaList;
 	}
