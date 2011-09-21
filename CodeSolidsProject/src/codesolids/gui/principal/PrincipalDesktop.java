@@ -365,6 +365,7 @@ public class PrincipalDesktop extends ContentPane {
 	}
 	
 	private void btnRegistrarClicked() {
+		
 		if (!validateCampoRegister())
 		{
 			Column col = new Column();

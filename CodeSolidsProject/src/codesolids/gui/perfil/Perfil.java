@@ -33,7 +33,6 @@ import org.informagen.echo.app.CapacityBar;
 
 import codesolids.bd.clases.Nivel;
 import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.Poderes;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.inventario.DesktopItem;

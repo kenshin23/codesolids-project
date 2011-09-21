@@ -1,18 +1,5 @@
 package codesolids.gui.crear;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-
-import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.Usuario;
-import codesolids.gui.principal.PrincipalApp;
-import codesolids.gui.seleccion.DesktopSelect;
-import codesolids.gui.style.Styles1;
-import codesolids.util.ImageReferenceCache;
-import codesolids.bd.hibernate.SessionHibernate;
-import echopoint.HtmlLayout;
-import echopoint.layout.HtmlLayoutData;
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
@@ -28,6 +15,18 @@ import nextapp.echo.app.Panel;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+
+import org.hibernate.Session;
+
+import codesolids.bd.clases.Personaje;
+import codesolids.bd.clases.Usuario;
+import codesolids.bd.hibernate.SessionHibernate;
+import codesolids.gui.principal.PrincipalApp;
+import codesolids.gui.seleccion.DesktopSelect;
+import codesolids.gui.style.Styles1;
+import codesolids.util.ImageReferenceCache;
+import echopoint.HtmlLayout;
+import echopoint.layout.HtmlLayoutData;
 
 /**
  * 
@@ -47,7 +46,6 @@ public class DesktopCreate extends ContentPane{
 	
 	public DesktopCreate()
 	{
-		
 		initGUI();
 	}
 
@@ -267,6 +265,8 @@ public class DesktopCreate extends ContentPane{
 		personaje.setSpeed(0);
 		personaje.setDefensa(0);
 		personaje.setPuntos(0);
+		personaje.setReputacionClan(0);
+		personaje.setDonateGold(0);
 		
 		if( type == "Mago Tierra"){
 			personaje.setTipo("Tierra");
@@ -286,14 +286,12 @@ public class DesktopCreate extends ContentPane{
 		}
 		
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
-		
 		Usuario usuario = app.getUsuario();
 		
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		Criteria criteria = session.createCriteria(Usuario.class).add(Restrictions.eq("id", usuario.getId()));
-		usuario = (Usuario) criteria.uniqueResult();
+		usuario = (Usuario) session.load(Usuario.class, usuario.getId());
 		
 		personaje.setUsuarioRef(usuario);
 		usuario.getPersonajeList().add(personaje);
