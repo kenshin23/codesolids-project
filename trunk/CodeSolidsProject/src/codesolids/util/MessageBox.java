@@ -44,6 +44,7 @@ public class MessageBox extends WindowPane{
 		setResizable(false);
 		setClosable(false);
 		setModal(true);
+		setMovable(false);
 		
 		initGUI();
 	}
