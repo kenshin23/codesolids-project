@@ -50,6 +50,9 @@ public class Personaje {
 	private Calendar fechaInicio;
 	private Calendar fechaFin;
 	
+	private int reputacionClan;
+	private int donateGold;
+	
 	private List<PersonajePoderes> personajePoderesList = new ArrayList<PersonajePoderes>();
 	private List<PersonajeItem> personajeItemList = new ArrayList<PersonajeItem>();
 	
@@ -61,6 +64,12 @@ public class Personaje {
 	
 	protected Usuario usuarioRef;
 	private Timestamp arena;
+	
+	private List<Clan> clanMasterList = new ArrayList<Clan>();
+	private Clan clanRef;
+	
+	private List<Mensaje> mensajeSendList = new ArrayList<Mensaje>();
+	private List<Mensaje> mensajeReceivesList = new ArrayList<Mensaje>();
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -194,7 +203,23 @@ public class Personaje {
 	public void setFechaFin(Calendar fechaFin) {
 		this.fechaFin = fechaFin;
 	}
+	
+	public int getReputacionClan() {
+		return reputacionClan;
+	}
 
+	public void setReputacionClan(int reputacionClan) {
+		this.reputacionClan = reputacionClan;
+	}
+
+	public int getDonateGold() {
+		return donateGold;
+	}
+
+	public void setDonateGold(int donateGold) {
+		this.donateGold = donateGold;
+	}
+	
 	@OneToMany(mappedBy = "personajeRef", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.TRUE)
 	@Cascade({CascadeType.ALL})
@@ -279,6 +304,47 @@ public class Personaje {
 		this.personajeItemList = personajeItemList;
 	}
 
+	@OneToMany(mappedBy = "clanMasterRef", orphanRemoval = true )
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
+	public List<Clan> getClanMasterList() {
+		return clanMasterList;
+	}
+
+	public void setClanMasterList(List<Clan> clanMasterList) {
+		this.clanMasterList = clanMasterList;
+	}
+	
+	@ManyToOne
+	public Clan getClanRef() {
+		return clanRef;
+	}
+
+	public void setClanRef(Clan clanRef) {
+		this.clanRef = clanRef;
+	}
+
+	@OneToMany(mappedBy = "personajeSendRef", orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
+	public List<Mensaje> getMensajeSendList() {
+		return mensajeSendList;
+	}
+
+	public void setMensajeSendList(List<Mensaje> mensajeSendList) {
+		this.mensajeSendList = mensajeSendList;
+	}
+
+	@OneToMany(mappedBy = "personajeReceivesRef", orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.TRUE)
+	@Cascade({CascadeType.ALL})
+	public List<Mensaje> getMensajeReceivesList() {
+		return mensajeReceivesList;
+	}
+
+	public void setMensajeReceivesList(List<Mensaje> mensajeReceivesList) {
+		this.mensajeReceivesList = mensajeReceivesList;
+	}
 	  
 }
 
