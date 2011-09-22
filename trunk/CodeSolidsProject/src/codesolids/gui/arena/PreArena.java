@@ -74,7 +74,7 @@ public class PreArena extends ContentPane{
 
 	TaskQueueHandle taskQueue;
 	TimedServerPush inviteServerPush;
-	
+	//Aqui
 	public PreArena() {
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
 		taskQueue = ApplicationInstance.getActive().createTaskQueue();		
