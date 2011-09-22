@@ -1279,11 +1279,11 @@ public class Tienda extends ContentPane {
 	    rowBtn.add(btnArmor);
 	    
 	    Button btnSword = new Button();
-        btnArmor.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/espadas.png")));
-        btnArmor.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/espadasMouseOver.png"))));
-        btnArmor.setRolloverEnabled(true);
-        btnArmor.setHeight(new Extent(27));
-        btnArmor.setWidth(new Extent(103));
+        btnSword.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/espadas.png")));
+        btnSword.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/espadasMouseOver.png"))));
+        btnSword.setRolloverEnabled(true);
+        btnSword.setHeight(new Extent(27));
+        btnSword.setWidth(new Extent(103));
 	    btnSword.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               btnSwordClicked();
@@ -1292,11 +1292,11 @@ public class Tienda extends ContentPane {
         rowBtn.add(btnSword);
 
 	    Button btnPotion = new Button();
-        btnArmor.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/posiones.png")));
-        btnArmor.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/posionesMouseOver.png"))));
-        btnArmor.setRolloverEnabled(true);
-        btnArmor.setHeight(new Extent(27));
-        btnArmor.setWidth(new Extent(103));
+        btnPotion.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/pociones.png")));
+        btnPotion.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/pocionesMouseOver.png"))));
+        btnPotion.setRolloverEnabled(true);
+        btnPotion.setHeight(new Extent(27));
+        btnPotion.setWidth(new Extent(103));
 	    btnPotion.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	btnPotionClicked();
