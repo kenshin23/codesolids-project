@@ -1437,15 +1437,11 @@ public class Tienda extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		List<Item> list = session.createCriteria(Item.class).addOrder(Order.asc("id")).list();
+		List<Item> list = session.createCriteria(Item.class).add(Restrictions.eq("inshop", true)).addOrder(Order.asc("id")).list();
 
 		for(Item obj : list)
 		{			
-			if(obj.isInshop() == true){
-
-				tableDtaModel.add(obj);
-			}			
-
+			tableDtaModel.add(obj);
 		}
 	    session.getTransaction().commit();
 	    session.close();		
@@ -1462,7 +1458,7 @@ public class Tienda extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		List<Item> list = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Armadura")).addOrder(Order.asc("id")).list();
+		List<Item> list = session.createCriteria(Item.class).add(Restrictions.eq("inshop", true)).add(Restrictions.eq("tipo", "Armadura")).addOrder(Order.asc("id")).list();
 
 		for(Item obj : list)
 		{			
@@ -1486,13 +1482,11 @@ public class Tienda extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		List<Item> list = session.createCriteria(Item.class).add(Restrictions.eq("tipo", "Espada")).addOrder(Order.asc("id")).list();
+		List<Item> list = session.createCriteria(Item.class).add(Restrictions.eq("inshop", true)).add(Restrictions.eq("tipo", "Espada")).addOrder(Order.asc("id")).list();
 
 		for(Item obj : list)
 		{			
-			if(obj.isInshop() == true){
-				tableDtaModel.add(obj);
-			}
+			tableDtaModel.add(obj);
 		}
 	    session.getTransaction().commit();
 	    session.close();
@@ -1664,7 +1658,7 @@ public class Tienda extends ContentPane {
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
-		List<Item> list = session.createCriteria(Item.class).addOrder(Order.asc("id")).list();
+		List<Item> list = session.createCriteria(Item.class).add(Restrictions.eq("inshop", true)).addOrder(Order.asc("id")).list();
 
 		for(Item obj : list)
 		{
@@ -1681,12 +1675,8 @@ public class Tienda extends ContentPane {
 			item.setDirImage(obj.getDirImage());
 			item.setInshop(obj.isInshop());
 			
-			if(item.isInshop() == true){
-
-				tableDtaModel.add(item);
-				listItem.add(item);
-			}			
-
+			tableDtaModel.add(obj);
+			listItem.add(item);
 		}			
 		session.getTransaction().commit();
 		session.close();		
