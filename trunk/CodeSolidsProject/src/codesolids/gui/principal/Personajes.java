@@ -23,7 +23,7 @@ public class Personajes {
 	public Component initPersonaje(){
 		
 		WindowPane windowPane = new WindowPane();
-		windowPane.setMaximumHeight(new Extent(535));
+		windowPane.setMaximumHeight(new Extent(550));
 		windowPane.setMinimumWidth(new Extent(440));
 		windowPane.setResizable(false);
 		windowPane.setPositionX(new Extent(400));
@@ -44,7 +44,7 @@ public class Personajes {
 	    Label  label;
 	    
 	    //Mago de Fuego
-		ImageReference image = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoF.png");
+		ImageReference image = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGF.gif");
 		label = new Label(image);
 		grid.add(label);
 		
@@ -66,12 +66,12 @@ public class Personajes {
 		grid.add(label);
 		
 		
-		image = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoHH.png");
+		image = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGH.gif");
 		label = new Label(image);
 		grid.add(label);
 		
 		//Mago de Tierra
-		image = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoT.png");
+		image = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGT.gif");
 		label = new Label(image);
 		grid.add(label);
 		
@@ -83,7 +83,6 @@ public class Personajes {
 		label.setFont(new Font(Font.SANS_SERIF,Font.BOLD, null));
 		grid.add(label);
 		
-		
 		//Guerrero
 		label = new Label("El guerrero es determinado en sus ataques, son muy fuertes y resistentes "+
 						"en la batalla. Combinan sus puños, espadas y patadas para realizar "+
@@ -93,7 +92,7 @@ public class Personajes {
 		label.setFont(new Font(Font.SANS_SERIF,Font.BOLD, null));
 		grid.add(label);
 		
-		image = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/GuerreroGG.png");
+		image = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGG.gif");
 		label = new Label(image);
 		grid.add(label);	
 

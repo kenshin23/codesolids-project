@@ -34,6 +34,7 @@ import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.GUIStyles;
+import codesolids.util.ImageReferenceCache;
 import codesolids.util.TimedServerPush;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
@@ -203,9 +204,12 @@ public class ChatGui extends ContentPane {
 		row = new Row();
 		row.setCellSpacing(new Extent(50));
 		row.add(panelTexto());
-		Button btnEnviar = new Button("Enviar");
-		btnEnviar.setStyle(GUIStyles.DEFAULT_STYLE);
-		btnEnviar.setHeight(new Extent(25));
+		Button btnEnviar = new Button();
+        btnEnviar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/enviarChat.png")));
+        btnEnviar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/enviarChatMouseOver.png"))));
+        btnEnviar.setRolloverEnabled(true);
+        btnEnviar.setHeight(new Extent(54));
+        btnEnviar.setWidth(new Extent(103));
 
 		btnEnviar.addActionListener(new ActionListener() {
 

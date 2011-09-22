@@ -641,7 +641,7 @@ public class Tienda extends ContentPane {
 
 	    lcr = new LabelCellRenderer();
 	    lcr.setBackground(new Color(226,211,161));
-	    lcr.setForeground(new Color(251,255,0));
+	    lcr.setForeground(Color.BLACK);
 	    
 	    tableColumn.setDataCellRenderer(lcr);
 	    tableColModel.getTableColumnList().add(tableColumn);
