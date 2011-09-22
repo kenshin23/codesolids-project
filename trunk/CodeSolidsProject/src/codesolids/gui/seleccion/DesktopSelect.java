@@ -12,6 +12,7 @@ import codesolids.gui.crear.DesktopCreate;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.Styles1;
+import codesolids.util.ImageReferenceCache;
 import codesolids.util.TestTableModel;
 import codesolids.bd.hibernate.SessionHibernate;
 
@@ -36,6 +37,7 @@ import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.event.ActionEvent;
@@ -226,11 +228,11 @@ public class DesktopSelect extends ContentPane{
 			public Component getCellRenderer( //
 					final ETable table, final Object value, final int col, final int row) {
 
-				boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
-
-				Button btnSelect = new Button("Seleccionar");
-				btnSelect.setStyle(Styles1.DEFAULT_STYLE);
-				btnSelect.setEnabled(editable);
+				
+				Button btnSelect = new Button();
+				btnSelect.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/seleccionar.png")));
+				btnSelect.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/seleccionarMouseOver.png")));
+				btnSelect.setRolloverEnabled(true);
 				btnSelect.setToolTipText("Seleccionar");
 				
 				btnSelect.addActionListener(new ActionListener() {
@@ -238,6 +240,8 @@ public class DesktopSelect extends ContentPane{
 						btnSelectClicked(row);
 					}
 				});
+				btnSelect.setHeight(new Extent(29));
+				btnSelect.setWidth(new Extent(103));
 
 				Personaje pBean = (Personaje) tableDtaModel.getElementAt(row);
 				
@@ -255,19 +259,20 @@ public class DesktopSelect extends ContentPane{
 			public Component getCellRenderer( //
 					final ETable table, final Object value, final int col, final int row) {
 
-				boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
-
-				Button btnCreate = new Button("Crear Personaje");
-				btnCreate.setStyle(Styles1.DEFAULT_STYLE);
-				btnCreate.setEnabled(editable);
+				Button btnCreate = new Button();
 				btnCreate.setToolTipText("Crear Personaje");
-				
+				btnCreate.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/crear.png")));
+				btnCreate.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/crearMouseOver.png")));
+				btnCreate.setRolloverEnabled(true);
 				btnCreate.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						btnCreateClicked(row);
 					}
 				});
+				btnCreate.setHeight(new Extent(29));
+				btnCreate.setWidth(new Extent(144));				
 
+				
 				Personaje pBean = (Personaje) tableDtaModel.getElementAt(row);
 				
 				if( pBean.getLevel() == 0 )
@@ -284,11 +289,10 @@ public class DesktopSelect extends ContentPane{
 			public Component getCellRenderer( //
 					final ETable table, final Object value, final int col, final int row) {
 
-				boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
-
-				Button btnDelete = new Button("Eliminar");
-				btnDelete.setStyle(Styles1.DEFAULT_STYLE);
-				btnDelete.setEnabled(editable);
+				Button btnDelete = new Button();
+				btnDelete.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/eliminar.png")));
+				btnDelete.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/eliminarMouseOver.png")));
+				btnDelete.setRolloverEnabled(true);
 				btnDelete.setToolTipText("Eliminar");
 				
 				btnDelete.addActionListener(new ActionListener() {
@@ -296,6 +300,8 @@ public class DesktopSelect extends ContentPane{
 						btnDeleteClicked(row);
 					}
 				});
+				btnDelete.setHeight(new Extent(29));
+				btnDelete.setWidth(new Extent(99));
 				
 				Personaje pBean = (Personaje) tableDtaModel.getElementAt(row);
 				

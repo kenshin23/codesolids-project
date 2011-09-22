@@ -227,9 +227,9 @@ public class ChatGui extends ContentPane {
 
 		return colp;
 
-
 	}
 
+	
 	public Component panelMensajes(){
 
 		Panel panel = new Panel();

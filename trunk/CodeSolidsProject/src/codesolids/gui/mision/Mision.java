@@ -310,10 +310,13 @@ public class Mision extends ContentPane{
 	          
 	          final Region reg = (Region) tableDtaModel.getElementAt(row);
 	          
-	          Button ret = new Button("Ver");
-	          ret.setStyle(Styles1.DEFAULT_STYLE);
-	          ret.setEnabled(editable);
+	          Button ret = new Button();
 	          ret.setToolTipText("Ver");
+	          ret.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/ver2.png")));
+	          ret.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/ver2MouseOver.png"))));
+	          ret.setRolloverEnabled(true);
+	          ret.setHeight(new Extent(23));
+	          ret.setWidth(new Extent(35));
 
 	          ret.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
@@ -340,8 +343,12 @@ public class Mision extends ContentPane{
 	          
 	          final Enemigo en = (Enemigo) tableDtaModelEnemigo.getElementAt(row);
 	          
-	          Button ret = new Button("Ver");
-	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          Button ret = new Button();
+	          ret.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/ver2.png")));
+	          ret.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/ver2MouseOver.png"))));
+	          ret.setRolloverEnabled(true);
+	          ret.setHeight(new Extent(23));
+	          ret.setWidth(new Extent(35));
 	          ret.setEnabled(editable);
 
 	          ret.addActionListener(new ActionListener() {
@@ -428,11 +435,13 @@ public class Mision extends ContentPane{
         
         Button btnRegion = new Button();		
         btnRegion = new Button();
-        btnRegion.setText("Aceptar");
         btnRegion.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-        btnRegion.setHeight(new Extent(15));
+        btnRegion.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/aceptar.png")));
+        btnRegion.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/aceptarMouseOver.png"))));
+        btnRegion.setRolloverEnabled(true);
+        btnRegion.setHeight(new Extent(29));
+        btnRegion.setWidth(new Extent(99));
         btnRegion.setToolTipText("Ir a esta region");
-        btnRegion.setStyle(Styles1.DEFAULT_STYLE);
         btnRegion.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
         	initEnemigos(nameR);				
@@ -442,12 +451,13 @@ public class Mision extends ContentPane{
         rowp.setCellSpacing(new Extent(20));
         
 		Button returnButton = new Button();		
-		returnButton = new Button();
-		returnButton.setText("Salir");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		returnButton.setHeight(new Extent(15));
 		returnButton.setToolTipText("Regresar al mapa");
-		returnButton.setStyle(Styles1.DEFAULT_STYLE);
+        returnButton.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/salir.png")));
+        returnButton.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/salirMouseOver.png"))));
+        returnButton.setRolloverEnabled(true);
+        returnButton.setHeight(new Extent(29));
+        returnButton.setWidth(new Extent(99));
 		returnButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			buttonExitClicked(e);				
@@ -496,12 +506,15 @@ public class Mision extends ContentPane{
 
         Button btnRegion = new Button();		
         btnRegion = new Button();
-        btnRegion.setText("Aceptar");
         btnRegion.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-        btnRegion.setHeight(new Extent(15));
+        btnRegion.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/aceptar.png")));
+        btnRegion.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/aceptarMouseOver.png"))));
+        btnRegion.setRolloverEnabled(true);
+        btnRegion.setHeight(new Extent(29));
+        btnRegion.setWidth(new Extent(99));
         btnRegion.setToolTipText("Hacer esta Misión");
-        btnRegion.setStyle(Styles1.DEFAULT_STYLE);
 
+        
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
 		
@@ -526,12 +539,13 @@ public class Mision extends ContentPane{
         rowTab2.setCellSpacing(new Extent(20));
         
 		Button returnButton = new Button();		
-		returnButton = new Button();
-		returnButton.setText("Regiones");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		returnButton.setHeight(new Extent(15));
 		returnButton.setToolTipText("Regresar a Regiones");
-		returnButton.setStyle(Styles1.DEFAULT_STYLE);
+        returnButton.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/regiones.png")));
+        returnButton.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/regionesMouseOver.png"))));
+        returnButton.setRolloverEnabled(true);
+        returnButton.setHeight(new Extent(29));
+        returnButton.setWidth(new Extent(99));
 		returnButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			removeAll();
@@ -541,12 +555,14 @@ public class Mision extends ContentPane{
 		rowTab2.add(returnButton);
         
 		returnButton = new Button();		
-		returnButton = new Button();
-		returnButton.setText("Salir");
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		returnButton.setHeight(new Extent(15));
+        returnButton.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/salir.png")));
+        returnButton.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/salirMouseOver.png"))));
+        returnButton.setRolloverEnabled(true);
+        returnButton.setHeight(new Extent(29));
+        returnButton.setWidth(new Extent(99));
 		returnButton.setToolTipText("Regresar al mapa");
-		returnButton.setStyle(Styles1.DEFAULT_STYLE);
+
 		returnButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			buttonExitClicked(e);				

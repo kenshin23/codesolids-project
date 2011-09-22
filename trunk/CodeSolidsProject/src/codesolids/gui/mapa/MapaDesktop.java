@@ -276,7 +276,6 @@ public class MapaDesktop extends ContentPane {
 		hld = new HtmlLayoutData("botonLogout");
 
 		Row row = new Row();
-		row.setCellSpacing(new Extent(20));
 
 		Button btnEditarDatos = new Button("Editar Datos");
 		btnEditarDatos.setStyle(Styles1.DEFAULT_STYLE);
@@ -289,14 +288,16 @@ public class MapaDesktop extends ContentPane {
 
 			}
 		});
-		row.add(btnEditarDatos);
+		//row.add(btnEditarDatos);
 
-		Button logoutBtn = new Button("Cerrar Sesion");
+		Button logoutBtn = new Button();
 		logoutBtn.setEnabled(true);
 		logoutBtn.setVisible(true);
-		logoutBtn.setStyle(Styles1.DEFAULT_STYLE);
-		logoutBtn.setHeight(new Extent(15, Extent.PX));
-		logoutBtn.setWidth(new Extent(80, Extent.PX));
+		logoutBtn.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/sesion.png")));
+		logoutBtn.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/sesionMouseOver.png"))));
+		logoutBtn.setRolloverEnabled(true);
+		logoutBtn.setHeight(new Extent(27));
+		logoutBtn.setWidth(new Extent(103));
 		logoutBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logoutBtnClicked(e);

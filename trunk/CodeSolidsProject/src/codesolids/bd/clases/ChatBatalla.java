@@ -49,7 +49,6 @@ public class ChatBatalla {
 		this.mensaje = mensaje;
 	}
 		
-	
 	@ManyToOne
 	public Batalla getBatallaChatRef() {
 		return batallaChatRef;

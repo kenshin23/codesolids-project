@@ -5,40 +5,35 @@ import nextapp.echo.app.Color;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
-import nextapp.echo.app.ImageReference;
-import nextapp.echo.app.ResourceImageReference;
+import nextapp.echo.app.FillImageBorder;
+import nextapp.echo.app.Font;
+import nextapp.echo.app.Insets;
 import nextapp.echo.app.TextArea;
 import nextapp.echo.app.WindowPane;
+import codesolids.util.ImageReferenceCache;
 
 public class Info {
 	
 	public Component initHistoria(){
 		
 		WindowPane windowPane = new WindowPane();
-		
-		ResourceImageReference w = new ResourceImageReference("Images/Fondos/midgard2.jpg");		
-		ImageReference image = w;
-		FillImage imagep = new FillImage(image);
-		
-		//FillImageBorder imageb = new FillImageBorder(Color.BLUE, new Insets(new Extent(4)), new Insets(new Extent(4)));
-		
-		//Aqui SVN
-		
-		windowPane.setTitle("HISTORIA");
+
 		windowPane.setMinimumHeight(new Extent(600));
 		windowPane.setMinimumWidth(new Extent(500));
 		windowPane.setResizable(false);
 		windowPane.setMovable(false);
-		windowPane.setBackgroundImage(imagep);
-		windowPane.setTitleBackground(Color.BLUE);
-		//windowPane.setBorder(imageb);
+		windowPane.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Fondos/midgard2.jpg")));
+		windowPane.setTitleBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/historiaBar.png")));
+		windowPane.setBorder(new FillImageBorder(Color.BLACK, new Insets(new Extent(1)), new Insets(new Extent(1))));
 		
 		TextArea txt = new TextArea();
 		txt.setEditable(false);
 		
 		txt.setHeight(new Extent(600));
 		txt.setWidth(new Extent(488));
-		txt.setBackgroundImage(imagep);
+		txt.setFont(new Font(Font.SANS_SERIF, Font.BOLD, new Extent(14)));
+		txt.setForeground(Color.BLACK);
+		txt.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Fondos/midgard2.jpg")));
 		txt.setAlignment(Alignment.ALIGN_CENTER);
 		txt.setText("	Durante muchos años, el poder de la Alquimia regía el mundo de Weyard. " +
 				"Gracias al descubrimiento de ese poder, la humanidad alcanzó la cima de la civilización " +

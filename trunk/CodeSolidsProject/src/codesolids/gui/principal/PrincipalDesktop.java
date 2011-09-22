@@ -14,6 +14,7 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
+import nextapp.echo.app.FillImageBorder;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
@@ -32,7 +33,7 @@ import org.hibernate.criterion.Restrictions;
 import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.seleccion.DesktopSelect;
-import codesolids.gui.style.Styles1;
+import codesolids.util.ImageReferenceCache;
 import codesolids.util.MessageBox;
 import echopoint.HtmlLayout;
 import echopoint.layout.HtmlLayoutData;
@@ -77,6 +78,11 @@ public class PrincipalDesktop extends ContentPane {
 			throw new RuntimeException(e);
 		}
 
+		ResourceImageReference w;
+		ImageReference image;
+		FillImage imageb;
+		
+		
 		//Tabla del Login
 
 		HtmlLayoutData hld;
@@ -102,11 +108,17 @@ public class PrincipalDesktop extends ContentPane {
 		row.add(textPassword);
 		col.add(row);
 
-		Button btnAcceder = new Button("Acceder");
-		btnAcceder.setStyle(Styles1.DEFAULT_STYLE);
-		btnAcceder.setHeight(new Extent(15));
-		btnAcceder.setWidth(new Extent(50));
-		col.add(btnAcceder);
+		Button btnAcceder = new Button();
+		imageb = new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/acceder.png"));
+		btnAcceder.setBackgroundImage(imageb);
+		btnAcceder.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/accederMouseOver.png"))));
+		btnAcceder.setRolloverEnabled(true);
+		btnAcceder.setHeight(new Extent(30));
+		btnAcceder.setWidth(new Extent(95));
+		Column colAcceder = new Column();
+		colAcceder.setInsets(new Insets(new Extent(60),new Extent(10)));
+		colAcceder.add(btnAcceder);
+		col.add(colAcceder);
 		btnAcceder.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent evt) {
@@ -122,10 +134,12 @@ public class PrincipalDesktop extends ContentPane {
 		hld = new HtmlLayoutData("register");
 		col = new Column();
 
-		Button btnRegistro = new Button("Registrar");
-		btnRegistro.setStyle(Styles1.DEFAULT_STYLE);
-		btnRegistro.setHeight(new Extent(20));
-		btnRegistro.setWidth(new Extent(50));
+		Button btnRegistro = new Button();
+		btnRegistro.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/registrar.png")));
+		btnRegistro.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/registrarMouseOver.png"))));
+		btnRegistro.setRolloverEnabled(true);
+		btnRegistro.setHeight(new Extent(30));
+		btnRegistro.setWidth(new Extent(95));
 
 		btnRegistro.addActionListener(new ActionListener() {
 
@@ -149,11 +163,15 @@ public class PrincipalDesktop extends ContentPane {
 		hld = new HtmlLayoutData("info");
 
 		row = new Row();
-		row.setCellSpacing(new Extent(30)); 
-		Button btnHistoria = new Button("Historia");
-		btnHistoria.setStyle(Styles1.DEFAULT_STYLE);
-		btnHistoria.setHeight(new Extent(15));
-		btnHistoria.setWidth(new Extent(65));
+		row.setCellSpacing(new Extent(15));
+		
+		Button btnHistoria = new Button();
+
+		btnHistoria.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/historia.png")));
+		btnHistoria.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/historiaMouseOver.png")));
+		btnHistoria.setRolloverEnabled(true);
+		btnHistoria.setHeight(new Extent(30));
+		btnHistoria.setWidth(new Extent(95));
 		btnHistoria.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent evt) {
@@ -163,16 +181,29 @@ public class PrincipalDesktop extends ContentPane {
 		});
 		row.add(btnHistoria);
 
-		Button btnPersonajes = new Button("Personajes");
-		btnPersonajes.setStyle(Styles1.DEFAULT_STYLE);
-		btnPersonajes.setHeight(new Extent(15));
-		btnPersonajes.setWidth(new Extent(65));
+		Button btnPersonajes = new Button();
+		btnPersonajes.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/personajes4.png")));
+		btnPersonajes.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/personajes4MouseOver.png")));
+		btnPersonajes.setRolloverEnabled(true);
+
+		btnPersonajes.setHeight(new Extent(30));
+		btnPersonajes.setWidth(new Extent(100));
+		btnPersonajes.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent evt) {
+				btnPersonajesClicked();
+
+			}
+		});
 		row.add(btnPersonajes);
 
-		Button btnObjetos = new Button("Objetos");
-		btnObjetos.setStyle(Styles1.DEFAULT_STYLE);
-		btnObjetos.setHeight(new Extent(15));
-		btnObjetos.setWidth(new Extent(65));
+		Button btnObjetos = new Button();
+		btnObjetos.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/objetos.png")));
+		btnObjetos.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/objetosMouseOver.png")));
+		btnObjetos.setRolloverEnabled(true);
+		
+		btnObjetos.setHeight(new Extent(30));
+		btnObjetos.setWidth(new Extent(100));
 		row.add(btnObjetos);
 
 		row.setLayoutData(hld);
@@ -268,21 +299,24 @@ public class PrincipalDesktop extends ContentPane {
 		Info inf = new Info();
 		add(inf.initHistoria());
 	}
+	
+	private void btnPersonajesClicked() {
+		Personajes inf = new Personajes();
+		add(inf.initPersonaje());
+	}
 
 	private void btnRegistroClicked(){
 
 		ventana = new WindowPane();
-		
-		ventana.setTitle("Registro de Usuario");	
+	
 		ventana.setMinimumHeight(new Extent(400));
 		ventana.setMinimumWidth(new Extent(200));
 		ventana.setResizable(false);
-		
-		ResourceImageReference w = new ResourceImageReference("Images/fondo2.jpg");		
-		ImageReference image = w;
-		FillImage imagep = new FillImage(image);
-		
-		ventana.setBackgroundImage(imagep);
+
+
+		ventana.setBorder(new FillImageBorder(Color.BLACK, new Insets(new Extent(2)), new Insets(new Extent(2))));
+		ventana.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Fondos/castillo2.jpg")));
+		ventana.setTitleBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/borde3.png")));		
 		
 		ventana.setModal(true);
 		
@@ -304,6 +338,7 @@ public class PrincipalDesktop extends ContentPane {
 		row.setCellSpacing(new Extent(20));
 		row.add(label);
 		fieldLogin = new TextField();
+		fieldLogin.setMaximumLength(20);
 		row.add(fieldLogin);
 
 		col.add(row);
@@ -345,10 +380,15 @@ public class PrincipalDesktop extends ContentPane {
 
 		row = new Row();
 		row.setAlignment(Alignment.ALIGN_CENTER);
-		Button btnOk = new Button("Registrar");
-		btnOk.setStyle(Styles1.DEFAULT_STYLE);
-		btnOk.setHeight(new Extent(20));
-		btnOk.setWidth(new Extent(50));
+		Button btnOk = new Button();
+		
+		FillImage imageb = new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/registrar.png")));
+		btnOk.setBackgroundImage(imageb);
+		btnOk.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/registrarMouseOver.png"))));
+		btnOk.setRolloverEnabled(true);
+		
+		btnOk.setHeight(new Extent(30));
+		btnOk.setWidth(new Extent(95));
 
 		btnOk.addActionListener(new ActionListener() {			
 			@Override

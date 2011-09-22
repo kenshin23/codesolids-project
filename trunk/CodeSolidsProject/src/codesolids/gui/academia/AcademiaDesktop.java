@@ -300,8 +300,12 @@ public class AcademiaDesktop extends ContentPane {
 		Row rowBtn = new Row();
 		rowBtn.setCellSpacing(new Extent(5));
 	    
-	    Button btnAll = new Button("Todos");
-	    btnAll.setStyle(Styles1.DEFAULT_STYLE);
+	    Button btnAll = new Button();
+        btnAll.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/todo.png")));
+        btnAll.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/todoMouseOver.png"))));
+        btnAll.setRolloverEnabled(true);
+        btnAll.setHeight(new Extent(27));
+        btnAll.setWidth(new Extent(103));
 	    btnAll.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               btnAllClicked();
@@ -309,8 +313,12 @@ public class AcademiaDesktop extends ContentPane {
         });
 	    rowBtn.add(btnAll);
 	    
-	    Button btnFire = new Button("Fuego");
-	    btnFire.setStyle(Styles1.DEFAULT_STYLE);
+	    Button btnFire = new Button();
+        btnFire.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/fuego.png")));
+        btnFire.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/fuegoMouseOver.png"))));
+        btnFire.setRolloverEnabled(true);
+        btnFire.setHeight(new Extent(27));
+        btnFire.setWidth(new Extent(103));
 	    btnFire.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               btnFireClicked();
@@ -318,8 +326,12 @@ public class AcademiaDesktop extends ContentPane {
         });
 	    rowBtn.add(btnFire);
 	    
-	    Button btnIce = new Button("Hielo");
-	    btnIce.setStyle(Styles1.DEFAULT_STYLE);
+	    Button btnIce = new Button();
+        btnIce.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/hielo.png")));
+        btnIce.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/hieloMouseOver.png"))));
+        btnIce.setRolloverEnabled(true);
+        btnIce.setHeight(new Extent(27));
+        btnIce.setWidth(new Extent(103));
 	    btnIce.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               btnIceClicked();
@@ -327,8 +339,12 @@ public class AcademiaDesktop extends ContentPane {
         });
         rowBtn.add(btnIce);
 
-	    Button btnEarth = new Button("Tierra");
-	    btnEarth.setStyle(Styles1.DEFAULT_STYLE);
+	    Button btnEarth = new Button();
+        btnEarth.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/tierra.png")));
+        btnEarth.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/tierraMouseOver.png"))));
+        btnEarth.setRolloverEnabled(true);
+        btnEarth.setHeight(new Extent(27));
+        btnEarth.setWidth(new Extent(103));
 	    btnEarth.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	btnEarthClicked();
@@ -336,8 +352,12 @@ public class AcademiaDesktop extends ContentPane {
         });
         rowBtn.add(btnEarth);
         
-	    Button btnWarrior = new Button("Guerrero");
-	    btnWarrior.setStyle(Styles1.DEFAULT_STYLE);
+	    Button btnWarrior = new Button();
+        btnWarrior.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/guerrero.png")));
+        btnWarrior.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/guerreroMouseOver.png"))));
+        btnWarrior.setRolloverEnabled(true);
+        btnWarrior.setHeight(new Extent(27));
+        btnWarrior.setWidth(new Extent(103));
 	    btnWarrior.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               btnWarriorClicked();
@@ -379,8 +399,12 @@ public class AcademiaDesktop extends ContentPane {
         
         rowBtn = new Row();
 
-        Button btnExit = new Button("Salir");
-        btnExit.setStyle(Styles1.DEFAULT_STYLE);
+        Button btnExit = new Button();
+        btnExit.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/salir.png")));
+        btnExit.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/salirMouseOver.png"))));
+        btnExit.setRolloverEnabled(true);
+        btnExit.setHeight(new Extent(30));
+        btnExit.setWidth(new Extent(100));
         btnExit.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		removeAll();
@@ -717,8 +741,12 @@ public class AcademiaDesktop extends ContentPane {
 			
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          Button ret = new Button("Ver");
-	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          Button ret = new Button();
+	          ret.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/ver2.png")));
+	          ret.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/ver2MouseOver.png"))));
+	          ret.setRolloverEnabled(true);
+	          ret.setHeight(new Extent(23));
+	          ret.setWidth(new Extent(35));
 	          ret.setEnabled(editable);
 	          ret.setToolTipText("Ver");
 
@@ -738,8 +766,13 @@ public class AcademiaDesktop extends ContentPane {
 
 	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-	          final Button ret = new Button("Entrenar");
-	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          final Button ret = new Button();
+	          ret.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/entrenar.png")));
+	          ret.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/entrenarMouseOver.png"))));
+	          ret.setDisabledBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/entrenarDes.png")));
+	          ret.setRolloverEnabled(true);
+	          ret.setHeight(new Extent(23));
+	          ret.setWidth(new Extent(66));
 	          ret.setEnabled(editable);
 	          ret.setToolTipText("Entrenar");
 

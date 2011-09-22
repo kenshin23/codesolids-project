@@ -86,11 +86,13 @@ public class Perfil extends ContentPane{
 		
 		Button returnButton = new Button();		
 		returnButton = new Button();
-		returnButton.setText("Salir");
+		returnButton.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/regresar.png")));
+		returnButton.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/regresarMouseOver.png"))));
+		returnButton.setRolloverEnabled(true);
+		returnButton.setHeight(new Extent(27));
+		returnButton.setWidth(new Extent(103));
 		returnButton.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		returnButton.setHeight(new Extent(15));
 		returnButton.setToolTipText("Regresar al mapa");
-		returnButton.setStyle(Styles1.DEFAULT_STYLE);
 		returnButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			buttonExitClicked(e);				
@@ -197,12 +199,13 @@ public class Perfil extends ContentPane{
 		colBar.add(rowBar);
 		
 		Button btnItem = new Button();
-		btnItem.setText("Objetos");
+	    btnItem.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/objetosT.png")));
+		btnItem.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/objetosTMouseOver.png"))));
+		btnItem.setRolloverEnabled(true);
+		btnItem.setHeight(new Extent(27));
+		btnItem.setWidth(new Extent(103));
 		btnItem.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnItem.setHeight(new Extent(15));
-		btnItem.setWidth( new Extent(60));
 		btnItem.setToolTipText("Ver sus Objetos");
-		btnItem.setStyle(Styles1.DEFAULT_STYLE);
 		btnItem.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			buttonItemClicked(e);				
@@ -215,12 +218,13 @@ public class Perfil extends ContentPane{
 		});
 		
 		Button btnPoderes = new Button();
-		btnPoderes.setText("Poderes");
+	    btnPoderes.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/poderes.png")));
+		btnPoderes.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/poderesMouseOver.png"))));
+		btnPoderes.setRolloverEnabled(true);
+		btnPoderes.setHeight(new Extent(27));
+		btnPoderes.setWidth(new Extent(103));
 		btnPoderes.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
-		btnPoderes.setHeight(new Extent(15));
-		btnPoderes.setWidth( new Extent(60));
 		btnPoderes.setToolTipText("Ver sus Poderes");
-		btnPoderes.setStyle(Styles1.DEFAULT_STYLE);
 		btnPoderes.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			buttonPoderesClicked(e);				

@@ -8,10 +8,12 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
+import nextapp.echo.app.Font;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
+import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
@@ -155,6 +157,7 @@ public class DesktopCreate extends ContentPane{
 		col.setCellSpacing(new Extent(5));
 
 		Label lblType = new Label();
+		lblType.setFont(new Font(Font.SANS_SERIF,Font.BOLD,new Extent(12)));
 		lblType.setText(type);
 		col.add(lblType);
 		
@@ -162,28 +165,38 @@ public class DesktopCreate extends ContentPane{
 		col.add(lblI);
 		
 		Row row = new Row(); 
-		row.setCellSpacing(new Extent(5));
+		row.setCellSpacing(new Extent(2));
 		
-		Button btnVer = new Button("Ver");
+		Button btnVer = new Button();
 		btnVer.setToolTipText("Ver");
-		btnVer.setStyle(Styles1.DEFAULT_STYLE);
+		FillImage imageb = new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/ver.png")));
+		btnVer.setBackgroundImage(imageb);
+		btnVer.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/verMouseOver.png"))));
+		btnVer.setRolloverEnabled(true);
 		btnVer.setAlignment(Alignment.ALIGN_CENTER);
 		btnVer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				btnVerClicked(type);
 			}
 		});
+		btnVer.setHeight(new Extent(29));
+		btnVer.setWidth(new Extent(49));
 		row.add(btnVer);
 		
-		Button btnSelect = new Button("Seleccionar");
+		Button btnSelect = new Button();
 		btnSelect.setToolTipText("Seleccionar");
-		btnSelect.setStyle(Styles1.DEFAULT_STYLE);
+		imageb = new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/seleccionar.png")));
+		btnSelect.setBackgroundImage(imageb);
+		btnSelect.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/seleccionarMouseOver.png"))));
+		btnSelect.setRolloverEnabled(true);
 		btnSelect.setAlignment(Alignment.ALIGN_CENTER);
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				btnSelectClicked(type);
 			}
 		});
+		btnSelect.setHeight(new Extent(29));
+		btnSelect.setWidth(new Extent(103));
 		row.add(btnSelect);
 		
 		col.add(row);
@@ -233,18 +246,23 @@ public class DesktopCreate extends ContentPane{
 		col.setCellSpacing(new Extent(10));
 		
 		lblTitulo = new Label();
+		lblTitulo.setFont(new Font(Font.SANS_SERIF,Font.BOLD,new Extent(11)));
 		col.add(lblTitulo);
 		
 		lblDescripcion = new Label();
+		lblDescripcion.setFont(new Font(Font.SANS_SERIF,Font.BOLD, new Extent(11)));
 		col.add(lblDescripcion);
 		
 		lblDescripcion1 = new Label();
+		lblDescripcion1.setFont(new Font(Font.SANS_SERIF,Font.BOLD, new Extent(11)));
 		col.add(lblDescripcion1);
 		
 		lblDescripcion2 = new Label();
+		lblDescripcion2.setFont(new Font(Font.SANS_SERIF,Font.BOLD, new Extent(11)));
 		col.add(lblDescripcion2);
 		
 		lblDescripcion3 = new Label();
+		lblDescripcion3.setFont(new Font(Font.SANS_SERIF,Font.BOLD, new Extent(11)));
 		col.add(lblDescripcion3);
 		
 		return col;
@@ -260,8 +278,8 @@ public class DesktopCreate extends ContentPane{
 		personaje.setMp(100);
 		personaje.setGold(300);
 		personaje.setXp(0);
-		personaje.setAtaqueBasico(0);
-		personaje.setAtaqueEspecial(0);
+		personaje.setAtaqueBasico(0.0);
+		personaje.setAtaqueEspecial(0.0);
 		personaje.setSpeed(0);
 		personaje.setDefensa(0);
 		personaje.setPuntos(0);
@@ -341,7 +359,7 @@ public class DesktopCreate extends ContentPane{
 		colCartel.add(descripcionTipo());
 		
 		lblTitulo.setText("Mago Fuego");
-		
+
 		lblDescripcion.setText("El mago de fuego tiene la habilidad de hacer que sus enemigos arden ");
 		lblDescripcion1.setText("en las temibles llamas de Weyard, sus ataques pueden ser de medio y ");
 		lblDescripcion2.setText("largo alcance. Es capaz de renacer desde las cenizas para vencer a ");
@@ -356,11 +374,10 @@ public class DesktopCreate extends ContentPane{
 		colCartel.add(descripcionTipo());
 		
 		lblTitulo.setText("Mago Hielo");
-		
+
 		lblDescripcion.setText("El mago de hielo es capaz de controlar letales hechizos de escarcha y "); 
 		lblDescripcion1.setText("frío. Su habilidad de hielo es una forma nativa de las regiones del ");
-		lblDescripcion2.setText("Norte de Weyard. Su capacidad de alcance es muy alta, maneja muchos ");
-		lblDescripcion3.setText("PP (Psinergia Point).");
+		lblDescripcion2.setText("Norte de Weyard. Su capacidad de alcance es muy alta, maneja muchos PP (Psinergia Point).");
 		
 	}
 	
@@ -371,11 +388,11 @@ public class DesktopCreate extends ContentPane{
 		colCartel.add(descripcionTipo());
 		
 		lblTitulo.setText("Guerrero");
-		
-		lblDescripcion.setText("El guerrero es determinado en sus ataques, son muy fuertes y resistentes");
-		lblDescripcion1.setText("en la batalla. Combinan sus puños, espadas y patadas para realizar ");
-		lblDescripcion2.setText("ataques contudentes. Su capacidad es de corto alcance, luchan fuera ");
-		lblDescripcion3.setText("de la ley Weyard en busca de la gloria.");
+
+		lblDescripcion.setText("El guerrero es determinado en sus ataques, son muy fuertes ");
+		lblDescripcion1.setText("y resistentes en la batalla. Combinan sus puños, espadas y patadas ");
+		lblDescripcion2.setText("para realizar ataques contudentes. Su capacidad es de corto alcance, ");
+		lblDescripcion3.setText("luchan fuera de la ley Weyard en busca de la gloria.");
 		
 	}
 

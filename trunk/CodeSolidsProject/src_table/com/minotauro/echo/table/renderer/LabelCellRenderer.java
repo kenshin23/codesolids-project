@@ -6,6 +6,7 @@ package com.minotauro.echo.table.renderer;
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Component;
+import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.layout.GridLayoutData;
@@ -22,6 +23,7 @@ public class LabelCellRenderer implements CellRenderer {
 
 	protected Color background;
 	protected Color foreground;
+	protected ImageReference imageReference;
 
 	protected Alignment alignment = new Alignment( //
 			Alignment.RIGHT, Alignment.DEFAULT);
@@ -96,6 +98,16 @@ public class LabelCellRenderer implements CellRenderer {
 
 	public void setAlignment(Alignment alignment) {
 		this.alignment = alignment;
+	}
+	
+	// --------------------------------------------------------------------------------
+
+	public ImageReference getBackgroundImage() {
+		return imageReference;
+	}
+
+	public void setBackgroundImage(ImageReference imageReference) {
+		this.imageReference = imageReference;
 	}
 
 }
