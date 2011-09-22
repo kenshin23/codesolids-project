@@ -131,7 +131,6 @@ public class Perfil extends ContentPane{
 		panel.setBackgroundImage(imgF);
 		
 		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/pto.png");
-		imgF = new FillImage(imgR);
 		
 		Column colCentral = new Column();
 		Row rowCentral = new Row();
@@ -261,7 +260,7 @@ public class Perfil extends ContentPane{
 		gridAt.add(toolTip);
 		lbl = new Label("Vida");
 		gridAt.add(lbl);
-		txtData.setText(""+(personaje.getHp()-100*personaje.getLevel())/15);
+		txtData.setText(""+(personaje.getHp() - 30 - 70*personaje.getLevel())/15);
 		gridAt.add(txtData);
 		Button btnS = new Button();
 		btnS.setIcon(imgR);
@@ -292,7 +291,7 @@ public class Perfil extends ContentPane{
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
 		txtData.setAlignment(Alignment.ALIGN_CENTER);
-		txtData.setText(""+(personaje.getMp()-100*personaje.getLevel())/15);
+		txtData.setText(""+(personaje.getMp() - 10 - 90*personaje.getLevel())/15);
 		gridAt.add(txtData);
 		btnS = new Button();
 		btnS.setIcon(imgR);
@@ -385,8 +384,7 @@ public class Perfil extends ContentPane{
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
 		txtData.setAlignment(Alignment.ALIGN_CENTER);
-		txtData.setMaximumLength(4);
-		txtData.setText(""+personaje.getAtaqueBasico()/0.05);
+		txtData.setText(""+ (int) (personaje.getAtaqueBasico()/0.05));
 		gridAt.add(txtData);
 		btnS = new Button();
 		btnS.setIcon(imgR);
@@ -407,7 +405,7 @@ public class Perfil extends ContentPane{
 		lblAyuda = new Label(imgA);
 		toolTip = new ToolTipContainer();
 		toolTip.add(lblAyuda);
-		toolTip.add(toolTipHelp("Cada punto equivale a 5% ataque especial"));
+		toolTip.add(toolTipHelp("Cada punto equivale a 5% del ataque especial"));
 
 		gridAt.add(toolTip);
 		lbl = new Label("Ataque Especial");
@@ -417,8 +415,7 @@ public class Perfil extends ContentPane{
 		txtData.setEditable(false);
 		txtData.setBackground(Color.WHITE);
 		txtData.setAlignment(Alignment.ALIGN_CENTER);
-		txtData.setMaximumLength(4);
-		txtData.setText(""+personaje.getAtaqueEspecial()/0.05);
+		txtData.setText(""+ (int) (personaje.getAtaqueEspecial()/0.05));
 		gridAt.add(txtData);
 		btnS = new Button();
 		btnS.setIcon(imgR);
