@@ -208,8 +208,8 @@ class ItemsBD{
 		AsignarDatos(15, 7, "Bomba Roja", 1000, 200, "Bomba", "Bomba mágica creada con piedras de color rojo",false,"Images/Items/bomb3.png", true);
 		AsignarDatos(16, 7, "Energia Super", 2350, 40, "Pocion", "Pocion para aumentar mucho más la psinergia",false,"Images/Items/potion2.png", true);
 		
-		AsignarDatos(18, 15, "Armadura Dorada", 3000, 15, "Armadura", "Poderosa armadura hecha de oro y plata",false,"Images/Items/armor3.png", false);
-		AsignarDatos(19, 15, "Espada Platino", 3000, 700, "Espada", "Poderosa espada",false,"Images/Items/sword3.png", false);
+		AsignarDatos(18, 10, "Armadura Dorada", 3000, 15, "Armadura", "Poderosa armadura hecha de oro y plata",false,"Images/Items/armor3.png", false);
+		AsignarDatos(19, 10, "Espada Platino", 3000, 700, "Espada", "Poderosa espada",false,"Images/Items/sword3.png", false);
 		
 		AsignarDatos(17, 9, "Medicina Super", 2400, 80, "Medicina", "Poderosa Medicina para aumentar la vida",false,"Images/Items/potion1.png", true);
 	
@@ -410,9 +410,9 @@ class EnemigosBD{
 		AsignarPoder("Dragon Negro", "Mordida", 20);
 		AsignarPoder("Dragon Negro", "Golpe de Cola", 40);
 		
-		AsignarPoder("Dragon OjoNegro", "Directo", 40);
-		AsignarPoder("Dragon OjoNegro", "Aliento Dragon", 50);
-		AsignarPoder("Dragon OjoNegro", "Dagas", 55);
+		AsignarPoder("Dragon Ojo Negro", "Directo", 40);
+		AsignarPoder("Dragon Ojo Negro", "Aliento Dragon", 50);
+		AsignarPoder("Dragon Ojo Negro", "Dagas", 55);
 		
 		AsignarPoder("Dragon Gris", "Aereo", 60);
 		AsignarPoder("Dragon Gris", "Furia de Fuego", 80);

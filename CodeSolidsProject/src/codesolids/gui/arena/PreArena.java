@@ -15,27 +15,32 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
+import nextapp.echo.app.Font;
+import nextapp.echo.app.Grid;
+import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.TaskQueueHandle;
+import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+import nextapp.echo.extras.app.TabPane;
+import nextapp.echo.extras.app.layout.TabPaneLayoutData;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Restrictions;
 
 import codesolids.bd.clases.Batalla;
 import codesolids.bd.clases.Invitacion;
 import codesolids.bd.clases.Personaje;
-import codesolids.bd.clases.Usuario;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.batalla.Desktop;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
+import codesolids.gui.style.StyleWindow;
 import codesolids.gui.style.Styles1;
 import codesolids.util.ImageReferenceCache;
 import codesolids.util.TestTableModel;
@@ -61,7 +66,6 @@ import echopoint.layout.HtmlLayoutData;
 
 @SuppressWarnings("serial")
 public class PreArena extends ContentPane{
-	private Usuario usuario;
 	private Personaje personaje;
 	private Label lblData;
 	private int actual = 0;
@@ -77,8 +81,7 @@ public class PreArena extends ContentPane{
 	//Aqui
 	public PreArena() {
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
-		taskQueue = ApplicationInstance.getActive().createTaskQueue();		
-		usuario = app.getUsuario();	
+		taskQueue = ApplicationInstance.getActive().createTaskQueue();
 		personaje = app.getPersonaje();
 		initGUI();
 	}
@@ -396,6 +399,31 @@ public class PreArena extends ContentPane{
 				return ret;
 			}
 		});
+		
+		
+		nestedCellRenderer.getCellRendererList().add(new BaseCellRenderer() {
+			@Override
+			public Component getCellRenderer( //
+	            final ETable table, final Object value, final int col, final int row) {
+
+	          boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
+
+	          final Personaje per = (Personaje) tableDtaModelPersonaje.getElementAt(row);
+	          Button ret = new Button();
+	          ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/estd.png");
+	          ret.setIcon(imgR);
+	          ret.setToolTipText("Estadisticas");
+	          ret.setStyle(Styles1.DEFAULT_STYLE);
+	          ret.setEnabled(editable);
+        	  ret.addActionListener(new ActionListener() {
+    			  public void actionPerformed(ActionEvent e) {
+    				  btnEstadisticaClicked(per);
+    			  }
+    		  });
+
+	          return ret;
+	        }
+	    });
 
 		return nestedCellRenderer;
 	}
@@ -517,6 +545,183 @@ public class PreArena extends ContentPane{
 			}
 		});	
 		return nestedCellRenderer;
+	}
+	
+	private void btnEstadisticaClicked(Personaje per) {
+		
+		final WindowPane ventana = new WindowPane();
+		ventana.setTitle("Estadisticas del Jugador");
+		ventana.setStyle(StyleWindow.DEFAULT_STYLE);
+		ventana.setWidth(new Extent(450));
+		ventana.setHeight(new Extent(350));
+		ventana.setMovable(false);
+		ventana.setResizable(false);
+		ventana.setModal(false);
+		
+		add(ventana);
+		
+		TabPane tabPane = new TabPane();
+		ventana.add(tabPane);
+		
+		tabPane.setTabActiveBackground(new Color(226,211,161));
+		tabPane.setTabActiveForeground(Color.BLACK);
+		tabPane.setTabActiveFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		
+		tabPane.setTabInactiveBackground(new Color(228,228,228));
+		tabPane.setTabInactiveForeground(Color.BLACK);
+		tabPane.setTabInactiveFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		
+		tabPane.setBackground(new Color(226,211,161));
+		tabPane.setBorder(new Border(1,Color.BLACK,Border.STYLE_SOLID));
+		
+		tabPane.setTabWidth(new Extent(180));
+		tabPane.setTabHeight(new Extent(20));
+		
+		tabPane.setTabAlignment(Alignment.ALIGN_CENTER);
+
+		TabPaneLayoutData tpld = new TabPaneLayoutData();
+		tpld.setTitle("General");
+		
+		Column col = new Column();
+		col.setLayoutData(tpld);
+		col.add(initColumnInfoEstadisticas(per));
+		
+		tabPane.add(col);
+		
+		tpld = new TabPaneLayoutData();
+		tpld.setTitle("Ultimas 10");
+		
+		col = new Column();
+		col.setLayoutData(tpld);
+		col.add(initColumnUltimasEstadisticas(per));
+		
+		tabPane.add(col);
+	}
+	
+	private Column initColumnInfoEstadisticas(Personaje per){
+		Column col = new Column();
+		
+		col.setInsets(new Insets(10, 10, 10, 10));
+		col.setCellSpacing(new Extent(15));
+		
+		Grid grid = new Grid(2);
+		grid.setInsets(new Insets(0, 2, 50, 2));
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+  		String queryStr = "FROM Batalla WHERE jugadorcreadorref_id = :idPlayer OR jugadorretadorref_id = :idPlayer ORDER BY id DESC";
+  		Query query = session.createQuery(queryStr);
+  		query.setInteger("idPlayer", per.getId());
+  		
+  		List<Batalla> list = query.list();
+  		
+  		int victorias = 0;
+  		int derrotas = 0;
+  		for(int i = 0 ; i<list.size(); i++){
+  			if(list.get(i).getVictoria() == per.getId())
+  				victorias++;
+  			else
+  				derrotas++;
+  		}
+		
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Util/pto.png");
+		
+		Label lbl = new Label("Batallas totales :", imgR);
+		lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		grid.add(lbl);
+		
+		lbl = new Label(""+list.size());
+		lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		grid.add(lbl);
+		
+		lbl = new Label("Victorias :", imgR);
+		lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		grid.add(lbl);
+		
+		lbl = new Label(""+victorias);
+		lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		grid.add(lbl);
+		
+		lbl = new Label("Derrotas :", imgR);
+		lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		grid.add(lbl);
+		
+		lbl = new Label(""+derrotas);
+		lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		grid.add(lbl);
+		
+		session.getTransaction().commit();
+	    session.close();
+		col.add(grid);
+		
+		return col;
+	}
+	
+	private Column initColumnUltimasEstadisticas(Personaje per){
+		Column col = new Column();
+		
+		col.setInsets(new Insets(10, 10, 10, 10));
+		col.setCellSpacing(new Extent(15));
+		
+		Grid grid = new Grid(3);
+		grid.setInsets(new Insets(0, 2, 50, 2));
+		
+		Session session = SessionHibernate.getInstance().getSession();
+		session.beginTransaction();
+		
+  		String queryStr = "FROM Batalla WHERE jugadorcreadorref_id = :idPlayer OR jugadorretadorref_id = :idPlayer ORDER BY id DESC";
+  		Query query = session.createQuery(queryStr);
+  		query.setInteger("idPlayer", per.getId());
+  		
+  		List<Batalla> list = query.list();
+  		
+  		int victorias = 0;
+  		int derrotas = 0;
+  		for(int i = 0 ; i<list.size(); i++){
+  			if(list.get(i).getVictoria() == per.getId())
+  				victorias++;
+  			else
+  				derrotas++;
+  		}
+		
+		Label lbl = new Label("Creador ");
+		lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		grid.add(lbl);
+		
+		lbl = new Label("Retador ");
+		lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		grid.add(lbl);
+		
+		lbl = new Label("Resultado ");
+		lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+		grid.add(lbl);
+		
+		int tam = 10;
+		if(list.size() < tam)
+			tam = list.size();
+		
+		for(int i = 0; i<tam; i++){
+			lbl = new Label(""+list.get(i).getJugadorCreadorRef().getUsuarioRef().getLogin());
+			lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+			grid.add(lbl);
+			lbl = new Label(""+list.get(i).getJugadorRetadorRef().getUsuarioRef().getLogin());
+			lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+			grid.add(lbl);
+			if(list.get(i).getVictoria() == per.getId())
+				lbl = new Label("Victoria");
+			else
+				lbl = new Label("Derrota");
+			lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, null));
+			grid.add(lbl);
+
+		}		
+		
+		session.getTransaction().commit();
+	    session.close();
+		col.add(grid);
+		
+		return col;
 	}
 
 	private void activate(){

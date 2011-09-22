@@ -238,7 +238,7 @@ public class Perfil extends ContentPane{
 		});
 		rowBar = new Row();
 		rowBar.add(btnItem);
-		rowBar.setInsets(new Insets(25, 15, 0, 0));
+		rowBar.setInsets(new Insets(0, 15, 0, 0));
 		rowBar.setCellSpacing(new Extent(10));
 		rowBar.add(btnPoderes);
 		colBar.add(rowBar);
