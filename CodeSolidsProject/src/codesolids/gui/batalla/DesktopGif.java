@@ -119,8 +119,6 @@ public class DesktopGif extends ContentPane{
 	
 	private List<Number> listCooldown;
 
-	private boolean flag;
-	
 	private Label magoA;
 	private Label magoB;
 	
@@ -238,8 +236,6 @@ public class DesktopGif extends ContentPane{
 		colTimeBotonera.add(panelTimeBotonera());
 		colTimeBotonera.setVisible(false);
 		col.add(colTimeBotonera);
-		
-		flag = true;
 		
 		session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
@@ -907,8 +903,6 @@ public class DesktopGif extends ContentPane{
 			lblSec.setText("21");
 			lblSec.setForeground(Color.GREEN);
 			
-			flag = false;
-			
 			remove(ventanaItem);
 			
 		}
@@ -1241,7 +1235,7 @@ public class DesktopGif extends ContentPane{
 			battle.setSecuenciaTurno(battle.getSecuenciaTurno() + 1);
 		
 		battle.setTipoAtaque("Especial");
-		battle.setTiempoMovimiento(2);
+		battle.setTiempoMovimiento(3);
 		battle.setFlag(false);
 		
 		session.getTransaction().commit();
@@ -1250,8 +1244,6 @@ public class DesktopGif extends ContentPane{
 		colTimeBotonera.removeAll();
 		colTimeBotonera.add(panelTimeBotonera());
 		colTimeBotonera.setVisible(false);
-
-		flag = false;
 		
 	}
 
@@ -1660,7 +1652,7 @@ public class DesktopGif extends ContentPane{
 			battle.setSecuenciaTurno(battle.getSecuenciaTurno() + 1);
 		
 		battle.setTipoAtaque("Basico");
-		battle.setTiempoMovimiento(2);
+		battle.setTiempoMovimiento(3);
 		battle.setFlag(false);
 		
 		session.getTransaction().commit();
@@ -1671,7 +1663,6 @@ public class DesktopGif extends ContentPane{
 		colTimeBotonera.setVisible(false);
 		
 		lblSec.setText("21");
-		flag = false;
 	}
 	
 	private void btnLoadCpClicked() 

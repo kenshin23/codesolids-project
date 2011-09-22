@@ -707,7 +707,7 @@ public class AcademiaDesktop extends ContentPane {
 
 	    lcr = new LabelCellRenderer();
 	    lcr.setBackground(new Color(226,211,161));
-	    lcr.setForeground(new Color(247,240,30));
+	    lcr.setForeground(Color.BLACK);
 	    
 	    tableColumn.setDataCellRenderer(lcr);
 	    tableColModel.getTableColumnList().add(tableColumn);

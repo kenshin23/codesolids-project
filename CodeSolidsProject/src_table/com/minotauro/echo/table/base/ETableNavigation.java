@@ -8,12 +8,15 @@ import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
 import org.apache.commons.lang.StringUtils;
+
+import codesolids.util.ImageReferenceCache;
 
 import com.minotauro.echo.table.event.PageableModelEvent;
 import com.minotauro.echo.table.event.PageableModelListener;
@@ -54,8 +57,13 @@ public class ETableNavigation extends Row {
   protected void initGUI() {
     setCellSpacing(new Extent(5));
 
-    btnBeg = new Button("<<");
+    btnBeg = new Button();
     //btnBeg.setStyle(ButtonEx.DEFAULT_STYLE);
+    btnBeg.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/menormenor.png")));
+    btnBeg.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/menormenorMouseOver.png")));
+    btnBeg.setRolloverEnabled(true);
+    btnBeg.setWidth(new Extent(25));
+    btnBeg.setHeight(new Extent(25));
     btnBeg.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         btnBegClicked();
@@ -63,8 +71,13 @@ public class ETableNavigation extends Row {
     });
     add(btnBeg);
 
-    btnPre = new Button("<");
+    btnPre = new Button();
     //btnPre.setStyle(ButtonEx.DEFAULT_STYLE);
+    btnPre.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/menor.png")));
+    btnPre.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/menorMouseOver.png")));
+    btnPre.setRolloverEnabled(true);
+    btnPre.setWidth(new Extent(25));
+    btnPre.setHeight(new Extent(25));
     btnPre.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         btnPreClicked();
@@ -83,8 +96,13 @@ public class ETableNavigation extends Row {
     txtPage.setWidth(new Extent(100));
     add(txtPage);
 
-    btnNxt = new Button(">");
+    btnNxt = new Button();
     //btnNxt.setStyle(ButtonEx.DEFAULT_STYLE);
+    btnNxt.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/mayor.png")));
+    btnNxt.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/mayorMouseOver.png")));
+    btnNxt.setRolloverEnabled(true);
+    btnNxt.setWidth(new Extent(25));
+    btnNxt.setHeight(new Extent(25));
     btnNxt.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         btnNxtClicked();
@@ -92,8 +110,13 @@ public class ETableNavigation extends Row {
     });
     add(btnNxt);
 
-    btnLst = new Button(">>");
+    btnLst = new Button();
     //btnLst.setStyle(ButtonEx.DEFAULT_STYLE);
+    btnLst.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/mayormayor.png")));
+    btnLst.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/mayormayorMouseOver.png")));
+    btnLst.setRolloverEnabled(true);
+    btnLst.setWidth(new Extent(25));
+    btnLst.setHeight(new Extent(25));
     btnLst.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         btnLstClicked();

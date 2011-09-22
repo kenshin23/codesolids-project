@@ -228,7 +228,7 @@ public class CreateClan extends ContentPane {
         row.setLayoutData(cld);
         
 		Label lblGold = new Label();
-		lblGold.setForeground(Color.YELLOW);
+		lblGold.setForeground(Color.BLACK);
 		lblGold.setText("Necesitas: 100000 ");
         row.add(lblGold);
 		
