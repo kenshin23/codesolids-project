@@ -103,7 +103,7 @@ public class DesktopCreate extends ContentPane{
 		panel.setAlignment(Alignment.ALIGN_CENTER);
 		
 		Column colCartel = new Column();
-		colCartel.setInsets(new Insets(5, 20, 20, 20));
+		colCartel.setInsets(new Insets(45, 20, 0, 20));
 		colCartel.add(rowImage());
 		
 		panel.add(colCartel);
@@ -118,7 +118,7 @@ public class DesktopCreate extends ContentPane{
 	private Column rowImage() {
 		
 		Column col = new Column();
-		col.setInsets(new Insets(5, 20, 20, 20));
+		col.setInsets(new Insets(5, 20, 5, 20));
 		
 		col.add(initRowSelect());
 		
@@ -128,18 +128,22 @@ public class DesktopCreate extends ContentPane{
 	private Row initRowSelect()
 	{
 		Row row = new Row(); 
-		row.setCellSpacing(new Extent(15));
+		row.setCellSpacing(new Extent(5));
 		
-		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoT.png");
+//		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoT.png");
+		ImageReference imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGT.gif");	
 		row.add(initColPersonaje(imgR,"Mago Tierra"));
 		
-		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoF.png");
+//		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoF.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGF.gif");
 		row.add(initColPersonaje(imgR,"Mago Fuego"));		
 		
-		imgR =  ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoHH.png");
+//		imgR =  ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MagoHH.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGHR.gif");
 		row.add(initColPersonaje(imgR,"Mago Hielo"));		
 		
-		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/GuerreroGG.png");
+//		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/GuerreroGG.png");
+		imgR = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGGR.gif");
 		row.add(initColPersonaje(imgR,"Guerrero"));
 		
 		return row;
@@ -165,7 +169,7 @@ public class DesktopCreate extends ContentPane{
 		col.add(lblI);
 		
 		Row row = new Row(); 
-		row.setCellSpacing(new Extent(2));
+		row.setCellSpacing(new Extent(1));
 		
 		Button btnVer = new Button();
 		btnVer.setToolTipText("Ver");
@@ -288,19 +292,23 @@ public class DesktopCreate extends ContentPane{
 		
 		if( type == "Mago Tierra"){
 			personaje.setTipo("Tierra");
-			personaje.setDirImage("Images/Personajes/MagoT.png");
+			//personaje.setDirImage("Images/Personajes/MagoT.png");
+			personaje.setDirImage("Images/Personajes/Gifs/MGT.gif");
 		}
 		else if( type == "Mago Fuego" ){
 			personaje.setTipo("Fuego");
-			personaje.setDirImage("Images/Personajes/MagoF.png");
+			//personaje.setDirImage("Images/Personajes/MagoF.png");
+			personaje.setDirImage("Images/Personajes/Gifs/MGF.gif");
 		}
 		else if( type == "Mago Hielo" ){
 			personaje.setTipo("Hielo");
-			personaje.setDirImage("Images/Personajes/MagoH.png");
+			//personaje.setDirImage("Images/Personajes/MagoH.png");
+			personaje.setDirImage("Images/Personajes/Gifs/MGH.gif");
 		}
 		else{
 			personaje.setTipo("Guerrero");
-			personaje.setDirImage("Images/Personajes/GuerreroGG.png");
+			//personaje.setDirImage("Images/Personajes/GuerreroGG.png");
+			personaje.setDirImage("Images/Personajes/Gifs/MGG.gif");
 		}
 		
 		PrincipalApp app = (PrincipalApp) ApplicationInstance.getActive();
@@ -394,9 +402,5 @@ public class DesktopCreate extends ContentPane{
 		lblDescripcion2.setText("para realizar ataques contudentes. Su capacidad es de corto alcance, ");
 		lblDescripcion3.setText("luchan fuera de la ley Weyard en busca de la gloria.");
 		
-	}
-
-	
-	
-	
+	}	
 }

@@ -53,6 +53,11 @@ public class Batalla {
 	
 	private List<ChatBatalla> chatBatallaList = new ArrayList<ChatBatalla>();
 	
+	private String tipoAtaque;
+	
+	private int tiempoMovimiento;
+	private boolean flag;
+	
 	@Id
 	@GeneratedValue( strategy = GenerationType.AUTO )
 	public int getId() {
@@ -169,6 +174,30 @@ public class Batalla {
 	}
 	public void setChatBatallaList(List<ChatBatalla> chatBatallaList) {
 		this.chatBatallaList = chatBatallaList;
+	}
+
+	public String getTipoAtaque() {
+		return tipoAtaque;
+	}
+
+	public void setTipoAtaque(String tipoAtaque) {
+		this.tipoAtaque = tipoAtaque;
+	}
+
+	public int getTiempoMovimiento() {
+		return tiempoMovimiento;
+	}
+
+	public void setTiempoMovimiento(int tiempoMovimiento) {
+		this.tiempoMovimiento = tiempoMovimiento;
+	}
+
+	public boolean getFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 	
 }

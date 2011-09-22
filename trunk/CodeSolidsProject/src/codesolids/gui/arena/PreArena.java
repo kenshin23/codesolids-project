@@ -38,6 +38,7 @@ import codesolids.bd.clases.Invitacion;
 import codesolids.bd.clases.Personaje;
 import codesolids.bd.hibernate.SessionHibernate;
 import codesolids.gui.batalla.Desktop;
+import codesolids.gui.batalla.DesktopGif;
 import codesolids.gui.mapa.MapaDesktop;
 import codesolids.gui.principal.PrincipalApp;
 import codesolids.gui.style.StyleWindow;
@@ -498,6 +499,8 @@ public class PreArena extends ContentPane{
 							int numeroAleatorio = (int) (Math.random()*3 + 0);	
 							
 							battle.setEscenario(numeroAleatorio);
+
+							battle.setTiempoMovimiento(0);
 							
 							session.save(battle);
 
@@ -509,7 +512,8 @@ public class PreArena extends ContentPane{
 							consultEstado();
 							removeAll();
 							
-							add(new Desktop());
+							add(new DesktopGif());
+//							add(new Desktop());
 						}
 					});	        	  
 				}
@@ -755,7 +759,8 @@ public class PreArena extends ContentPane{
 					btnDeleteClicked(listA.get(i));
 					removeAll();
 					
-					add(new Desktop());
+					add(new DesktopGif());
+//					add(new Desktop());
 				}
 			}
 		}

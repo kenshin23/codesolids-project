@@ -464,22 +464,22 @@ public class MapaDesktop extends ContentPane {
 
 		if( personaje.getTipo().equals("Fuego") )
 		{
-			lblImg.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MarcoCaraF.png"));
+			lblImg.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MarcoCaraF.png"));
 			row.add(lblImg);
 		}
 		else if( personaje.getTipo().equals("Tierra") )	
 		{
-			lblImg.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MarcoCaraT.png"));
+			lblImg.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MarcoCaraT.png"));
 			row.add(lblImg);
 		}
 		else if( personaje.getTipo().equals("Hielo") )	
 		{
-			lblImg.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MarcoCaraH.png"));
+			lblImg.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MarcoCaraH.png"));
 			row.add(lblImg);
 		}
 		else	
 		{
-			lblImg.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/MarcoCaraG.png"));
+			lblImg.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MarcoCaraG.png"));
 			row.add(lblImg);
 		}
 
