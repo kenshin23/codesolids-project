@@ -151,9 +151,12 @@ public class CreateClan extends ContentPane {
 		ColumnLayoutData cld = new ColumnLayoutData();
 		cld.setAlignment(Alignment.ALIGN_RIGHT);
 		
-		Button btnSalir = new Button("Salir");
-		btnSalir.setStyle(Styles1.DEFAULT_STYLE);
-		btnSalir.setWidth(new Extent(50));
+		Button btnSalir = new Button();
+        btnSalir.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/regresar.png")));
+        btnSalir.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/regresarMouseOver.png"))));
+        btnSalir.setRolloverEnabled(true);
+        btnSalir.setHeight(new Extent(27));
+        btnSalir.setWidth(new Extent(103));
 		btnSalir.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent evt) {
@@ -204,10 +207,13 @@ public class CreateClan extends ContentPane {
 		row.setLayoutData(cld);
 		colOption.add(row);
 		
-		Button btnCrear = new Button("Crear");
+		Button btnCrear = new Button();
+        btnCrear.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/crear3.png")));
+        btnCrear.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/crear3MouseOver.png"))));
+        btnCrear.setRolloverEnabled(true);
+        btnCrear.setHeight(new Extent(27));
+        btnCrear.setWidth(new Extent(103));
 		btnCrear.setToolTipText("Crear un Clan");
-		btnCrear.setWidth(new Extent(50));
-		btnCrear.setStyle(Styles1.DEFAULT_STYLE);
 		btnCrear.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent evt) {
@@ -269,11 +275,14 @@ public class CreateClan extends ContentPane {
 		
 		colOption.add(lblTitulo);
 		
-		Button btnRequest = new Button("Solicitar Clan");
+		Button btnRequest = new Button();
 		btnRequest.setToolTipText("Solicitar Vacante");
-		btnRequest.setWidth(new Extent(80));
-		btnRequest.setStyle(Styles1.DEFAULT_STYLE);
-		
+        btnRequest.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/solicitar.png")));
+        btnRequest.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/solicitarMouseOver.png"))));
+        btnRequest.setRolloverEnabled(true);
+        btnRequest.setHeight(new Extent(27));
+        btnRequest.setWidth(new Extent(103));
+
 		btnRequest.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent evt) {
@@ -312,10 +321,13 @@ public class CreateClan extends ContentPane {
 		
 		colOption.add(lblTitulo);
 		
-		Button btnRanking = new Button("Lista Clan");
+		Button btnRanking = new Button();
+        btnRanking.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/ranking.png")));
+        btnRanking.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/rankingMouseOver.png"))));
+        btnRanking.setRolloverEnabled(true);
+        btnRanking.setHeight(new Extent(27));
+        btnRanking.setWidth(new Extent(103));
 		btnRanking.setToolTipText("Ver Ranking Clan");
-		btnRanking.setWidth(new Extent(80));
-		btnRanking.setStyle(Styles1.DEFAULT_STYLE);
 		
 		btnRanking.addActionListener(new ActionListener() {
 			

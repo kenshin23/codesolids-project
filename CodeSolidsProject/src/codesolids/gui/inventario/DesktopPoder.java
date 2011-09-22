@@ -282,12 +282,14 @@ public class DesktopPoder extends ContentPane{
 			public Component getCellRenderer( //
 					final ETable table, final Object value, final int col, final int row) {
 
-				boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
 
-				Button btnVer = new Button("Ver");
-				btnVer.setStyle(Styles1.DEFAULT_STYLE);
-				btnVer.setEnabled(editable);
+				Button btnVer = new Button();
 				btnVer.setToolTipText("Ver");
+				btnVer.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/ver2.png")));
+				btnVer.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/ver2MouseOver.png"))));
+				btnVer.setRolloverEnabled(true);
+				btnVer.setHeight(new Extent(23));
+				btnVer.setWidth(new Extent(35));
 
 				btnVer.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -404,9 +406,13 @@ public class DesktopPoder extends ContentPane{
 			col.add(imgI);
 		}
 		
-		Button btnQuitar = new Button("Quitar");
+		Button btnQuitar = new Button();
 		btnQuitar.setToolTipText("Quitar el poder");
-		btnQuitar.setStyle(Styles1.DEFAULT_STYLE);
+		btnQuitar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/quitar.png")));
+		btnQuitar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/quitarMouseOver.png")));
+		btnQuitar.setRolloverEnabled(true);
+		btnQuitar.setHeight(new Extent(24));
+		btnQuitar.setWidth(new Extent(42));
 		
 		if( posicion < list.size() )
 		{
@@ -452,10 +458,13 @@ public class DesktopPoder extends ContentPane{
 		Row row = new Row();
 		row.setCellSpacing(new Extent(20));
 		
-		Button btnClear = new Button("Limpiar");
+		Button btnClear = new Button();
 		btnClear.setToolTipText("Limpiar Poderes");
-		btnClear.setStyle(Styles1.DEFAULT_STYLE);
-		btnClear.setWidth(new Extent(50));
+		btnClear.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/limpiar.png")));
+		btnClear.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/limpiarMouseOver.png"))));
+		btnClear.setRolloverEnabled(true);
+		btnClear.setHeight(new Extent(27));
+		btnClear.setWidth(new Extent(103));
 		
 		btnClear.addActionListener(new ActionListener() {
 			
@@ -465,10 +474,13 @@ public class DesktopPoder extends ContentPane{
 		});
 		row.add(btnClear);
 		
-		Button btnExit = new Button("Salir");
+		Button btnExit = new Button();
 		btnExit.setToolTipText("Regresar Perfil");
-		btnExit.setStyle(Styles1.DEFAULT_STYLE);
-		btnExit.setWidth(new Extent(30));
+		btnExit.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/regresar.png")));
+		btnExit.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/regresarMouseOver.png"))));
+		btnExit.setRolloverEnabled(true);
+		btnExit.setHeight(new Extent(27));
+		btnExit.setWidth(new Extent(103));
 		
 		btnExit.addActionListener(new ActionListener() {
 			
@@ -555,10 +567,13 @@ public class DesktopPoder extends ContentPane{
 		
 		col.add(new Label(poder.getDescripcion()));
 
-		Button btnEquipar = new Button("Equipar");
+		Button btnEquipar = new Button();
 		btnEquipar.setToolTipText("Equipar Poder");
-		btnEquipar.setStyle(Styles1.DEFAULT_STYLE);
-		btnEquipar.setWidth(new Extent(50));
+		btnEquipar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/equipar.png")));
+		btnEquipar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/equiparMouseOver.png"))));
+		btnEquipar.setRolloverEnabled(true);
+		btnEquipar.setHeight(new Extent(27));
+		btnEquipar.setWidth(new Extent(103));
 		
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();

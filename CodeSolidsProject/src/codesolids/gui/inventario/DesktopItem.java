@@ -143,9 +143,13 @@ public class DesktopItem extends ContentPane {
 		row.setCellSpacing(new Extent(15));
 		row.setInsets(new Insets(5, 30, 5, 20));
 		
-		Button btnArmas = new Button("Armas");
+		Button btnArmas = new Button();
 		btnArmas.setToolTipText("Armas");
-		btnArmas.setStyle(Styles1.DEFAULT_STYLE);
+	    btnArmas.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/armas.png")));
+	    btnArmas.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/armasMouseOver.png"))));
+	    btnArmas.setRolloverEnabled(true);
+	    btnArmas.setHeight(new Extent(27));
+	    btnArmas.setWidth(new Extent(103));
 		
 		btnArmas.addActionListener(new ActionListener() {
 			
@@ -155,9 +159,13 @@ public class DesktopItem extends ContentPane {
 		});
 		row.add(btnArmas);
 		
-		Button btnArmaduras = new Button("Armaduras");
+		Button btnArmaduras = new Button();
 		btnArmaduras.setToolTipText("Armaduras");
-		btnArmaduras.setStyle(Styles1.DEFAULT_STYLE);
+	    btnArmaduras.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/armaduras.png")));
+	    btnArmaduras.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/armadurasMouseOver.png"))));
+	    btnArmaduras.setRolloverEnabled(true);
+	    btnArmaduras.setHeight(new Extent(27));
+	    btnArmaduras.setWidth(new Extent(103));
 		
 		btnArmaduras.addActionListener(new ActionListener() {
 			
@@ -167,9 +175,13 @@ public class DesktopItem extends ContentPane {
 		});
 		row.add(btnArmaduras);
 		
-		Button btnItems = new Button("Items");
+		Button btnItems = new Button();
 		btnItems.setToolTipText("Items");
-		btnItems.setStyle(Styles1.DEFAULT_STYLE);
+		btnItems.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/items.png")));
+		btnItems.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/itemsMouseOver.png"))));
+		btnItems.setRolloverEnabled(true);
+		btnItems.setHeight(new Extent(27));
+	    btnItems.setWidth(new Extent(103));
 		
 		btnItems.addActionListener(new ActionListener() {
 			
@@ -179,9 +191,13 @@ public class DesktopItem extends ContentPane {
 		});
 		row.add(btnItems);
 		
-		Button btnExit = new Button("Salir");
+		Button btnExit = new Button();
 		btnExit.setToolTipText("Regresar a Perfil");
-		btnExit.setStyle(Styles1.DEFAULT_STYLE);
+		btnExit.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/regresar.png")));
+		btnExit.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/regresarMouseOver.png"))));
+		btnExit.setRolloverEnabled(true);
+		btnExit.setHeight(new Extent(27));
+		btnExit.setWidth(new Extent(103));
 		
 		btnExit.addActionListener(new ActionListener() {
 			
@@ -376,12 +392,13 @@ public class DesktopItem extends ContentPane {
 			public Component getCellRenderer( //
 					final ETable table, final Object value, final int col, final int row) {
 
-				boolean editable = ((TestTableModel) table.getTableDtaModel()).getEditable();
-
-				Button btnVer = new Button("Ver");
-				btnVer.setStyle(Styles1.DEFAULT_STYLE);
-				btnVer.setEnabled(editable);
+				Button btnVer = new Button();				
 				btnVer.setToolTipText("Ver");
+				btnVer.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/ver2.png")));
+				btnVer.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/ver2MouseOver.png"))));
+				btnVer.setRolloverEnabled(true);
+				btnVer.setHeight(new Extent(23));
+				btnVer.setWidth(new Extent(35));
 
 				btnVer.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -499,10 +516,13 @@ public class DesktopItem extends ContentPane {
 		
 		col.add(new Label(item.getDescripcion()));
 
-		Button btnEquipar = new Button("Equipar");
+		Button btnEquipar = new Button();
 		btnEquipar.setToolTipText("Equipar Items");
-		btnEquipar.setStyle(Styles1.DEFAULT_STYLE);
-		btnEquipar.setWidth(new Extent(50));
+		btnEquipar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/equipar.png")));
+		btnEquipar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/equiparMouseOver.png"))));
+		btnEquipar.setRolloverEnabled(true);
+		btnEquipar.setHeight(new Extent(27));
+		btnEquipar.setWidth(new Extent(103));
 		btnEquipar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				btnEquiparClicked(item,fila);

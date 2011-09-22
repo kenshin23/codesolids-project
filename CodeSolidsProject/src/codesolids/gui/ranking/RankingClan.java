@@ -100,9 +100,12 @@ public class RankingClan extends ContentPane {
 		col.add(createRankingTable(tableDtaModel, initTableColModel()));
 
 		Button returnButton = new Button();
-		returnButton.setText("Regresar");
-		returnButton.setWidth(new Extent(100));
-		returnButton.setStyle(Styles1.DEFAULT_STYLE);
+        returnButton.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/regresar.png")));
+        returnButton.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/regresarMouseOver.png"))));
+        returnButton.setRolloverEnabled(true);
+        returnButton.setHeight(new Extent(27));
+        returnButton.setWidth(new Extent(103));
+        returnButton.setToolTipText("Regresar al mapa");
 		returnButton.setTextAlignment(Alignment.ALIGN_CENTER);
 		returnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

@@ -12,6 +12,7 @@ import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Font;
 import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
@@ -290,10 +291,13 @@ public class PerfilClan extends ContentPane{
 		gld.setAlignment(Alignment.ALIGN_RIGHT);
 		grid.setLayoutData(gld);
 		
-		Button btnCerrar = new Button("Cerrar Clan");
-		btnCerrar.setStyle(Styles1.DEFAULT_STYLE);
+		Button btnCerrar = new Button();
+		btnCerrar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/cerrar.png")));
+		btnCerrar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/cerrarMouseOver.png"))));
+		btnCerrar.setRolloverEnabled(true);
+		btnCerrar.setHeight(new Extent(27));
+		btnCerrar.setWidth(new Extent(103));
 		btnCerrar.setToolTipText("Cerrar el Clan");
-		btnCerrar.setWidth(new Extent(80));
 		btnCerrar.addActionListener(new ActionListener() {
 			
 			@Override
@@ -303,10 +307,13 @@ public class PerfilClan extends ContentPane{
 		});
 		grid.add(btnCerrar);
 		
-		Button btnDespedir = new Button("Despedir Clan");
-		btnDespedir.setStyle(Styles1.DEFAULT_STYLE);
+		Button btnDespedir = new Button();
+		btnDespedir.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/despedir.png")));
+		btnDespedir.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/despedirMouseOver.png"))));
+		btnDespedir.setRolloverEnabled(true);
+		btnDespedir.setHeight(new Extent(27));
+		btnDespedir.setWidth(new Extent(116));
 		btnDespedir.setToolTipText("Despedir del Clan");
-		btnDespedir.setWidth(new Extent(90));
 		btnDespedir.addActionListener(new ActionListener() {
 			
 			@Override
@@ -316,10 +323,13 @@ public class PerfilClan extends ContentPane{
 		});
 		grid.add(btnDespedir);
 		
-		Button btnInvitar = new Button("Invitar Clan");
-		btnInvitar.setStyle(Styles1.DEFAULT_STYLE);
+		Button btnInvitar = new Button();
+		btnInvitar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/invitarC.png")));
+		btnInvitar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/invitarCMouseOver.png"))));
+		btnInvitar.setRolloverEnabled(true);
+		btnInvitar.setHeight(new Extent(27));
+		btnInvitar.setWidth(new Extent(103));
 		btnInvitar.setToolTipText("Invitar al Clan");
-		btnInvitar.setWidth(new Extent(80));
 		btnInvitar.addActionListener(new ActionListener() {
 			
 			@Override
@@ -329,10 +339,13 @@ public class PerfilClan extends ContentPane{
 		});
 		grid.add(btnInvitar);
 		
-		Button btnGold = new Button("Donar Oro");
-		btnGold.setStyle(Styles1.DEFAULT_STYLE);
+		Button btnGold = new Button();
+		btnGold.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/donar.png")));
+		btnGold.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/donarMouseOver.png"))));
+		btnGold.setRolloverEnabled(true);
+		btnGold.setHeight(new Extent(27));
+		btnGold.setWidth(new Extent(103));
 		btnGold.setToolTipText("Donar Oro al Clan");
-		btnGold.setWidth(new Extent(70));
 		btnGold.addActionListener(new ActionListener() {
 			
 			@Override
@@ -342,10 +355,13 @@ public class PerfilClan extends ContentPane{
 		});
 		grid.add(btnGold);
 		
-		Button btnRegresar = new Button("Regresar");
-		btnRegresar.setStyle(Styles1.DEFAULT_STYLE);
+		Button btnRegresar = new Button();
+        btnRegresar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/regresar.png")));
+        btnRegresar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/regresarMouseOver.png"))));
+        btnRegresar.setRolloverEnabled(true);
+        btnRegresar.setHeight(new Extent(27));
+        btnRegresar.setWidth(new Extent(103));
 		btnRegresar.setToolTipText("Regresar al mapa");
-		btnRegresar.setWidth(new Extent(70));
 		btnRegresar.addActionListener(new ActionListener() {
 			
 			@Override
@@ -434,9 +450,12 @@ public class PerfilClan extends ContentPane{
 		
 		col.add(grid);
 		
-		Button btnDespedir = new Button("Despedir");
-		btnDespedir.setStyle(Styles1.DEFAULT_STYLE);
-		btnDespedir.setWidth(new Extent(60));
+		Button btnDespedir = new Button();
+		btnDespedir.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/despedir.png")));
+		btnDespedir.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/despedirMouseOver.png"))));
+		btnDespedir.setRolloverEnabled(true);
+		btnDespedir.setHeight(new Extent(27));
+		btnDespedir.setWidth(new Extent(116));
 		btnDespedir.setToolTipText("Despedir al miembro del clan");
 		btnDespedir.addActionListener(new ActionListener() {
 			@Override
@@ -622,9 +641,12 @@ public class PerfilClan extends ContentPane{
 		
 		col.add(grid);
 		
-		Button btnInvitar = new Button("Invitar");
-		btnInvitar.setStyle(Styles1.DEFAULT_STYLE);
-		btnInvitar.setWidth(new Extent(60));
+		Button btnInvitar = new Button();
+        btnInvitar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/invitarC.png")));
+        btnInvitar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/invitarCMouseOver.png"))));
+        btnInvitar.setRolloverEnabled(true);
+        btnInvitar.setHeight(new Extent(27));
+        btnInvitar.setWidth(new Extent(103));
 		btnInvitar.setToolTipText("Invitar un miembro al clan");
 		btnInvitar.addActionListener(new ActionListener() {
 			@Override
@@ -692,9 +714,12 @@ public class PerfilClan extends ContentPane{
 		
 		col.add(grid);
 		
-		Button btnDonar = new Button("Donar");
-		btnDonar.setStyle(Styles1.DEFAULT_STYLE);
-		btnDonar.setWidth(new Extent(50));
+		Button btnDonar = new Button();
+		btnDonar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/donar.png")));
+		btnDonar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/donarMouseOver.png"))));
+		btnDonar.setRolloverEnabled(true);
+		btnDonar.setHeight(new Extent(27));
+		btnDonar.setWidth(new Extent(103));
 		btnDonar.setToolTipText("Donar Oro");
 		btnDonar.addActionListener(new ActionListener() {
 			
@@ -811,9 +836,12 @@ public class PerfilClan extends ContentPane{
 		});
 		grid.add(btnRetirar);
 		
-		Button btnGold = new Button("Donar Oro");
-		btnGold.setStyle(Styles1.DEFAULT_STYLE);
-		btnGold.setWidth(new Extent(70));
+		Button btnGold = new Button();
+		btnGold.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/donar.png")));
+		btnGold.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/donarMouseOver.png"))));
+		btnGold.setRolloverEnabled(true);
+		btnGold.setHeight(new Extent(27));
+		btnGold.setWidth(new Extent(103));
 		btnGold.setToolTipText("Donar Oro al Clan");
 		btnGold.addActionListener(new ActionListener() {
 			
@@ -824,10 +852,13 @@ public class PerfilClan extends ContentPane{
 		});
 		grid.add(btnGold);
 		
-		Button btnRegresar = new Button("Regresar");
-		btnRegresar.setStyle(Styles1.DEFAULT_STYLE);
+		Button btnRegresar = new Button();
+        btnRegresar.setBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference("Images/Botones/regresar.png")));
+        btnRegresar.setRolloverBackgroundImage(new FillImage(ImageReferenceCache.getInstance().getImageReference(("Images/Botones/regresarMouseOver.png"))));
+        btnRegresar.setRolloverEnabled(true);
+        btnRegresar.setHeight(new Extent(27));
+        btnRegresar.setWidth(new Extent(103));
 		btnRegresar.setToolTipText("Regresar al mapa");
-		btnRegresar.setWidth(new Extent(70));
 		btnRegresar.addActionListener(new ActionListener() {
 			
 			@Override
