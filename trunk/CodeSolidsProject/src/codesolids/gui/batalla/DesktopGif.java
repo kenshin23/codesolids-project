@@ -36,10 +36,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.ejb.criteria.expression.function.AggregationFunction.COUNT;
 import org.informagen.echo.app.CapacityBar;
-
-import com.sun.swing.internal.plaf.basic.resources.basic;
 
 import codesolids.bd.clases.Batalla;
 import codesolids.bd.clases.ChatBatalla;
@@ -65,7 +62,9 @@ import echopoint.layout.HtmlLayoutData;
 /**
  * 
  * @author Antonio López
- * @Colaborador Eduardo Granado
+ * 
+ * @Colaborador Jose Luis
+ * @Colaborador Eduardo Granado  
  *
  */
 
@@ -206,7 +205,7 @@ public class DesktopGif extends ContentPane{
 	private Column initGuiBatalla() {
 		
 		Column col = new Column();
-		col.setCellSpacing(new Extent(7));
+		col.setCellSpacing(new Extent(3));
 
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
@@ -329,23 +328,19 @@ public class DesktopGif extends ContentPane{
 							
 							battle = (Batalla) session.load(Batalla.class, battle.getId());
 							battle.setTiempoMovimiento(battle.getTiempoMovimiento() - 1);
-
-//							if( flag == false ){
-//								simulateMovimiento(battle.getTipoAtaque());
-//								flag = true;
-//							}else{
-//								imageIni();
-//							}
 							
 							if( battle.getFlag() == false ){
 								simulateMovimiento(battle.getTipoAtaque());
 								battle.setFlag(true);
-							}else{
-								imageIni();
 							}
-							
 							session.getTransaction().commit();
 							session.close();
+							
+							if( battle.getTiempoMovimiento() == 0 ){
+								rowM.removeAll();
+								rowM.add(rowImage());
+							}
+							
 						}
 					}
 				}
@@ -354,7 +349,6 @@ public class DesktopGif extends ContentPane{
 					if( jugador.getId() == battle.getJugadorRetadorRef().getId() )
 					{
 						if( battle.getTiempoMovimiento() == 0 ){
-							
 							colTimeBotonera.setVisible(true);
 
 							if( battle.getVidaRetador() == 0 )
@@ -402,22 +396,17 @@ public class DesktopGif extends ContentPane{
 							battle = (Batalla) session.load(Batalla.class, battle.getId());
 							battle.setTiempoMovimiento(battle.getTiempoMovimiento() - 1);
 
-//							if( flag == false ){
-//								simulateMovimiento(battle.getTipoAtaque());
-//								flag = true;
-//							}else{
-//								imageIni();
-//							}
-
 							if( battle.getFlag() == false ){
 								simulateMovimiento(battle.getTipoAtaque());
 								battle.setFlag(true);
-							}else{
-								imageIni();
 							}
-							
 							session.getTransaction().commit();
 							session.close();
+							
+							if( battle.getTiempoMovimiento() == 0 ){
+								rowM.removeAll();
+								rowM.add(rowImage());
+							}
 						}
 					}
 				}
@@ -550,7 +539,7 @@ public class DesktopGif extends ContentPane{
 	private Column statusColumn()
 	{
 		Column colStatus = new Column(); 
-		colStatus.setInsets(new Insets(5,5,5,18));
+		colStatus.setInsets(new Insets(5,5,5,3));
 
 		Session session = SessionHibernate.getInstance().getSession();
 		session.beginTransaction();
@@ -577,37 +566,13 @@ public class DesktopGif extends ContentPane{
 		}
 				
 		if ( jugadorOponente.getTipo().equals("Tierra") )
-		{
-		//	jugadorOponente.setDirImage("Images/Personajes/MagoTT.png");
 			jugadorOponente.setDirImage("Images/Personajes/Gifs/MGTR.gif");
-		}
 		else if ( jugadorOponente.getTipo().equals("Fuego") )
-		{
-		//	jugadorOponente.setDirImage("Images/Personajes/MagoFF.png");
 			jugadorOponente.setDirImage("Images/Personajes/Gifs/MGFR.gif");
-		}
 		else if ( jugadorOponente.getTipo().equals("Hielo") )
-		{
-		//	jugadorOponente.setDirImage("Images/Personajes/MagoHH.png");
 			jugadorOponente.setDirImage("Images/Personajes/Gifs/MGHR.gif");
-		}
 		else
-		{
-		//	jugadorOponente.setDirImage("Images/Personajes/GuerreroGG.png");
 			jugadorOponente.setDirImage("Images/Personajes/Gifs/MGGR.gif");
-		}
-			
-//		ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
-//		Label magoA = new Label(mA);
-//		
-//		ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-//		Label magoB = new Label(mB);
-//		
-//		Row rowM = new Row();
-//		rowM.setAlignment(Alignment.ALIGN_CENTER);
-//		rowM.setCellSpacing(new Extent(500, Extent.PX));
-//		rowM.add(magoA);
-//		rowM.add(magoB);
 
 		colStatus.add(rowImage());
 		
@@ -621,7 +586,7 @@ public class DesktopGif extends ContentPane{
 		rowB.add(barraVida2);
 
 		Row row = new Row();
-		row.setCellSpacing(new Extent(690));
+		row.setCellSpacing(new Extent(685));
 		row.add(rowA);
 		row.add(rowB);
 
@@ -843,7 +808,7 @@ public class DesktopGif extends ContentPane{
 		col.setBorder(new Border(3, Color.BLACK, Border.STYLE_RIDGE));
 		col.setCellSpacing(new Extent(10));
 		col.setInsets(new Insets(5, 5, 5, 5));
-		col.setBackground(new Color(226,211,161));
+		col.setBackground(Color.WHITE);
 		
 		Label lbl = new Label();
 
@@ -998,7 +963,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else if( jugador.getTipo().equals("Hielo") )
 				{
@@ -1008,7 +973,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else if( jugador.getTipo().equals("Tierra") )
 				{
@@ -1018,7 +983,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else
 				{
@@ -1028,7 +993,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				
 				listNumber = new ArrayList<Number>();
@@ -1052,7 +1017,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));			
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));			
 				}
 				else if( jugador.getTipo().equals("Hielo") )
 				{
@@ -1062,7 +1027,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else if( jugador.getTipo().equals("Tierra") )
 				{
@@ -1072,7 +1037,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else
 				{
@@ -1082,7 +1047,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				
 				listCooldown.add(posicion, (poder.getCooldown() + battle.getSecuenciaTurno() + 1));
@@ -1120,7 +1085,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));			
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));			
 				}
 				else if( jugador.getTipo().equals("Hielo") )
 				{
@@ -1130,7 +1095,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else if( jugador.getTipo().equals("Tierra") )
 				{
@@ -1140,7 +1105,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else
 				{
@@ -1150,7 +1115,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				
 				listNumber = new ArrayList<Number>();
@@ -1175,7 +1140,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));			
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));			
 				}
 				else if( jugador.getTipo().equals("Hielo") )
 				{
@@ -1185,7 +1150,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else if( jugador.getTipo().equals("Tierra") )
 				{
@@ -1195,7 +1160,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else
 				{
@@ -1205,7 +1170,7 @@ public class DesktopGif extends ContentPane{
 //					magoA.setIcon(ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFE1.gif"));
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGE1.gif"));
 //					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				
 				listCooldown.add(posicion, (poder.getCooldown() + battle.getSecuenciaTurno() + 1));
@@ -1307,7 +1272,7 @@ public class DesktopGif extends ContentPane{
 //					ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFH1.gif"));
 //					ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));			
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));			
 				}
 				else if( jugador.getTipo().equals("Hielo") )
 				{
@@ -1317,7 +1282,7 @@ public class DesktopGif extends ContentPane{
 //					ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHH1.gif"));
 //					ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else if( jugador.getTipo().equals("Tierra") )
 				{
@@ -1327,7 +1292,7 @@ public class DesktopGif extends ContentPane{
 //					ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTH1.gif"));
 //					ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else
 				{
@@ -1337,7 +1302,7 @@ public class DesktopGif extends ContentPane{
 //					ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGH1.gif"));
 //					ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				
 				listNumber = new ArrayList<Number>();
@@ -1363,7 +1328,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));			
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));			
 					}
 					else if( jugador.getTipo().equals("Hielo") )
 					{
@@ -1373,7 +1338,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					else if( jugador.getTipo().equals("Tierra") )
 					{
@@ -1383,7 +1348,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					else
 					{
@@ -1393,7 +1358,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					
 					labelCp.setText(jugador.getMp() + "/" + jugador.getMp());	
@@ -1422,7 +1387,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));			
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));			
 					}
 					else if( jugador.getTipo().equals("Hielo") )
 					{
@@ -1432,7 +1397,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					else if( jugador.getTipo().equals("Tierra") )
 					{
@@ -1442,7 +1407,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					else
 					{
@@ -1452,7 +1417,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					
 					listNumber = new ArrayList<Number>();
@@ -1485,7 +1450,7 @@ public class DesktopGif extends ContentPane{
 //					ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFH1.gif"));
 //					ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));			
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));			
 				}
 				else if( jugador.getTipo().equals("Hielo") )
 				{
@@ -1495,7 +1460,7 @@ public class DesktopGif extends ContentPane{
 //					ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHH1.gif"));
 //					ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else if( jugador.getTipo().equals("Tierra") )
 				{
@@ -1505,7 +1470,7 @@ public class DesktopGif extends ContentPane{
 //					ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTH1.gif"));
 //					ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				else
 				{
@@ -1515,7 +1480,7 @@ public class DesktopGif extends ContentPane{
 //					ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 					magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGH1.gif"));
 //					ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-					magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+					magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 				}
 				
 				listNumber = new ArrayList<Number>();
@@ -1538,7 +1503,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));			
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));			
 					}
 					else if( jugador.getTipo().equals("Hielo") )
 					{
@@ -1548,7 +1513,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					else if( jugador.getTipo().equals("Tierra") )
 					{
@@ -1558,7 +1523,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					else
 					{
@@ -1568,7 +1533,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					
 					labelCp.setText(jugador.getMp() + "/" + jugador.getMp());	
@@ -1597,7 +1562,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));			
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));			
 					}
 					else if( jugador.getTipo().equals("Hielo") )
 					{
@@ -1607,7 +1572,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					else if( jugador.getTipo().equals("Tierra") )
 					{
@@ -1617,7 +1582,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					else
 					{
@@ -1627,7 +1592,7 @@ public class DesktopGif extends ContentPane{
 //						ImageReference mA = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH1.gif");					
 						magoA.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGH1.gif"));
 //						ImageReference mB = ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage());
-						magoB.setIcon(new ResourceImageReference(jugadorOponente.getDirImage()));
+						magoB.setIcon(ImageReferenceCache.getInstance().getImageReference(jugadorOponente.getDirImage()));
 					}
 					
 					listNumber = new ArrayList<Number>();
@@ -1753,7 +1718,7 @@ public class DesktopGif extends ContentPane{
 				rowM.add(imageData());
 				
 //				ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
-				magoA.setIcon(new ResourceImageReference(jugador.getDirImage()));
+				magoA.setIcon(ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage()));
 //				ImageReference mB = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH2.gif");				
 				magoB.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFH2.gif"));
 			}
@@ -1763,7 +1728,7 @@ public class DesktopGif extends ContentPane{
 				rowM.add(imageData());
 							
 //				ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
-				magoA.setIcon(new ResourceImageReference(jugador.getDirImage()));
+				magoA.setIcon(ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage()));
 //				ImageReference mB = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH2.gif");				
 				magoB.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHH2.gif"));
 			}
@@ -1773,7 +1738,7 @@ public class DesktopGif extends ContentPane{
 				rowM.add(imageData());
 
 //				ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
-				magoA.setIcon(new ResourceImageReference(jugador.getDirImage()));
+				magoA.setIcon(ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage()));
 //				ImageReference mB = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH2.gif");				
 				magoB.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTH2.gif"));
 			}
@@ -1783,7 +1748,7 @@ public class DesktopGif extends ContentPane{
 				rowM.add(imageData());
 							
 //				ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
-				magoA.setIcon(new ResourceImageReference(jugador.getDirImage()));
+				magoA.setIcon(ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage()));
 //				ImageReference mB = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH2.gif");				
 				magoB.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGH2.gif"));
 			}
@@ -1796,7 +1761,7 @@ public class DesktopGif extends ContentPane{
 				rowM.add(imageData());
 				
 //				ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
-				magoA.setIcon(new ResourceImageReference(jugador.getDirImage()));
+				magoA.setIcon(ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage()));
 //				ImageReference mB = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH2.gif");				
 				magoB.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGFE2.gif"));
 			}
@@ -1806,7 +1771,7 @@ public class DesktopGif extends ContentPane{
 				rowM.add(imageData());
 				
 //				ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
-				magoA.setIcon(new ResourceImageReference(jugador.getDirImage()));
+				magoA.setIcon(ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage()));
 //				ImageReference mB = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH2.gif");				
 				magoB.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGHE2.gif"));
 			}
@@ -1816,7 +1781,7 @@ public class DesktopGif extends ContentPane{
 				rowM.add(imageData());
 				
 //				ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
-				magoA.setIcon(new ResourceImageReference(jugador.getDirImage()));
+				magoA.setIcon(ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage()));
 //				ImageReference mB = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH2.gif");				
 				magoB.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGTE2.gif"));
 			}
@@ -1826,17 +1791,11 @@ public class DesktopGif extends ContentPane{
 				rowM.add(imageData());
 				
 //				ImageReference mA = ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage());
-				magoA.setIcon(new ResourceImageReference(jugador.getDirImage()));
+				magoA.setIcon(ImageReferenceCache.getInstance().getImageReference(jugador.getDirImage()));
 //				ImageReference mB = ImageReferenceCache.getInstance().getImageReference("Images/Personajes/Gifs/MGFH2.gif");				
 				magoB.setIcon(new ResourceImageReference("Images/Personajes/Gifs/MGGE2.gif"));
 			}
 		}
-	}
-	
-	private void imageIni()
-	{
-		rowM.removeAll();
-		rowM.add(rowImage());
 	}
 	
 	private void btnItemClicked() 
@@ -2219,7 +2178,7 @@ public class DesktopGif extends ContentPane{
 		col.setBorder(new Border(3, Color.BLACK, Border.STYLE_RIDGE));
 		col.setCellSpacing(new Extent(10));
 		col.setInsets(new Insets(5, 5, 5, 5));
-		col.setBackground(new Color(226,211,161));
+		col.setBackground(Color.WHITE);
 		
 	    ColumnLayoutData cld;
 		
